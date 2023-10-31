@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,10 +42,23 @@ INSTALLED_APPS = [
     'user',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'rest_framework.authtoken',
+    'rest_auth',
 
     'corsheaders',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
    
 ]
+
+SITE_ID = 1
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
@@ -150,3 +164,4 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL ='user.CustomUser'
 
 CORS_ALLOW_ALL_ORIGINS = True
+

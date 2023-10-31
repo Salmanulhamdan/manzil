@@ -58,6 +58,6 @@ class CustomUser(AbstractUser):
     profile_photo = models.ImageField(upload_to="Profile_photos", null=True, blank=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['username', 'usertype', 'phonenumber']
+    REQUIRED_FIELDS = []
 
     objects = CustomUserManager()

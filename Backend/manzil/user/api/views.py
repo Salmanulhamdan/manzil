@@ -8,6 +8,9 @@ from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from user.models import CustomUser
 
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from rest_auth.registration.views import SocialLoginView
 
 # Create your views here.
 # user creation
@@ -30,13 +33,13 @@ class Signup(APIView):
             """
 
             # Creating user and setting the password (save() doesn't hash the password)
-            hashed_password = make_password(serializer.validated_data["password"])
+            # hashed_password = make_password(serializer.validated_data["password"])
             user = CustomUser.objects.create_user(
                 username=serializer.validated_data["username"],
                 usertype=serializer.validated_data["usertype"],
                 email=serializer.validated_data["email"],
                 phonenumber=serializer.validated_data["phonenumber"],
-                password=hashed_password,
+                password=serializer.validated_data["password"],
                 profile_photo=serializer.validated_data.get("profile_photo"),
             )
 
@@ -57,7 +60,7 @@ class login(APIView):
 
     def post(self, reuqest, format=None):
         """
-        validating the user credencials and generating access and regresh
+        validating the user credencials and generating access and refresh
         jwt tocken if the user is validated otherwise return error message
         """
         print("request hit")
@@ -69,11 +72,19 @@ class login(APIView):
         if seriazed_data.is_valid(raise_exception=True):
   
             # fetching credencials for validation
-            email = seriazed_data.validated_data["email"]
-            password = seriazed_data.validated_data["password"]
+            email = seriazed_data.validated_data['email']
+            password = seriazed_data.validated_data['password']
+            print(email)
+            print(password)
+
+
+            user1=CustomUser.objects.get(email=email)
+            print(user1)
+
 
             # authenticate func returns user instence if authenticated
             user = authenticate(email=email, password=password)
+            print(user)
 
             # if user is authenticated generate jwt
             if user is not None:
@@ -98,3 +109,11 @@ class login(APIView):
             # if user none, wrong email or passord
             else:
                 return Response({"details": "wrong email or password"}, status=401)
+            
+
+#social_login
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
