@@ -20,3 +20,174 @@ height: 0px;
 
 
 }
+
+
+/* Logo */
+
+/* Auto layout */
+.logo{
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 0px;
+gap: 2px;
+
+position: absolute;
+width: 146px;
+height: 30px;
+left: 109px;
+top: 30px;
+
+}
+
+/* logo-transparent-png 1 */
+
+/* width: 146px;
+height: 30px;
+
+background: url(logo-transparent-png); */
+
+/* Inside auto layout */
+/* flex: none;
+order: 0;
+flex-grow: 0; */
+
+
+/* Nav Links */
+
+/* Auto layout */
+.nav-links{
+display: flex;
+flex-direction: row;
+align-items: center;
+padding: 0px;
+gap: 32px;
+
+position: absolute;
+width: 366px;
+height: 19px;
+left: 288px;
+top: 35px;
+}
+
+
+
+
+
+/* Home */
+.home{
+width: 45px;
+height: 19px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+text-transform: capitalize;
+
+/* Black */
+color: #000000;
+
+
+/* Inside auto layout */
+flex: none;
+order: 0;
+flex-grow: 0;
+
+}
+/* Frame 2 */
+.frame1{
+/* Auto layout */
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 0px;
+gap: 8px;
+
+width: 62px;
+height: 19px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 1;
+flex-grow: 0;
+
+}
+/* Posts */
+.post{
+width: 42px;
+height: 19px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+text-transform: capitalize;
+
+/* Black */
+color: #000000;
+}
+
+.group{
+
+/* Group 36695 */
+
+width: 117px;
+height: 19px;
+
+
+/* Inside auto layout */
+flex: none;
+order: 2;
+flex-grow: 0;
+
+
+}
+
+
+/* Professionals */
+.professional{
+position: absolute;
+width: 101px;
+height: 19px;
+left: 171px;
+top: 0px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+text-transform: capitalize;
+
+/* Black */
+color: #000000;
+}
+
+
+/* About */
+.about{
+width: 46px;
+height: 19px;
+
+font-family: 'Inter';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 19px;
+text-transform: capitalize;
+
+/* Black */
+color: #000000;
+
+
+/* Inside auto layout */
+flex: none;
+order: 3;
+flex-grow: 0;
+}

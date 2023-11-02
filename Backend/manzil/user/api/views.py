@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from user.api.serializers import Custom_user_serializer,Login_serializer_user
+from user.api.serializers import Custom_user_serializer,Login_serializer_user,UserTypeSelectionSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
@@ -14,6 +14,20 @@ from rest_auth.registration.views import SocialLoginView
 
 # Create your views here.
 # user creation
+# user typeselection
+class UserTypeSelection(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = UserTypeSelectionSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            # Return the selected user type
+            user_type = serializer.validated_data['usertype']
+            return Response({'usertype': user_type}, status=201)
+
+
+
 class Signup(APIView):
     permission_classes = [AllowAny]
     serializer_class = Custom_user_serializer
@@ -25,6 +39,7 @@ class Signup(APIView):
         """
         # Serializing request.data
         serializer = self.serializer_class(data=request.data)
+        selected_user_type = request.data.get('usertype', None)
 
         if serializer.is_valid(raise_exception=True):
             """
@@ -36,7 +51,7 @@ class Signup(APIView):
             # hashed_password = make_password(serializer.validated_data["password"])
             user = CustomUser.objects.create_user(
                 username=serializer.validated_data["username"],
-                usertype=serializer.validated_data["usertype"],
+                usertype=selected_user_type,
                 email=serializer.validated_data["email"],
                 phonenumber=serializer.validated_data["phonenumber"],
                 password=serializer.validated_data["password"],
@@ -74,22 +89,11 @@ class login(APIView):
             # fetching credencials for validation
             email = seriazed_data.validated_data['email']
             password = seriazed_data.validated_data['password']
-            print(email)
-            print(password)
-
-
             user1=CustomUser.objects.get(email=email)
-            print(user1)
-
-
             # authenticate func returns user instence if authenticated
             user = authenticate(email=email, password=password)
-            print(user)
-
             # if user is authenticated generate jwt
             if user is not None:
-  
-                print("login success")
                 # generating jwt tocken
                 refresh = RefreshToken.for_user(user)
                 access = refresh.access_token
@@ -117,3 +121,10 @@ class FacebookLogin(SocialLoginView):
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
+
+
+
+#--------------------------------------------------adminside----------------------------------------------#
+
+#adminlogin
+

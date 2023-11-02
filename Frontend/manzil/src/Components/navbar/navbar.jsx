@@ -17,14 +17,15 @@ class Navbar extends Component {
         </div>
         <ul className="nav-links">
         
-            <a href="/">Home</a>
+            <a className= 'home' href="/">Home</a>
+          <div className='frame1'>
           
-          
-            <a href="/about">About</a>
-          
-            <a href="/services">Services</a>
-          
-            <a href="/contact">Contact</a>
+            <a className= 'post'href="/about">Post</a>
+            </div>
+            <div className='group'>
+            <a className= 'professional'href="/services">Professionals</a>
+            </div>
+            <a className= 'about'href="/contact">Contact</a>
           
         </ul>
       </nav>
