@@ -1,0 +1,21 @@
+/* Signup Hire */
+.signupform{
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+
+
+background: #000;
+
+
+
+}
+
+.frame{
+position: absolute;
+width: 773px;
+height: 50px;
+left: 0%;
+top: 0%;
+bottom: 0%;
+}

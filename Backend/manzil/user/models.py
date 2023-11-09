@@ -61,3 +61,23 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+
+
+class HouseownerProfile(models.Model):
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="houseowner_profile")
+    place=models.CharField(max_length=200)
+class Professions(models.Model):
+    profession_name=models.CharField(max_length=200,)
+class ProfessionalsProfile(models.Model):
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="professional_profile")
+    place=models.CharField(max_length=200)
+    profession=models.ForeignKey(Professions,on_delete=models.CASCADE)
+    experience=models.IntegerField(null=True)
+    bio=models.TextField(null=True)
+    
+
+
+
+
+
+    

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from user.models import CustomUser 
+from user.models import CustomUser ,HouseownerProfile,Professions,ProfessionalsProfile
 class Custom_user_serializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -16,6 +16,22 @@ class Custom_user_serializer(serializers.ModelSerializer):
 class Login_serializer_user(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True)
+class HouseownerProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HouseownerProfile
+        fields = '__all__'
 
 class UserTypeSelectionSerializer(serializers.Serializer):
     usertype = serializers.ChoiceField(choices=CustomUser.USER_TYPE_CHOICES)
+
+class ProfessionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Professions
+        fields = '__all__'
+
+class ProfessionalsProfileSerializer(serializers.ModelSerializer):
+    profession = ProfessionsSerializer()
+
+    class Meta:
+        model = ProfessionalsProfile
+        fields = '__all__'

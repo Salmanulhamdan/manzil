@@ -1,12 +1,12 @@
 from django.shortcuts import render
-from user.api.serializers import Custom_user_serializer,Login_serializer_user,UserTypeSelectionSerializer
+from user.api.serializers import Custom_user_serializer,Login_serializer_user,UserTypeSelectionSerializer,HouseownerProfileSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
-from user.models import CustomUser
+from user.models import CustomUser,HouseownerProfile
 
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
@@ -39,6 +39,7 @@ class Signup(APIView):
         """
         # Serializing request.data
         serializer = self.serializer_class(data=request.data)
+        print(request.data)
         selected_user_type = request.data.get('usertype', None)
 
         if serializer.is_valid(raise_exception=True):
@@ -56,11 +57,28 @@ class Signup(APIView):
                 phonenumber=serializer.validated_data["phonenumber"],
                 password=serializer.validated_data["password"],
                 profile_photo=serializer.validated_data.get("profile_photo"),
-            )
 
-           
+            )
+            print(user.usertype)
+            if selected_user_type=="houseowner":
+                print(request.data.get('place',None))
+                # print(place)
+                profile_serilizer=HouseownerProfileSerializer(data="kkk")
+                if profile_serilizer.is_valid(raise_exception=True):
+                    print("validated")
+
+
+                    houseowner=HouseownerProfile.objects.create(
+                    user=user,
+                    place=profile_serilizer.validated_data["place"]
+                )
+
+            
             # Remove password from the response and send the response
-            response_data = serializer.data
+            response_data = [serializer.data,profile_serilizer.data]
+
+            print("f",user)
+
             response_data.pop("password")
 
            
@@ -128,3 +146,5 @@ class GoogleLogin(SocialLoginView):
 
 #adminlogin
 
+class Getusers(APIView):
+    
