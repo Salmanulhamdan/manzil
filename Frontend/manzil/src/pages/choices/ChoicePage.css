@@ -1,0 +1,22 @@
+/* Add this CSS in a separate stylesheet or inside a style tag in your component */
+
+.card-container {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .card {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    width: 45%; /* Adjust the width as needed */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    text-align: center;
+  }
+  
+  input[type="radio"] {
+    margin-right: 5px;
+  }
+  

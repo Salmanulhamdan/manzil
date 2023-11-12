@@ -1,80 +1,77 @@
-import React, { useState } from 'react';
-import './houseowner.css';
-import img from  "../../assets/signup.svg";
+import React, { useState } from "react";
+import axios from "axios";
+import { baseUrl,register } from "../../utilits/constants";
 
-function HouseOwnerSignup() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    emailAddress: '',
-    city: '',
-    password: '',
-  });
+const HouseownerSignUpForm = () => {
+  const [fullName, setFullName] = useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your signup logic for house owners here
+
+    // TODO: Validate the form fields
+
+    // Create a new user account
+    var username=fullName
+    var email=emailAddress
+    var usertype="houseowner"
+    var phonenumber="8239995544"
+    const response = await axios.post(baseUrl + register , {
+      username,
+      usertype,
+      email,
+      phonenumber,
+      city,
+      password,
+    });
+
+    // If the user account was created successfully, redirect to the login page
+    if (response.status === 201) {
+      window.location.href = "/login";
+    } else {
+      // Handle the error
+    }
   };
 
   return (
-  <div className='signupform'>
-    <div className='frame'>
-       <img src={img} alt="signup" />
-       </div>
-      <h2>House Owner Signup</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-        <label>Fullname:</label>
-        <input
-          type="text"
-          name="fullName"
-          placeholder="Full Name"
-          value={formData.fullName}
-          onChange={handleInputChange}
-        />
-        </div>
-        <div>
-        <label>Email:</label>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="fullName"
+        placeholder="Full name"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+      />
 
-        <input
-          type="email"
-          name="emailAddress"
-          placeholder="Email Address"
-          value={formData.emailAddress}
-          onChange={handleInputChange}
-        />
-        </div>
-        <div>
-        <label>City:</label>
+      <input
+        type="email"
+        name="emailAddress"
+        placeholder="Email address"
+        value={emailAddress}
+        onChange={(e) => setEmailAddress(e.target.value)}
+      />
 
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={formData.city}
-          onChange={handleInputChange}
-        />
-        </div>
-        <div>
-        <label>Password:</label>
+      <input
+        type="text"
+        name="city"
+        placeholder="City"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+      />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleInputChange}
-        />
-        </div>
-        <button type="submit">Sign Up</button>
-      </form>
-  
-    </div>
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <button type="submit">Sign up</button>
+    </form>
   );
-}
+};
 
-export default HouseOwnerSignup;
+export default HouseownerSignUpForm;

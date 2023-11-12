@@ -1,22 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import UserRouter from "./routs/user_routs";
 // import Navbar from './Components/navbar/navbar';
-// import ChoicePage from './pages/choices/choice';
-// import ProfessionalSignup from './pages/signup_page/professional_signup';
-import HouseOwnerSignup from './pages/signup_page/houseownersignup';
-import './App.css';
+// import { Suspense, lazy } from "react";
+// import AdminRouter from "./routes/adminRoutes";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-     {/* <Navbar/> */}
-     <HouseOwnerSignup/>
+
+function App() {
+  return (
     
-
-      
-      </div>
-    );
-  }
+    <BrowserRouter>
+   
+      <Routes>
+        <Route path="/*" element={<UserRouter />} />
+       
+      </Routes>
+     
+    </BrowserRouter>
+  );
 }
 
 export default App;

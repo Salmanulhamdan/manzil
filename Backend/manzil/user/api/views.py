@@ -39,10 +39,12 @@ class Signup(APIView):
         """
         # Serializing request.data
         serializer = self.serializer_class(data=request.data)
-        print(request.data)
+        print("hh",request.data)
+        print(serializer,"ended")
         selected_user_type = request.data.get('usertype', None)
 
         if serializer.is_valid(raise_exception=True):
+            print("serlizr valid")
             """
             If the data is validated, the password is hashed, and a new user is created.
             Return with generated JWT tokens.
@@ -59,27 +61,27 @@ class Signup(APIView):
                 profile_photo=serializer.validated_data.get("profile_photo"),
 
             )
-            print(user.usertype)
-            if selected_user_type=="houseowner":
-                print(request.data.get('place',None))
-                # print(place)
-                profile_serilizer=HouseownerProfileSerializer(data="kkk")
-                if profile_serilizer.is_valid(raise_exception=True):
-                    print("validated")
+            # print(user.usertype)
+            # if selected_user_type=="houseowner":
+            #     print(request.data.get('place',None))
+            #     # print(place)
+            #     profile_serilizer=HouseownerProfileSerializer(data="kkk")
+            #     if profile_serilizer.is_valid(raise_exception=True):
+            #         print("validated")
 
 
-                    houseowner=HouseownerProfile.objects.create(
-                    user=user,
-                    place=profile_serilizer.validated_data["place"]
-                )
+            #         houseowner=HouseownerProfile.objects.create(
+            #         user=user,
+            #         place=profile_serilizer.validated_data["place"]
+            #     )
 
             
             # Remove password from the response and send the response
-            response_data = [serializer.data,profile_serilizer.data]
+            response_data = serializer.data
 
             print("f",user)
 
-            response_data.pop("password")
+            response_data.pop('password')
 
            
 
@@ -115,6 +117,7 @@ class login(APIView):
                 # generating jwt tocken
                 refresh = RefreshToken.for_user(user)
                 access = refresh.access_token
+                print(access)
 
                 # returning response with access and refresh tocken
                 # refresh tocken used to generate new tocken before tockens session expired
@@ -145,6 +148,6 @@ class GoogleLogin(SocialLoginView):
 #--------------------------------------------------adminside----------------------------------------------#
 
 #adminlogin
-
-class Getusers(APIView):
+# class AdminLogin(APIView):
+    
     

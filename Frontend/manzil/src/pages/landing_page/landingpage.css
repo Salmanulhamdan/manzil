@@ -1,0 +1,45 @@
+
+
+.background-image {
+    width: 100%;
+    height: auto;
+    background-size: contain;
+    background-position: center;
+    
+  }
+  
+  .social-login {
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    padding: 20px; /* Adjust the padding as needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  }
+  
+  .google-login, .facebook-login {
+    margin: 5px; /* Adjust the margin as needed */
+    background-color: #007bff; /* Blue background color for Google Login */
+    color: #fff; /* White text color for Google Login */
+    border: none; /* Remove button border */
+    padding: 10px 20px; /* Adjust padding as needed */
+    cursor: pointer;
+  }
+  
+  .facebook-login {
+    background-color: #3b5998; /* Blue background color for Facebook Login */
+    color: #fff; /* White text color for Facebook Login */
+  }
+  
+  /* Hover styles */
+  .google-login:hover, .facebook-login:hover {
+    background-color: #0056b3; /* Darker blue on hover for Google Login */
+    /* You can add more hover styles as needed */
+  }
+  
+  .bg-image{
+    width: 100%;
+    object-fit: cover;
+  }
+  

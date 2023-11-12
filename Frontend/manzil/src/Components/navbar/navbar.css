@@ -1,193 +1,97 @@
-/* Navbar.css (or any other name you prefer) */
-
-/* Navs */
-.navbar{
-position: relative;
-width: 100%;
-height: 84px;
-
-background: linear-gradient(89.91deg, rgba(255, 255, 255, 0) -23.9%, #64E3E3 86.23%);
-
-}
-/* Logo */
-
-/* Auto layout */
-
-/* logo-transparent-png 1 */
-.logo{
-width: 246px;
-height: 0px;
-
-
-}
-
-
-/* Logo */
-
-/* Auto layout */
-.logo{
-display: flex;
-flex-direction: row;
-justify-content: center;
-align-items: center;
-padding: 0px;
-gap: 2px;
-
-position: absolute;
-width: 146px;
-height: 30px;
-left: 109px;
-top: 30px;
-
-}
-
-/* logo-transparent-png 1 */
-
-/* width: 146px;
-height: 30px;
-
-background: url(logo-transparent-png); */
-
-/* Inside auto layout */
-/* flex: none;
-order: 0;
-flex-grow: 0; */
-
-
-/* Nav Links */
-
-/* Auto layout */
-.nav-links{
-display: flex;
-flex-direction: row;
-align-items: center;
-padding: 0px;
-gap: 32px;
-
-position: absolute;
-width: 366px;
-height: 19px;
-left: 288px;
-top: 35px;
-}
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background-image: linear-gradient(89.91deg, rgba(255, 255, 255, 0) -23.9%, #64E3E3 86.23%);
+  }
+  
+  .logo {
+    flex-shrink: 0;
+    margin-left: 100px;
+  }
+  
+  .nav-links {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    order: 1; /* Move the nav-links to the left */
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: #000;
+    padding: 1rem;
+  }
+  
+  .nav-links a:hover {
+    background-color: #ccc;
+  }
+  
+  .search-bar {
+    width: 20%;
+    height: 25px;
+    padding: 0.5rem 2rem; /* Increase the padding to accommodate the button */
+    border: 1px solid #ccc;
+    border-radius: 1.5rem;
+    order: 2; /* Move the search-bar to the middle */
+  }
+  
+  .search-button {
+    position: absolute;
+    right: 1rem; /* Adjust the right position to place the button inside the search bar */
+    top: 50%; /* Vertically center the button */
+    transform: translateY(-50%);
+    background: transparent;
+    border: black;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  /* Add any additional styling for the search icon, e.g., color, size */
+  .search-button i {
+    color: #080000;
+    font-size: 1.2rem;
+  }
+  
+  .signup {
+    width: 124px;
+    padding: 1rem;
+    background-color: #000;
+    color: #fff;
+    border-radius: 1.5rem;
+    order: 3; /* Move the signup button to the right */
+    margin-right: 70px;
+    background: linear-gradient(360deg, #000000 -21.62%, #64EAEA 154.26%);
+    border-radius: 50px;
 
 
+    text-decoration: none; /* Remove the default underline */
+  /* Set the font weight to bold */
+  font-size: 1.2rem; /* Adjust the font size */
+   /* Convert text to uppercase */
+  letter-spacing: 1px;
+  text-align: center;
 
 
+  }
+ 
 
-/* Home */
-.home{
-width: 45px;
-height: 19px;
-
-font-family: 'Inter';
-font-style: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 19px;
-text-transform: capitalize;
-
-/* Black */
-color: #000000;
-
-
-/* Inside auto layout */
-flex: none;
-order: 0;
-flex-grow: 0;
-
-}
-/* Frame 2 */
-.frame1{
-/* Auto layout */
-display: flex;
-flex-direction: row;
-justify-content: center;
-align-items: center;
-padding: 0px;
-gap: 8px;
-
-width: 62px;
-height: 19px;
-
-
-/* Inside auto layout */
-flex: none;
-order: 1;
-flex-grow: 0;
-
-}
-/* Posts */
-.post{
-width: 42px;
-height: 19px;
-
-font-family: 'Inter';
-font-style: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 19px;
-text-transform: capitalize;
-
-/* Black */
-color: #000000;
-}
-
-.group{
-
-/* Group 36695 */
-
-width: 117px;
-height: 19px;
-
-
-/* Inside auto layout */
-flex: none;
-order: 2;
-flex-grow: 0;
-
-
-}
-
-
-/* Professionals */
-.professional{
-position: absolute;
-width: 101px;
-height: 19px;
-left: 171px;
-top: 0px;
-
-font-family: 'Inter';
-font-style: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 19px;
-text-transform: capitalize;
-
-/* Black */
-color: #000000;
-}
-
-
-/* About */
-.about{
-width: 46px;
-height: 19px;
-
-font-family: 'Inter';
-font-style: normal;
-font-weight: 400;
-font-size: 16px;
-line-height: 19px;
-text-transform: capitalize;
-
-/* Black */
-color: #000000;
-
-
-/* Inside auto layout */
-flex: none;
-order: 3;
-flex-grow: 0;
-}
+  
+  /* Frame and Group */
+  .frame1, .group {
+    text-align: center; /* Center-align the text */
+  }
+  
+  .frame1 a, .group a {
+    text-decoration: none;
+    color: #000;
+    padding: 1rem;
+  }
+  
+  .frame1 a:hover, .group a:hover {
+    background-color: #ccc;
+  }
+  
