@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from user.api.serializers import Custom_user_serializer,Login_serializer_user,UserTypeSelectionSerializer,HouseownerProfileSerializer
+from user.api.serializers import Custom_user_serializer,Login_serializer_user,HouseownerProfileSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
@@ -15,18 +15,6 @@ from rest_auth.registration.views import SocialLoginView
 # Create your views here.
 # user creation
 # user typeselection
-class UserTypeSelection(APIView):
-    permission_classes = [AllowAny]
-    serializer_class = UserTypeSelectionSerializer
-
-    def post(self, request, format=None):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            # Return the selected user type
-            user_type = serializer.validated_data['usertype']
-            return Response({'usertype': user_type}, status=201)
-
-
 
 class Signup(APIView):
     permission_classes = [AllowAny]

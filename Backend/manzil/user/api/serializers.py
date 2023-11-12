@@ -21,8 +21,7 @@ class HouseownerProfileSerializer(serializers.ModelSerializer):
         model = HouseownerProfile
         fields = '__all__'
 
-class UserTypeSelectionSerializer(serializers.Serializer):
-    usertype = serializers.ChoiceField(choices=CustomUser.USER_TYPE_CHOICES)
+
 
 class ProfessionsSerializer(serializers.ModelSerializer):
     class Meta:

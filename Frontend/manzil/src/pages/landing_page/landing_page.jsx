@@ -6,16 +6,19 @@ function LandingPage() {
     <div className="landing-page">
     <Navbar/>
     
-      <div className="background-image">
-      <img src={bgimg} className='bg-image' alt="Logo" style={{"width":"100%", objectFit:"cover"}} />
+    
+
+        
       
-
-      <div className="social-login">
-        <button className="google-login">Login with Google</button>
-        <button className="facebook-login">Login with Facebook</button>
-      </div>
-
-      </div>
+<div className="background-image" style={{ position: "relative" }}>
+  <button className="google-login" style={{ position: "absolute", top: "41%", left: "45%" }}>
+    Login with Google
+  </button>
+  <button className="facebook-login" style={{ position: "absolute", top: "45%", right: "47%" }}>
+    Login with Facebook
+  </button>
+  <img src={bgimg} className="bg-image" alt="Logo" style={{ width: "100%", objectFit: "cover" }} />
+</div>
 
       <div className="user-posts">
         {/* User posts go here */}
