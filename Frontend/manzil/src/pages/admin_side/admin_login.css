@@ -1,0 +1,107 @@
+/* Frame 1 */
+
+
+
+/* Frame 2 */
+.loginbox{
+    position: absolute;
+    width: 50%;
+    height: 407px;
+    left: 25%;
+    top: 123px;
+
+    background: #D0D4D5;
+    border: 1.5px solid #A16464;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+
+}
+
+
+/* Email Input */
+.adminemail {
+    box-sizing: border-box;
+    position: absolute;
+    max-width: 90%; /* Adjust max-width based on your design */
+    width: 100%; /* Ensure it doesn't exceed 100% of the container */
+    height: 44px;
+    left: 5%; /* Adjust horizontally based on your design */
+    top: 40%; /* Center vertically within the rectangle */
+    transform: translateY(-50%); /* Center vertically within the rectangle */
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 31px;
+    border: 1.5px solid #A16464;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    border-radius: 10px;
+    color: #000000;
+}
+
+/* Password Input */
+.adminpassword {
+    box-sizing: border-box;
+    position: absolute;
+    max-width: 90%; /* Adjust max-width based on your design */
+    width: 100%; /* Ensure it doesn't exceed 100% of the container */
+    height: 44px;
+    left: 5%; /* Adjust horizontally based on your design */
+    top: 60%; /* Adjust vertically based on your design */
+    transform: translateY(-50%); /* Center vertically within the rectangle */
+    border: 1.5px solid #A16464;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    border-radius: 10px;
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 31px;
+    color: #000000;
+}
+
+.btn.admin_login{
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 144px;
+    height: 45px;
+    left: 40%;
+    top: 80%;
+
+    background: #D9D9D9;
+    border: 2px solid #A16464;
+    border-radius: 10px; 
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 39px;
+    color: #000000; 
+}
+
+ .btn.admin_login:hover{
+    cursor: pointer;
+    background-color: #D15A5A;
+ }
+
+ .admin_title{
+    position: absolute;
+    width: 150px;
+    height: 64px;
+    left: 40%;
+    top: 45px;
+
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 38px;
+    line-height: 64px;
+
+    color: #000000;
+}
+
+
+
+
+
+

@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import UserRouter from "./routs/user_routs";
+import AdminRouter from './routs/adminRoutes';
 // import Navbar from './Components/navbar/navbar';
 // import { Suspense, lazy } from "react";
-// import AdminRouter from "./routes/adminRoutes";
+
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
    
       <Routes>
         <Route path="/*" element={<UserRouter />} />
+        <Route path="/admin/*" element={<AdminRouter />} />
        
       </Routes>
      

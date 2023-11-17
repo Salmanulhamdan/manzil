@@ -1,22 +1,42 @@
-/* Add this CSS in a separate stylesheet or inside a style tag in your component */
-
 .card-container {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
+  margin: 20px;
+}
+
+.card {
+  border: 2px solid #64EAEA;
+  padding: 10px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+
+  &:hover {
+    border-color: #4db6ac;
   }
-  
-  .card {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 20px;
-    width: 45%; /* Adjust the width as needed */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    text-align: center;
+
+  &.selected {
+    border-color: #4db6ac;
   }
-  
-  input[type="radio"] {
-    margin-right: 5px;
+}
+
+.continue-button {
+  background-color: #64EAEA;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #4db6ac;
   }
-  
+}
+
+@media (max-width: 600px) {
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}

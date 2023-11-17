@@ -11,7 +11,7 @@ function ChoicePage() {
 
   return (
     <div>
-      <h1>Choose your role</h1>
+      <h1>Choose your Role</h1>
       <div className="card-container">
         <div className={`card ${selectedOption === "HOUSEOWNER" ? 'selected' : ''}`}>
           <label>

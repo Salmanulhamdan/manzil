@@ -34,3 +34,9 @@ class ProfessionalsProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfessionalsProfile
         fields = '__all__'
+
+
+class GetUserSerializer(serializers.ModelSerializer):
+     class Meta:
+        model = CustomUser
+        fields = '__all__'

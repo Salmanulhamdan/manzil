@@ -1,0 +1,62 @@
+
+/* NavBar.css */
+.admin_navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    padding: 10px;
+    margin-top: 0;
+    width: 70vw;
+    margin-left: 0px;
+    
+  }
+  
+  
+  .admin_logout {
+    display: flex;
+    align-items: center;
+  
+   
+  }
+  
+
+  
+  
+  /* Add this to NavBar.css */
+  .input-group.md-form.form-sm.form-1 {
+    height: auto;
+    margin-left: 50%    ; /* Adjust the margin as needed */
+  }
+  
+  .input-group.md-form.form-sm.form-1 input {
+    border: 1px solid #bdbdbd;
+    border-radius: 2rem;
+    font-size: 12px;
+    padding: 0.25rem;
+    width: 300px; /* Set the width explicitly, adjust as needed */
+    border-left: 0;
+    margin-top: 1px;
+  }
+  
+  
+  .input-group.md-form.form-sm.form-1 .input-group-prepend .input-group-text {
+    border-top-left-radius: 2rem;
+    border-bottom-left-radius: 2rem;
+    border-right: 0px;
+    border-left: 1px solid #bdbdbd;
+    border-top: 1px solid #bdbdbd;
+    border-bottom: 1px solid #bdbdbd;
+    background-color: white;
+  }
+  
+
+  
+  .admin_logout span {
+    white-space: nowrap;
+    margin-right:1px;
+  }
+  
+  .logout_link:hover{
+    cursor: pointer;
+  }

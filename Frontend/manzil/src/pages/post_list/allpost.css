@@ -1,0 +1,31 @@
+/* Assuming your sidebar has a fixed width, adjust it accordingly */
+/*  */
+  
+  .center-container {
+    margin: 0 auto;
+    width: 60%; /* Adjust the width of your main content container */
+  }
+  
+  /* Add the following styles to your existing component styles */
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+
+  
+  /* Add the following styles to center the main container */
+  .div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust the height if needed */
+  }
+  
+  /* Add media queries to make it responsive */
+  @media (max-width: 768px) {
+    .center-container {
+      width: 80%;
+    }
+  }
+  

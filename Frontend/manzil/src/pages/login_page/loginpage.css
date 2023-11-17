@@ -1,0 +1,262 @@
+/* landing or sign in page */
+
+/* General Styles */
+html, body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+}
+
+/* Shared Styles for Sections */
+.first, .second {
+    box-sizing: border-box;
+    position: absolute;
+    height: 100%;
+    border: 1px solid #64EAEA;
+}
+
+/* First Section Styles */
+.first {
+    width: 50%;
+    left: 0;
+    background: #64EAEA;
+}
+
+/* Second Section Styles */
+.second {
+    width: 50%;
+    left: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Rectangle Styles */
+.rectangle {
+    box-sizing: border-box;
+    position: absolute;
+    width: 460px;
+    height: 650px;
+    top: 50%;
+    left: 50%;
+    opacity: 0.5;
+    border: 1.5px solid #64EAEA;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    transform: translate(-50%, -50%); /* Center the element */
+}
+
+/* Responsive Styles using Media Queries */
+@media (max-width: 768px) {
+    .first, .second {
+        width: 100%;
+        left: 0;
+    }
+
+    .second {
+        top: 50%;
+    }
+
+    .rectangle {
+        width: 80%;
+        height: auto;
+        max-width: 460px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .title {
+        width: 70%;
+        left: 15%;
+        top: 10%;
+    }
+
+    /* Add more responsive styles as needed */
+}
+
+/* Add more media queries for different screen sizes as needed */
+
+
+ /* name */
+.title{
+    position: absolute;
+    width: 150px;
+    height: 64px;
+    left: 190px;
+    top: 128px;
+
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 25px;
+    line-height: 64px;
+
+    color: #000000;
+}
+/* Email Input */
+.email {
+    box-sizing: border-box;
+    position: absolute;
+    max-width: 90%; /* Adjust max-width based on your design */
+    width: 100%; /* Ensure it doesn't exceed 100% of the container */
+    height: 44px;
+    left: 5%; /* Adjust horizontally based on your design */
+    top: 40%; /* Center vertically within the rectangle */
+    transform: translateY(-50%); /* Center vertically within the rectangle */
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 31px;
+    border: 1.5px solid #64EAEA;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    border-radius: 10px;
+    color: #000000;
+}
+
+/* Password Input */
+.password {
+    box-sizing: border-box;
+    position: absolute;
+    max-width: 90%; /* Adjust max-width based on your design */
+    width: 100%; /* Ensure it doesn't exceed 100% of the container */
+    height: 44px;
+    left: 5%; /* Adjust horizontally based on your design */
+    top: 55%; /* Adjust vertically based on your design */
+    transform: translateY(-50%); /* Center vertically within the rectangle */
+    border: 1.5px solid #A16464;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    border-radius: 10px;
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 31px;
+    color: #000000;
+}
+
+/* Media Query for Small Screens */
+@media (max-width: 768px) {
+    .email, .password {
+        max-width: 100%;
+        left: 0;
+    }
+}
+
+
+
+    /* Rectangle 5 */
+.btn.login{
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 144px;
+    height: 45px;
+    left: 156px;
+    top: 431px;
+
+    background: #D9D9D9;
+    border: 2px solid #A16464;
+    border-radius: 10px; 
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 20px;
+    line-height: 39px;
+    color: #000000; 
+}
+
+ .btn.login:hover{
+    cursor: pointer;
+    background-color: #D15A5A;
+ }
+
+
+ /* forgot password???? */
+.forgot{
+    position: absolute;
+    width: 109px;
+    height: 26px;
+    left: 306px;
+    top: 453px;
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 10px;
+    color: #33318B;
+    text-decoration: none;
+}
+.forgot:hover{
+    cursor: pointer;
+    color: #D15A5A;
+    
+}
+   
+
+    /* If you dont have one, create your account here.........signup */
+.text{
+    position: absolute;
+    width: 385px;
+    height: 31px;
+    left: 37px;
+    top: 501px;
+
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15.95px;
+    line-height: 31px;
+    color: #33318B;
+}
+.link{
+    font-size: 18px;
+}
+.link:hover{
+    cursor: pointer;
+    color: #D15A5A;
+}
+
+
+/* Welcome !!!! */
+/* Welcome Section */
+.welcome {
+    position: absolute;
+    width: 50%; /* Adjust width based on your design */
+    height: auto;
+    left: 30%; /* Center horizontally */
+    top: 30%; /* Adjust vertically based on your design */
+
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 4.5vw; /* Adjust font size based on your design */
+    line-height: 1.5;
+    color: #000000;
+}
+
+/* Tagline Section */
+.tagline {
+    position: absolute;
+    width: 80%; /* Adjust width based on your design */
+    height: auto;
+    left: 19%; /* Adjust horizontally based on your design */
+    top: 45%; /* Adjust vertically based on your design */
+
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 3vw; /* Adjust font size based on your design */
+    line-height: 1.2;
+    color: #000000;
+}
+
+/* Media Query for Small Screens */
+@media (max-width: 768px) {
+    .welcome, .tagline {
+        width: 80%;
+        left: 10%;
+    }
+}

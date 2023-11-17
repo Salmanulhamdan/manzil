@@ -5,13 +5,21 @@ from django.utils import timezone
 class Hashtags(models.Model):
     hashtag=models.CharField(null=True,)
 
+    def __str__(self):
+        return self.hashtag
+
 class Posts(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     media=models.FileField(upload_to='media/')
     caption=models.TextField(null=True,default="")
-    hashtag=models.ManyToManyField(Hashtags)
+    hashtag=models.ManyToManyField('Hashtags', related_name='posts')
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(default=timezone.now, editable=False)
+
+
+    def __str__(self):
+        return self.user.username
+    
 
 
 class Saves(models.Model):

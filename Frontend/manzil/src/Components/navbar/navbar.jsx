@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import './navbar.css';
 import img from "../../assets/logo.svg";
-class Navbar extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // You can set the initial state here if needed
-    };
-  }
+import { useNavigate } from 'react-router-dom';
+function Navbar  (){
+const navigate = useNavigate();
+ const token=localStorage.getItem("jwtToken")
+ const logout=()=>{
+  localStorage.removeItem("jwtToken");
+  navigate('/')
 
-  render() {
+
+ }
     return (
 <nav className="navbar">
   <div className="logo">
@@ -29,11 +30,13 @@ class Navbar extends Component {
 <button type="submit" className="search-button">
   <i className="fa fa-search"></i> 
 </button>
+{ token?<a className="signup"  onClick={logout}>Log Out</a>:
   <a className="signup" href="/choice">Sign Up</a>
+    }
 </nav>
 
     );
-  }
+  
 }
 
 export default Navbar;

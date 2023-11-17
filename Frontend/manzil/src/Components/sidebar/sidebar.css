@@ -1,0 +1,240 @@
+/* Frame 4 */
+.box2 {
+    box-sizing: border-box;
+    position: absolute;
+    width: 200px; /* Increase the width */
+    height: 500px;
+    left: 13px;
+    top: 100px;
+    border: 1px solid rgba(209, 90, 90, 0.5);
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    display: flex;
+    flex-direction: column;
+    background-color: #fff; /* Add a background color */
+  }
+  
+/* My Profile */
+.myprofile{
+    width: 100%;
+    height: 10%;
+    margin-top: 15px;
+    /* background-color: pink; */
+    padding-top: 0px;
+    padding-left: 15px;
+ 
+}
+
+.myprofile img{
+    
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+   
+  
+}
+.myprofile_text{
+
+
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 26px;
+    color: #000000;
+    margin-left: 10px;
+    text-decoration: none;
+    
+    
+
+}
+
+/* My Posts */
+
+.myposts{
+    width: 100%;
+    height: 10%;
+    margin-top: 15px;
+    /* background-color: pink; */
+    padding-top: 0px;
+    padding-left: 15px;
+    }
+    
+.myposts img{
+ 
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    
+}
+   
+    
+.myposts_text{
+   
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 26px;
+
+    color: #000000;
+    margin-left: 10px;
+}
+
+
+/* SavedPosts */
+.savedpost{
+    width: 100%;
+    height: 10%;
+   
+    /* background-color: pink; */
+    padding-top: 0px;
+    padding-left: 15px;
+    margin-top: 15px;    
+ 
+    }
+    
+.savedpost img{
+   
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+   
+}
+   
+
+.savedpost_text{
+   
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 26px;
+
+    color: #000000;
+    margin-left: 10px;
+}
+
+
+/* Followers */
+.followers{
+    width: 100%;
+    height: 10%;
+    margin-top: 15px;
+    /* background-color: pink; */
+    padding-top: 0px;
+    padding-left: 15px;
+}
+    
+.followers img{
+    
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+   
+}
+  
+.followers_text{
+   
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 26px;
+
+    color: #000000;
+    margin-left: 10px;
+}
+
+
+/* Following */
+
+.following{
+    width: 100%;
+    height: 10%;
+    margin-top: 15px;
+    /* background-color: pink; */
+    padding-top: 0px;
+    padding-left: 15px;
+}
+    
+.following img{
+    
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    
+}
+   
+    
+.following_text{
+   
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 26px;
+
+    color: #000000;
+    margin-left: 10px;
+
+}
+
+/* Messages */
+
+.messages{
+    width: 100%;
+    height: 10%;
+    margin-top: 15px;
+    /* background-color: pink; */
+    padding-top: 0px;
+    padding-left: 15px;
+}
+    
+.messages img{
+  
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  
+}
+   
+    
+
+.messages_text{
+   
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 26px;
+
+    color: #000000;
+    margin-left: 10px;
+}
+
+
+/* logout */
+
+.logout{
+    width: 100%;
+    height: 10%;
+    margin-top: 10px;
+    /* background-color: pink; */
+    padding-top: 0px;
+    padding-left: 15px;
+}
+
+.logout_link{
+   
+    font-family: 'Inknut Antiqua';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 26px;
+
+    color: #000000;
+    margin-left: 40px;
+    border: none;
+    background-color: transparent;
+}
+
