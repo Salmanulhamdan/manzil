@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from user.models import CustomUser ,HouseownerProfile,Professions,ProfessionalsProfile
+from user.models import CustomUser ,HouseownerProfile,Professions,ProfessionalsProfile,Plan,UserPlan
 class Custom_user_serializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -39,4 +39,16 @@ class ProfessionalsProfileSerializer(serializers.ModelSerializer):
 class GetUserSerializer(serializers.ModelSerializer):
      class Meta:
         model = CustomUser
+        fields = '__all__'
+
+
+
+class PlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plan
+        fields = '__all__'
+
+class UserPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPlan
         fields = '__all__'

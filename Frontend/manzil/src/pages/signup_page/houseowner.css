@@ -19,3 +19,11 @@ left: 0%;
 top: 0%;
 bottom: 0%;
 }
+.required-field {
+    border: 2px solid red;  /* Add a red border to indicate a required field */
+  }
+  
+  .error-message {
+    color: red;  /* Display error message in red text */
+    margin-top: 5px;  /* Add some spacing between input and error message */
+  }

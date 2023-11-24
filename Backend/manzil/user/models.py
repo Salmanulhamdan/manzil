@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.utils.translation import gettext_lazy as _
 import uuid
+from django.utils import timezone
 
 # overriding usermanager
 class CustomUserManager(BaseUserManager):
@@ -57,6 +58,9 @@ class CustomUser(AbstractUser):
     phonenumber = models.CharField(max_length=12)
     profile_photo = models.ImageField(upload_to="Profile_photos", null=True, blank=True)
 
+
+  
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -65,17 +69,53 @@ class CustomUser(AbstractUser):
 
 class HouseownerProfile(models.Model):
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="houseowner_profile")
-    place=models.CharField(max_length=200)
+    place=models.CharField(max_length=200,null=True)
+    upgraded=models.BooleanField(default=False)
 class Professions(models.Model):
     profession_name=models.CharField(max_length=200,)
 class ProfessionalsProfile(models.Model):
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="professional_profile")
-    place=models.CharField(max_length=200)
-    profession=models.ForeignKey(Professions,on_delete=models.CASCADE)
+    place=models.CharField(max_length=200,null=True)
+    profession=models.ForeignKey(Professions,on_delete=models.CASCADE,null=True)
     experience=models.IntegerField(null=True)
     bio=models.TextField(null=True)
+    upgraded=models.BooleanField(default=False)
     
 
+
+#modls for upgrade a user 
+
+class Plan(models.Model):
+
+    name = models.CharField(max_length=100)
+
+    description = models.TextField()
+
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    duration=models.DurationField()
+
+    
+
+
+class UserPlan(models.Model):
+
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,related_name="userplan")
+
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True)
+
+    start_date = models.DateTimeField(default=timezone.now)
+
+    end_date = models.DateTimeField(null=True, blank=True)
+
+
+    def save(self, *args, **kwargs):
+
+        if not self.end_date:
+
+            self.end_date = self.start_date + self.plan.duration
+
+        super(UserPlan, self).save(*args, **kwargs)
 
 
 

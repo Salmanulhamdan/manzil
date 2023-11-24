@@ -20,6 +20,9 @@ class Posts(models.Model):
     def __str__(self):
         return self.user.username
     
+    def like_count(self):
+        return Likes.objects.filter(post=self).count()
+    
 
 
 class Saves(models.Model):
@@ -31,6 +34,8 @@ class Likes(models.Model):
     post=models.ForeignKey(Posts,on_delete=models.CASCADE)
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     time=models.DateTimeField(default=timezone.now,editable=False)
+
+    
 
 
 class Shares(models.Model):

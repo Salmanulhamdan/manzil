@@ -1,42 +1,37 @@
-.card-container {
+.login-container {
   display: flex;
-  justify-content: space-around;
-  margin: 20px;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
-.card {
-  border: 2px solid #64EAEA;
-  padding: 10px;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-
-  &:hover {
-    border-color: #4db6ac;
-  }
-
-  &.selected {
-    border-color: #4db6ac;
-  }
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-.continue-button {
-  background-color: #64EAEA;
-  color: #fff;
+.button {
   padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+
+.create-account {
+  padding: 10px 20px;
+  cursor: pointer;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #4db6ac;
-  }
+  background-color: #007BFF;
+  color: white;
+  margin-bottom: 20px;
 }
 
-@media (max-width: 600px) {
-  .card-container {
-    flex-direction: column;
-    align-items: center;
-  }
+.create-account:hover {
+  background-color: #0056b3;
 }

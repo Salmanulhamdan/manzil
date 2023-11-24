@@ -1,17 +1,18 @@
 from django.shortcuts import render
-from user.api.serializers import Custom_user_serializer,Login_serializer_user,GetUserSerializer
+from user.api.serializers import Custom_user_serializer,Login_serializer_user,GetUserSerializer, PlanSerializer,UserPlanSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
-from user.models import CustomUser,HouseownerProfile
-from rest_framework import status
+from user.models import CustomUser,HouseownerProfile, Plan,Professions,UserPlan
+from rest_framework import status,viewsets
 from posts.models import Posts
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-
+from rest_framework import serializers,generics
+import logging
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
@@ -19,66 +20,81 @@ from rest_auth.registration.views import SocialLoginView
 # Create your views here.
 # user creation
 # user typeselection
+logger = logging.getLogger(__name__)
 
 class Signup(APIView):
     permission_classes = [AllowAny]
     serializer_class = Custom_user_serializer
 
     def post(self, request, format=None):
-        """
-        Create a new user, receive request.data and serialize it. If validated,
-        create a new user and return newly generated JWT access and refresh tokens.
-        """
-        # Serializing request.data
-        serializer = self.serializer_class(data=request.data)
-        print("hh",request.data)
-        print(serializer,"ended")
-        selected_user_type = request.data.get('usertype', None)
-
-        if serializer.is_valid(raise_exception=True):
-            print("serlizr valid")
+        try:
             """
-            If the data is validated, the password is hashed, and a new user is created.
-            Return with generated JWT tokens.
+            Create a new user, receive request.data and serialize it. If validated,
+            create a new user and return newly generated JWT access and refresh tokens.
             """
+            # Serializing request.data
+            serializer = self.serializer_class(data=request.data)
+            # print("hh",request.data)
+            # print(serializer,"ended")
+            selected_user_type = request.data.get('usertype', None)
+            print(selected_user_type)
+            place=request.data.get('place',None)
 
-            # Creating user and setting the password (save() doesn't hash the password)
-            # hashed_password = make_password(serializer.validated_data["password"])
-            user = CustomUser.objects.create_user(
-                username=serializer.validated_data["username"],
-                usertype=selected_user_type,
-                email=serializer.validated_data["email"],
-                phonenumber=serializer.validated_data["phonenumber"],
-                password=serializer.validated_data["password"],
-                profile_photo=serializer.validated_data.get("profile_photo"),
+            if serializer.is_valid(raise_exception=True):
+                print("serlizr valid")
+                """
+                If the data is validated, the password is hashed, and a new user is created.
+                Return with generated JWT tokens.
+                """
 
-            )
-            # print(user.usertype)
-            # if selected_user_type=="houseowner":
-            #     print(request.data.get('place',None))
-            #     # print(place)
-            #     profile_serilizer=HouseownerProfileSerializer(data="kkk")
-            #     if profile_serilizer.is_valid(raise_exception=True):
-            #         print("validated")
+                # Creating user and setting the password (save() doesn't hash the password)
+                # hashed_password = make_password(serializer.validated_data["password"])
+                user = CustomUser.objects.create_user(
+                    username=serializer.validated_data["username"],
+                    usertype=selected_user_type,
+                    email=serializer.validated_data["email"],
+                    phonenumber=serializer.validated_data["phonenumber"],
+                    password=serializer.validated_data["password"],
+                    profile_photo=serializer.validated_data.get("profile_photo"),
 
+                )
+                print(user.usertype)
+                if selected_user_type=="houseowner":
+                    user.houseowner_profile.place = place
+                    user.houseowner_profile.save()
+                else:
+                    profession=request.data.get('profession',None)
+                    print(profession)
+                    professional_instance,create=Professions.objects.get_or_create(profession_name=profession)
+                    experience=request.data.get('experience',None)
+                    user.professional_profile.place=place
+                    user.professional_profile.profession=professional_instance
+                    user.professional_profile.experience=experience
+                    user.professional_profile.save()
+                response_data = serializer.data
 
-            #         houseowner=HouseownerProfile.objects.create(
-            #         user=user,
-            #         place=profile_serilizer.validated_data["place"]
-            #     )
+                print("f",user)
+
+                response_data.pop('password')
 
             
-            # Remove password from the response and send the response
-            response_data = serializer.data
 
-            print("f",user)
+                return Response(response_data, status=201)
+        except serializers.ValidationError as e:
+            error_messages = []
 
-            response_data.pop('password')
+            for field, errors in e.detail.items():
+                field_errors = ', '.join([f"{field}: {str(error)}" for error in errors])
+                error_messages.append(field_errors)
 
-           
+            error_message = ', '.join(error_messages)
+            print(error_message)
 
-            return Response(response_data, status=201)
-        
+            logger.error(f"Validation error: {error_message}")
+                    
+            return Response({'error': error_message}, status=status.HTTP_400_BAD_REQUEST)
+    
+            
 # login
 class login(APIView):
   
@@ -146,6 +162,15 @@ class GetUserView(APIView):
         serializer = GetUserSerializer(instance=user_details)
         print(serializer.data)
         return Response(serializer.data,status=200)
+
+class GetOneUser(APIView):
+ 
+    def get(self,request,userId):
+        print(" requested for details of user")
+        detail = CustomUser.objects.get(pk=userId)
+        print(detail)
+        serializer = GetUserSerializer(instance=detail)
+        return Response(serializer.data,status=200)
             
 
 #social_login
@@ -154,6 +179,13 @@ class FacebookLogin(SocialLoginView):
 
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
+
+
+
+class UserPlanCreateView(generics.CreateAPIView):
+    queryset = UserPlan.objects.all()
+    serializer_class = UserPlanSerializer
+
 
 
 
@@ -204,3 +236,12 @@ class DeletePost(APIView):
         except Posts.DoesNotExist:
             print("post not found")
             return Response({"message": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+
+
+
+#plancrudoperations
+
+class PlanViewSet(viewsets.ModelViewSet):
+    queryset = Plan.objects.all()
+    serializer_class = PlanSerializer
