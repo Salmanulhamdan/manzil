@@ -1,12 +1,13 @@
 from django.shortcuts import render
-from user.api.serializers import Custom_user_serializer,Login_serializer_user,GetUserSerializer, PlanSerializer,UserPlanSerializer
+import razorpay
+from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer,UserPlanSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
-from user.models import CustomUser,HouseownerProfile, Plan,Professions,UserPlan
+from user.models import CustomUser,HouseownerProfile, Plan, ProfessionalsProfile,Professions,UserPlan
 from rest_framework import status,viewsets
 from posts.models import Posts
 from rest_framework.permissions import IsAuthenticated
@@ -16,6 +17,8 @@ import logging
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
+from decouple import config 
+from rest_framework.decorators import api_view, permission_classes
 
 # Create your views here.
 # user creation
@@ -155,6 +158,7 @@ class GetUserView(APIView):
     authentication_classes=[JWTAuthentication]
  
     def get(self,request):
+        print("fffff")
     
         user_email = request.user
         print(request.user)
@@ -182,9 +186,7 @@ class GoogleLogin(SocialLoginView):
 
 
 
-class UserPlanCreateView(generics.CreateAPIView):
-    queryset = UserPlan.objects.all()
-    serializer_class = UserPlanSerializer
+
 
 
 
@@ -226,6 +228,9 @@ class BlockUser(APIView):
             print(f"An error occurred: {str(e)}")
             return Response({"message": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+
+
+        
 #deletepostbyadmin
 class DeletePost(APIView):
     def delete(self,request,id):
@@ -245,3 +250,111 @@ class DeletePost(APIView):
 class PlanViewSet(viewsets.ModelViewSet):
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
+
+
+class UserPlanViewSet(viewsets.ModelViewSet):
+    queryset = UserPlan.objects.all()
+    serializer_class = UserPlanSerializer
+    permission_classes = [IsAuthenticated]
+   
+    def create(self,request,*args, **kwargs):
+        user = request.user
+        print(user)
+        print(request.data)
+        serializer=self.get_serializer(data=request.data)
+
+        # Check if a UserPlan already exists for the user
+        existing_user_plan = UserPlan.objects.filter(user=user).first()
+
+        if existing_user_plan:
+           return Response(existing_user_plan,status=200)
+        else:
+            # Create a new UserPlan
+            serializer.is_valid(raise_exception=True)
+            serializer.validated_data['user'] = user
+            serializer.save()
+
+        # Update the user profile's upgraded field based on the plan type
+        if hasattr(user, 'professional_profile'):
+            user.professional_profile.upgraded = True
+            user.professional_profile.save()
+        elif hasattr(user, 'houseowner_profile'):
+            user.houseowner_profile.upgraded = True
+            user.houseowner_profile.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+
+
+class RazorpayOrderView(APIView):
+
+    # @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            plan_id = request.data.get('planId')
+            amount = request.data.get('amount')
+
+
+            # Initialize Razorpay client with environment variables
+            client = razorpay.Client(auth=(config('RAZORPAY_KEY_ID'), config('RAZORPAY_KEY_SECRET')))
+            # Create a Razorpay order
+            order_params = {
+                'amount': float(amount) * 100,  # Amount in paise
+                'currency': 'INR',
+                'receipt': 'receipt_id',  # Replace with a unique identifier for the order
+                'payment_capture': 1,
+                'notes': {
+                    'plan_id': plan_id,
+                    'key':config('RAZORPAY_KEY_ID'),
+                },
+            }
+            print(order_params,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+
+            order = client.order.create(data=order_params)
+
+            return Response(order, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+class UserProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        if user.usertype == 'professional':
+            profile = ProfessionalsProfile.objects.get(user=user)
+            serializer = ProfessionalsProfileSerializer(profile)
+        elif user.usertype == 'houseowner':
+            profile = HouseownerProfile.objects.get(user=user)
+            serializer = HouseownerProfileSerializer(profile)
+        else:
+            # Handle other user types as needed
+            return Response({'error': 'Invalid user type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.data)
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+
+        if user.usertype == 'professional':
+            profile = ProfessionalsProfile.objects.get(user=user)
+            serializer = ProfessionalsProfileSerializer(profile, data=request.data)
+        elif user.usertype == 'houseowner':
+            profile = HouseownerProfile.objects.get(user=user)
+            serializer = HouseownerProfileSerializer(profile, data=request.data)
+        else:
+            # Handle other user types as needed
+            return Response({'error': 'Invalid user type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

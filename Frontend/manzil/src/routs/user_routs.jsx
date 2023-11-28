@@ -6,6 +6,7 @@ import ProfessionalSignup from '../pages/signup_page/professional_signup';
 import ChoicePage from '../pages/choices/choice';
 import LoginForm from '../pages/login_page/login';
 import Home from '../pages/Home_page/home_Page';
+import UserProfile from '../pages/myProfile/myProfile';
 // import Home from "../pages/HomePage";
 // import Profile from "../pages/ProfilePage";
 
@@ -23,6 +24,7 @@ export default function UserRouter(){
         <Route path='/login'element={<LoginForm />}/>
         <Route path='/choice'element={<ChoicePage />}/>
         <Route path='/homepage' element={<Home />}/>
+        <Route path='/myprofile' element={<UserProfile />}/>
         </Routes>
         </div>
     )

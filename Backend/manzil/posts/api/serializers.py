@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from user.api.serializers import GetUserSerializer
 from posts.models import Posts, Hashtags,Saves, Likes, Shares
 
 class HashtagSerializer(serializers.ModelSerializer):
@@ -9,7 +10,7 @@ class HashtagSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     hashtag = HashtagSerializer(many=True, read_only=True)
-    # user = serializers.SerializerMethodField()
+    user =  GetUserSerializer()
     like_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -17,8 +18,10 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'media', 'caption', 'hashtag', 'created_at', 'updated_at', 'like_count']
         extra_kwargs = {'hashtag': {'required': False}}
 
-    # def get_user(self, obj):
-    #     return obj.user.username
+    def get_user(self, obj):
+        user_instance = obj.user
+        user_serializer = GetUserSerializer(user_instance)
+        return user_serializer.data
 
     def get_like_count(self, obj):
         return obj.like_count()

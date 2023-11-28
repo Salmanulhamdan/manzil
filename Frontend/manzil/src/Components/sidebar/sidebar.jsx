@@ -20,12 +20,12 @@ console.log("ddd",{username})
         {username ? (
             <div>
                 <FontAwesomeIcon icon={faUser} className="text-black" />
-                <Link className="myprofile_text" to='/profile'>{username}</Link>
+                <Link className="myprofile_text" to='/myprofile'>{username}</Link>
             </div>
         ) : (
             <div>
                 <FontAwesomeIcon icon={faUser} className="text-black" />
-                <Link className="myprofile_text" to='/profile'>My Profile</Link>
+                <Link className="myprofile_text" to='/myprofile'>My Profile</Link>
             </div>
         )}
     </div>

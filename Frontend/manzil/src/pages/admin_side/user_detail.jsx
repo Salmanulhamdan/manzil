@@ -13,8 +13,8 @@ function UserDetail(props){
 
     const navigate = useNavigate()
     const [users,setUsers] = useState([])
-    const [userdeleted,setUserdeleted] = useState(false)
     const [userblocked,setUserblocked] = useState(false)
+    const [userPosts, setUserPosts] = useState([]);
 
    
 
@@ -35,17 +35,59 @@ function UserDetail(props){
 
 
     useEffect(() => {
-      axios.get(`${baseUrl}${userdetail}/${userEmail}`)
-        .then(response => {
+      const fetchData = async () => {
+        try {
+          const token = localStorage.getItem('jwtToken');
+          console.log('Tokenzzz:', token);
+    
+          const config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+          const response = await axios.get(`${baseUrl}${userdetail}/${userEmail}`);
           setUsers(response.data);
           console.log(response.data);
-        })
-        .catch(error => {
+          const postresponse = await axios.get(`${baseUrl}/api/posts/${response.data.id}/get_user_posts_by_id/`, config);
+          
+          setUserPosts(postresponse.data);
+        } catch (error) {
           console.error('Error fetching user details:', error);
-
-        });
-    }, [userEmail]);
+        }
+      };
   
+        
+        fetchData()
+    }, [userEmail]);
+
+    const handleDeletePost = async (postId) => {
+      try {
+        const result = await Swal.fire({
+          title: "Are you sure?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes",
+        });
+    
+        if (result.isConfirmed) {
+          const url = `${baseUrl}/api/deletepost/${postId}/`;
+    
+          // Make the DELETE request using Axios
+          await axios.delete(url);
+
+          setUserPosts(userPosts.filter(post => post.id !== postId));
+    
+          // Assuming the request was successful, you can handle the success case here
+          Swal.fire("Deleted!", "Your post has been deleted.", "success");
+        }
+      } catch (error) {
+        // Handle errors, e.g., show an error message to the user
+        console.error("Error:", error);
+        Swal.fire("Error", "An error occurred while deleting the post.", "error");
+      }
+    };
     //   handle block button clicking event
     const handleBlockUser = async (id) => {
       Swal.fire({
@@ -86,28 +128,30 @@ function UserDetail(props){
             <AdminSide/>
             <AdminNav/>
             <div className="details_box" style={{
-                
-                marginLeft:'350px',
-                marginTop:'100px',
-                width:'70%',
-                height:'500px',
-                overflowX: 'auto',
-            }}>
-             <div className='user_profile'>
-                {users.profile_pic?<img src={baseUrl + users.profile_pic} alt="profile" style={{
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '50%',
-                   marginRight:'20px'
-                
-                }} />:<img src="https://cdn-icons-png.flaticon.com/128/1144/1144760.png" alt="default profile" style={{
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '50%',
-                   marginRight:'20px'
-                
-                }} />}
-                <span style={{fontSize:'20px', fontWeight:'600',paddingTop:'100px'}}>{users.first_name}</span>
+  marginLeft: '350px',
+  marginTop: '100px',
+  width: '70%',
+  height: '500px',
+  overflowX: 'auto',
+}}>
+  <div className='user_profile'>
+    {users.profile_photo ? (
+      <img src={baseUrl + users.profile_photo} alt="profile" style={{
+        width: '50px',
+        height: '50px',
+        borderRadius: '50%',
+        marginRight: '20px'
+      }} />
+    ) : (
+      <img src="https://cdn-icons-png.flaticon.com/128/1144/1144760.png" alt="default profile" style={{
+        width: '50px',
+        height: '50px',
+        borderRadius: '50%',
+        marginRight: '20px'
+      }} />
+    )}
+
+    <span style={{fontSize:'20px', fontWeight:'600',paddingTop:'100px'}}>{users.first_name}</span>
             </div>
 
             <ul style={{
@@ -151,20 +195,52 @@ function UserDetail(props){
             <span style={{ marginRight: '10px' }}>: </span>
             <input type='checkbox' checked={users.is_staff}/>
             </li>
-            </ul>
+            
 
-           
-            <button style={{
-                backgroundColor:'#808080',
-                border:'5px solid #808080',
-                width:'100px',
-                borderRadius:'5px'
-                }}
-                onClick={() => handleBlockUser(users.id)}>{users.is_active ? "Block" : "Unblock"}</button>
-            </div>
-          
+   
+    <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+      <span style={{ width: '150px', marginRight: '10px' }}>Profile Upgraded</span>
+      <span style={{ marginRight: '10px' }}>: </span>
+      <span>{users.is_upgraded ? "Yes" : "No"}</span>
+    </li>
+  </ul>
 
+  {/* Section to show user posts */}
+  <div className="mt-8">
+    <h2 className="text-2xl font-bold mb-4">User Posts</h2>
+    {/* Loop through user posts and display them */}
+    {userPosts.map((post) => (
+      <div key={post.id} className="flex items-center justify-between mb-4">
+        <div>
+          <img
+            src={post.media}
+            alt="Post"
+            className="w-20 h-20 object-cover rounded-md mr-4"
+          />
+          <span>{post.caption}</span>
         </div>
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded-md"
+          onClick={() => handleDeletePost(post.id)}
+        >
+          Delete
+        </button>
+      </div>
+    ))}
+  </div>
+
+  <button style={{
+    backgroundColor: '#808080',
+    border: '5px solid #808080',
+    width: '100px',
+    borderRadius: '5px'
+  }}
+    onClick={() => handleBlockUser(users.id)}>{users.is_active ? "Block" : "Unblock"}</button>
+</div>
+
+       </div>   
+
+        
     )
 }
 

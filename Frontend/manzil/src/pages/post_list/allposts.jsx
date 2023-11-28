@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import './allpost.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
-import CreateModal from '../../Components/post_modal/postmodal';
+import CreateModal from '../../Components/modals/postmodal';
 function PostListing({post}){
   const [modalIsOpen, setModalIsOpen] = useState(false);
   
@@ -78,7 +78,7 @@ function PostListing({post}){
     <div key={post.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md'>
       <div className='flex items-center mb-2'>
         <img src={post.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />
-        <p className='font-bold'>{post.user}</p>
+        <p className='font-bold'>{post.user.username}</p>
       </div>
       {post.media && <img src={post.media} alt="Post" className='post-image mb-4 rounded-md' />}
       <p className='mb-2'>{post.caption}</p>

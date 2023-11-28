@@ -17,7 +17,7 @@ const navigate = useNavigate();
     <img src={img} alt="Logo" />
   </div>
   <div className="nav-links">
-    <a className='home' href="/">Home</a>
+    <a className='home' href="/homepage">Home</a>
     <div className='frame1'>
       <a className='post' href="/about">Post</a>
     </div>

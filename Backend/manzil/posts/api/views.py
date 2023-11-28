@@ -1,7 +1,9 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets,generics,permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from user.models import CustomUser
 from posts.models import Hashtags, Posts,Saves, Likes, Shares
 from .serializers import HashtagSerializer, PostSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
@@ -81,6 +83,36 @@ class PostsViewSet(viewsets.ModelViewSet):
         serlized_post=self.get_serializer(posts,many=True)
 
         return Response(serlized_post.data)
+    
+    @action(detail=True, methods=['GET'])
+    def get_user_posts_by_id(self, request, pk=None):
+    
+        target_user = get_object_or_404(CustomUser, pk=pk)
+        posts = Posts.objects.filter(user=target_user)
+        serialized_posts = self.get_serializer(posts, many=True)
+        
+        return Response(serialized_posts.data)
+    
+    def delete(self, request, pk=None):
+        print("enterdd")
+        post = self.get_object()
+        print("Before deletion:", post)
+
+        # Check if the user making the request is an admin
+        if not request.user.is_staff:
+            print("User is not an admin.")
+            # If not an admin, check if the user is the owner of the post
+            if request.user != post.user:
+                return Response({'error': 'You do not have permission to delete this post.'}, status=status.HTTP_403_FORBIDDEN)
+        print("User is an admin or the owner.")
+
+        post.delete()
+        print("After deletion:", post)
+
+        return Response({'success': 'Post deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
+
+    
+
 
 
 
