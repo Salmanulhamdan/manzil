@@ -5,12 +5,13 @@ export const refresh = "api/refresh";
 export const user = "api/user";
 export const post = "api/posts/recommended_posts";
 export const createpost = "api/posts/";
-export const like="api/likes/";
+export const like="api/likes/like_post/";
 export const oneuser="api/userprofile/";
 export const userpost="api/posts/user_posts";
 export const razorpay="api/create-razorpay/";
 export const userupgrade="api/userplans/"
-export const apiUrl = '/api/get-user-profile';
+export const myprofile = '/api/myprofile';
+export const userprofile='api/userprofile';
 // admin side urls
 export const registeredUsers = "api/registeredUsers";
 export const userdetail = "api/userdetail";

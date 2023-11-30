@@ -9,7 +9,7 @@ class Hashtags(models.Model):
         return self.hashtag
 
 class Posts(models.Model):
-    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE ,related_name='posts')
     media=models.FileField(upload_to='media/')
     caption=models.TextField(null=True,default="")
     hashtag=models.ManyToManyField('Hashtags', related_name='posts')

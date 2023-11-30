@@ -3,9 +3,17 @@ import './allpost.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
-function PostListing({post}){
+import { baseUrl,like ,post} from '../../utilits/constants';
+import axios from 'axios';
+import FollowUnfollowApi from '../../api/followunfollow';
+import { Link, useNavigate } from 'react-router-dom';
+
+
+
+function PostListing(){
+  const [trigger, setTrigger] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  
+  const[postslist,setPostslist]=useState([]);
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -15,38 +23,64 @@ function PostListing({post}){
   };
   const [likes, setLikes] = useState({})
   const handleLike = async (postId) => {
+  const token = localStorage.getItem('jwtToken');
+  console.log('Token:', token);
+  
+  const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
     try {
-      const response = await axios.post(`/api/posts/${postId}/like_post/`);
+      const formData = new FormData();
+      formData.append('post', postId);
+      console.log("like clicked")
+      const response = await axios.post(`${baseUrl}${like}`,formData, config);
       if (response.status === 201) {
         // If the like was successful, update the like state
         setLikes((prevLikes) => ({
           ...prevLikes,
           [postId]: true,
         }));
+        setTrigger(false)
       }
     } catch (error) {
       console.error('Error liking post:', error);
     }
   };
 
-  const loadLikes = async () => {
-    // Fetch the likes status for all posts and update the like state
+  const handleFollowUnfollow = async (userId) => {
     try {
-      const response = await axios.get('/api/posts/');
-      const likesData = {};
-      response.data.forEach((post) => {
-        likesData[post.id] = post.has_liked;
-      });
-      setLikes(likesData);
-    } catch (error) {
-      console.error('Error loading likes:', error);
+      await FollowUnfollowApi(userId);
+      setTrigger(false);
+    } catch {
+      console.log("follow/unfollow got error");
     }
   };
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem('jwtToken');
+      console.log('Token:', token);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      console.log('Making request...new');
+      const response = await axios.get(baseUrl + post, config);
+      setPostslist(response.data)
+    } catch (error) {
+      console.error('Error:', error);
+
+    }};
 
   useEffect(() => {
-    // Load likes when the component mounts
-    loadLikes();
-  }, []);
+    
+    fetchData();
+    
+  }, [trigger]);
   
 
  
@@ -74,11 +108,18 @@ function PostListing({post}){
       </div>
       {/* List of posts */}
       <div>
-  {post.map((post, index) => (
+  {postslist.map((post, index) => (
     <div key={post.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md'>
-      <div className='flex items-center mb-2'>
-        <img src={post.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />
-        <p className='font-bold'>{post.user.username}</p>
+      <div className='flex items-center justify-between mb-2'>
+        <div className='flex items-center'>
+          <img src={post.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />
+          <Link className="userrofile_text font-bold" to={`/userprofile/${post.user.id}`}>{post.user.username}</Link>
+        </div>
+        <button onClick={() => {handleFollowUnfollow(post.user.id);setTrigger(true); }}
+          className={`className='follow-btn bg-gray-200 text-black-700 px-4 py-1 rounded-md hover:bg-gray-400 focus:outline-none focus:shadow-outline-gray active:bg-gray-500' ${
+          post.is_following_author ? "bg-red-400 hover:bg-red-500" : ""}`} >
+          {post.is_following_author ? "Unfollow" : "Follow"}
+       </button>
       </div>
       {post.media && <img src={post.media} alt="Post" className='post-image mb-4 rounded-md' />}
       <p className='mb-2'>{post.caption}</p>
@@ -90,8 +131,8 @@ function PostListing({post}){
 
       <div className='flex items-center justify-between mt-4'>
         <div className='post-actions'>
-          <div className='like-btn' onClick={() => handleLike(post.id)}>
-            <FontAwesomeIcon icon={faHeart} color={likes[post.id] ? 'red' : 'black'} />
+          <div className='like-btn' onClick={() => {handleLike(post.id);setTrigger(true); }}>
+            <FontAwesomeIcon icon={faHeart} color={post.is_liked ? 'red' : 'black'} />
             <span className='ml-1'>{post.like_count || 0}</span>
           </div>
           <div className='save-btn ml-4'>

@@ -38,7 +38,6 @@ class PostsViewSet(viewsets.ModelViewSet):
         # Update the request data with the hashtag instances
         newdata['hashtag'] = [hashtag.id for hashtag in hashtag_instence]
         newdata['user'] = user.id
-        print(newdata)
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
@@ -80,9 +79,14 @@ class PostsViewSet(viewsets.ModelViewSet):
         print("userpost")
         user=request.user
         posts=Posts.objects.filter(user=user)
+        posts_count = posts.count()
         serlized_post=self.get_serializer(posts,many=True)
+        response_data = {
+            'posts': serlized_post.data,
+            'posts_count': posts_count,
+        }
 
-        return Response(serlized_post.data)
+        return Response(response_data)
     
     @action(detail=True, methods=['GET'])
     def get_user_posts_by_id(self, request, pk=None):
@@ -126,51 +130,27 @@ class LikesViewSet(viewsets.ModelViewSet):
     serializer_class = LikesSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # @action(detail=False, methods=['get'])
-    # def has_liked(self, request,):
-       
-    #     post_pk = request.data.get('post')  
-    #     post = Posts.objects.get(pk=post_pk)
-    #     print(post)
-    #     user = request.user
-    #     print("likedposts")
-
-    #     has_liked = Likes.objects.filter(post=post, user=user).exists()
-
-    #     return Response({"has_liked": has_liked})
-        
     @action(detail=False, methods=['post'])
     def like_post(self, request):
         post_pk = request.data.get('post')  
         post = Posts.objects.get(pk=post_pk)
-        print(post)
-        print("liked")
         user = request.user
 
         # Check if the user has already liked the post
-        if Likes.objects.filter(post=post, user=user).exists():
-            return Response({"detail": "You have already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+        existing_like=Likes.objects.filter(post=post, user=user).first()
+        if existing_like:
+            # User has already liked the post, unlike it
+            existing_like.delete()
+            return Response({"detail": "Post unliked successfully."}, status=status.HTTP_200_OK)
 
         like = Likes(post=post, user=user)
         like.save()
+        total_likes = Likes.objects.filter(post=post).count()
 
-        return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
+        return Response({"detail": "Post liked successfully.","total_likes": total_likes}, status=status.HTTP_201_CREATED)
+    
 
-    # @action(detail=True, methods=['delete'])
-    # def unlike_post(self, request):
-    #     post_pk = request.data.get('post')  
-    #     post = Posts.objects.get(pk=post_pk)
-    #     user = request.user
-    #     print("deleted")
-
-    #     # Check if the user has liked the post
-    #     like = Likes.objects.filter(post=post, user=user).first()
-    #     if not like:
-    #         return Response({"detail": "You haven't liked this post."}, status=status.HTTP_400_BAD_REQUEST)
-
-    #     like.delete()
-
-    #     return Response({"detail": "Post unliked successfully."}, status=status.HTTP_200_OK)
+   
 
 
 class SharesListCreateView(generics.ListCreateAPIView):

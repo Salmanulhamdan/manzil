@@ -11,7 +11,7 @@ import SideBar from '../../Components/sidebar/sidebar';
 
 function Home() {
   const [userName, setUserName] = useState(null);
-  const[postslist,setPostslist]=useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -25,14 +25,11 @@ function Home() {
         };
   
         console.log('Making request...new');
-        const postsresponse = await axios.get(baseUrl + post, config);
+       
         const response = await axios.get(baseUrl + user, config);
       
         console.log('Response:', response.data);
-        console.log('Postshone:',postsresponse.data);
-        setPostslist(postsresponse.data)
-        console.log("postlistinghome:",{postslist})
-  
+       
         setUserName(response.data);
       } catch (error) {
         console.error('Error:', error);
@@ -81,7 +78,7 @@ function Home() {
   <Navbar/>
   {/* <SideBar/> */}
   <SideBar username={userName ? userName.username : null} />
-  <PostListing post={postslist}/>
+  <PostListing />
       
     </>
   );

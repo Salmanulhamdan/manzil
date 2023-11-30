@@ -1,13 +1,28 @@
 import React from 'react';
 import Modal from 'react-modal';
-import  {  useState } from 'react';
+import  {  useState ,useEffect} from 'react';
 
 import { loadRazorpayScript,createRazorpayOrder } from '../../utilits/razorpay';
 import axios from 'axios';
-import { baseUrl,userupgrade } from '../../utilits/constants';
-const PlanModal = ({ isOpen, closeModal, plans }) => {
+import { baseUrl,userupgrade ,planss} from '../../utilits/constants';
+const PlanModal = ({ isOpen, closeModal, }) => {
   const [selectedPlan, setSelectedPlan] = useState(null);
-  console.log(plans,"uuu")
+  const [Plans, setPlans] = useState([]);
+  useEffect(() => {
+  
+  const fetchData = async () => {
+    try {
+      const planresponse = await axios.get(baseUrl+planss);
+      setPlans(planresponse.data)
+      console.log(planresponse.data)
+    } catch (error) {
+      // Handle errors...
+      console.error('Error fetching user data:', error);
+    }
+  };
+  fetchData();
+}, []); 
+
 
   const handleContinue = async () => {
     if (selectedPlan) {
@@ -90,7 +105,7 @@ const PlanModal = ({ isOpen, closeModal, plans }) => {
           
           <h2 className="text-2xl font-bold mb-4">Select a Plan</h2>
           <ul>
-            {plans.map((plan, index) => (
+            {Plans.map((plan, index) => (
               <li
                 key={index}
                 onClick={() => setSelectedPlan(plan)}

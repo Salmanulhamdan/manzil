@@ -71,6 +71,11 @@ class HouseownerProfile(models.Model):
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="houseowner_profile")
     place=models.CharField(max_length=200,null=True)
     upgraded=models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+    
+    
 class Professions(models.Model):
     profession_name=models.CharField(max_length=200,)
 class ProfessionalsProfile(models.Model):
@@ -80,6 +85,12 @@ class ProfessionalsProfile(models.Model):
     experience=models.IntegerField(null=True)
     bio=models.TextField(null=True)
     upgraded=models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return self.user.username
+
+    
     
 
 
@@ -116,6 +127,22 @@ class UserPlan(models.Model):
             self.end_date = self.start_date + self.plan.duration
 
         super(UserPlan, self).save(*args, **kwargs)
+
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey( CustomUser, related_name="following", on_delete=models.CASCADE)
+    following = models.ForeignKey(CustomUser, related_name="followers", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.follower.username} follows {self.following.username}"
+
+    def followers_count(self):
+        return self.followers.count()
+
+    def following_count(self):
+        return self.following.count()
 
 
 

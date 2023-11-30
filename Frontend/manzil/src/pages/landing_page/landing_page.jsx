@@ -19,7 +19,7 @@ function LandingPage() {
     Login with Facebook
   </button>
   <Link to="/login" className='link'>
-  <button className="login" style={{ position: "absolute", top: "50%", right: "47%" }}>
+  <button className=" hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full" style={{ position: "absolute", top: "50%", right: "47%" }}>
    Already have an account? Log in
   </button>
   </Link>

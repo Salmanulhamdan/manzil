@@ -133,18 +133,10 @@ const ProfessionalSignup = () => {
           name="experience"
           placeholder="Experience"
           value={experience}
-          onChange={(e) => setExperience(parseInt(e.target.value, 10) || 0)} // Parse as integer, fallback to 0 if NaN
+          onChange={(e) => setExperience(parseInt(e.target.value, 10) || 0)} 
           className="border rounded w-full py-2 px-3"
         />
       </div>
-    {/* <div className="mb-4">
-      <input
-        type="file"
-        name="profile_photo"
-        onChange={(e) => handleFileChange(e)}
-        className="border rounded w-full py-2 px-3"
-      />
-    </div> */}
 
     <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
       Sign up

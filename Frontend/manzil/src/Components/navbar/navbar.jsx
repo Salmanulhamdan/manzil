@@ -7,6 +7,7 @@ const navigate = useNavigate();
  const token=localStorage.getItem("jwtToken")
  const logout=()=>{
   localStorage.removeItem("jwtToken");
+  console.log(localStorage.getItem("jwtToken"))
   navigate('/')
 
 

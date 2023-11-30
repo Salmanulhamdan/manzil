@@ -1,13 +1,13 @@
 from django.shortcuts import render
 import razorpay
-from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer,UserPlanSerializer
+from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer,UserPlanSerializer, UserProfileStatusSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
-from user.models import CustomUser,HouseownerProfile, Plan, ProfessionalsProfile,Professions,UserPlan
+from user.models import CustomUser, Follow,HouseownerProfile, Plan, ProfessionalsProfile,Professions,UserPlan
 from rest_framework import status,viewsets
 from posts.models import Posts
 from rest_framework.permissions import IsAuthenticated
@@ -167,14 +167,14 @@ class GetUserView(APIView):
         print(serializer.data)
         return Response(serializer.data,status=200)
 
-class GetOneUser(APIView):
+# class GetOneUser(APIView):
  
-    def get(self,request,userId):
-        print(" requested for details of user")
-        detail = CustomUser.objects.get(pk=userId)
-        print(detail)
-        serializer = GetUserSerializer(instance=detail)
-        return Response(serializer.data,status=200)
+#     def get(self,request,userId):
+#         print(" requested for details of user")
+#         detail = CustomUser.objects.get(pk=userId)
+#         print(detail)
+#         serializer = GetUserSerializer(instance=detail)
+#         return Response(serializer.data,status=200)
             
 
 #social_login
@@ -323,7 +323,7 @@ class RazorpayOrderView(APIView):
         
 
 
-class UserProfile(APIView):
+class MyProfile(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
@@ -358,3 +358,70 @@ class UserProfile(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+class FollowUnfollowUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        logged_in_user = request.user
+        try:
+            user_to_follow = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if logged_in_user == user_to_follow:
+            return Response({"detail": "You cannot follow/unfollow yourself."},status=status.HTTP_400_BAD_REQUEST,)
+
+        try:
+            follow_instance = Follow.objects.get(follower=logged_in_user, following=user_to_follow)
+            follow_instance.delete()
+            return Response({"detail": "You have unfollowed this user."}, status=status.HTTP_200_OK)
+        except Follow.DoesNotExist:
+            follow_instance = Follow(follower=logged_in_user, following=user_to_follow)
+            follow_instance.save()
+           
+            return Response({"detail": "You are now following this user."},status=status.HTTP_201_CREATED,)
+class UserProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request,userId,*args, **kwargs):
+         
+        user=CustomUser.objects.get(pk=userId)
+
+        if user.usertype == 'professional':
+            profile = ProfessionalsProfile.objects.get(user=user)
+            serializer = ProfessionalsProfileSerializer(profile)
+        elif user.usertype == 'houseowner':
+            profile = HouseownerProfile.objects.get(user=user)
+            serializer = HouseownerProfileSerializer(profile)
+        else:
+            # Handle other user types as needed
+            return Response({'error': 'Invalid user type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.data)
+    
+
+
+class UserProfileStatusView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+
+        if hasattr(user, 'houseowner_profile'):
+            upgraded = user.houseowner_profile.upgraded
+        elif hasattr(user, 'professional_profile'):
+            upgraded = user.professional_profile.upgraded
+        else:
+            upgraded = False
+
+        serializer = UserProfileStatusSerializer({'upgraded': upgraded})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ProfilePhotoUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = ProfilePhotoUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user

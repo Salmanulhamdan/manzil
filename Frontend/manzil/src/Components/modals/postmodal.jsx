@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal'; 
 import axios from "axios";
 import { baseUrl,createpost } from '../../utilits/constants';
+import Swal from "sweetalert2";
 
 const CreateModal = ({ isOpen, onClose }) => {
   const [media, setMedia] = useState('');
@@ -29,7 +30,7 @@ const CreateModal = ({ isOpen, onClose }) => {
       if (response.status) {
         // Handle successful post creation, e.g., show a success message, redirect, etc.
         console.log('Post created successfully!');
-        alert("Post Created")
+        Swal.fire("Created!", "Your post has been Created.", "success");
       } else {
         // Handle errors, e.g., show an error message to the user
         console.error('Error creating post:', response.statusText);
