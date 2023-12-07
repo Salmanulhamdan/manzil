@@ -279,7 +279,20 @@ const MyProfile = () => {
       <div className="grid grid-cols-4 gap-4">
         {userPosts.map((post) => (
           <div key={post.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md relative'>
-            {post.media && <img src={post.media} alt="Post" className='post-image mb-4 rounded-md' />}
+            {post.media && (
+  <div className='mb-4 rounded-md'>
+    {post.media.endsWith('.mp4') || post.media.endsWith('.avi') ? (
+      // Display video if the media URL ends with .mp4 or .avi
+      <video controls width="100%" height="auto">
+        <source src={post.media} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    ) : (
+      // Display image for other cases
+      <img src={post.media} alt="Post" className='post-image' />
+    )}
+  </div>
+)}
             <p className='mb-2'>{post.caption}</p>
             <div className='hashtags'>
               {post.hashtag.map((hashtag) => (

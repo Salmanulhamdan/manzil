@@ -1,6 +1,7 @@
 from django.db import models
 from user.models import CustomUser
 from django.utils import timezone
+
 # Create your models here.
 class Hashtags(models.Model):
     hashtag=models.CharField(null=True,)
@@ -49,6 +50,7 @@ class Shares(models.Model):
 
 class Requirment(models.Model):
     creater=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    profession=models.ManyToManyField("user.Professions", verbose_name=("profession"))
     description=models.TextField()
     time=models.DateTimeField(default=timezone.now,editable=False)
 

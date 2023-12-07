@@ -154,7 +154,20 @@ function PostListing(){
           {post.is_following_author ? "Unfollow" : "Follow"}
        </button>
       </div>
-      {post.media && <img src={post.media} alt="Post" className='post-image mb-4 rounded-md' />}
+      {post.media && (
+  <div className='mb-4 rounded-md'>
+    {post.media.endsWith('.mp4') || post.media.endsWith('.avi') ? (
+      // Display video if the media URL ends with .mp4 or .avi
+      <video controls width="100%" height="auto">
+        <source src={post.media} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    ) : (
+      // Display image for other cases
+      <img src={post.media} alt="Post" className='post-image' />
+    )}
+  </div>
+)}
       <p className='mb-2'>{post.caption}</p>
       <div className='hashtags'>
         {post.hashtag.map((hashtag) => (
