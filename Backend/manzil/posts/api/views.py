@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from user.models import CustomUser
-from posts.models import Hashtags, Posts,Saves, Likes, Shares
+from posts.models import Hashtags, Posts,Saves, Likes, Shares,Requirment
 from .serializers import HashtagSerializer, PostSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 
@@ -214,6 +214,12 @@ class SharesListCreateView(generics.ListCreateAPIView):
     queryset = Shares.objects.all()
     serializer_class = SharesSerializer
     permission_classes = [IsAuthenticated]
+
+
+
+
+class RequirmentViewset(viewsets.ModelViewSet):
+    queryset=Requirment.objects.all()
 
 
 
