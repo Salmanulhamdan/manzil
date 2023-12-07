@@ -43,6 +43,7 @@ const CreateModal = ({ isOpen, onClose }) => {
 
   return (
     <Modal
+      // ariaHideApp={false}
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Create Post Modal"

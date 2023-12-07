@@ -12,6 +12,8 @@ export const razorpay="api/create-razorpay/";
 export const userupgrade="api/userplans/"
 export const myprofile = '/api/myprofile';
 export const userprofile='api/userprofile';
+export const updateprofile='api/customuser-update/'
+export const save="api/saves/save_post/";
 // admin side urls
 export const registeredUsers = "api/registeredUsers";
 export const userdetail = "api/userdetail";

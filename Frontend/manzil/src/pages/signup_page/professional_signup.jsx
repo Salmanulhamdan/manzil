@@ -11,7 +11,7 @@ const ProfessionalSignup = () => {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [profession, setProfession] = useState(""); 
-  const [experience, setExperience] = useState(0);
+  const [experience, setExperience] = useState("");
   const navigate=useNavigate()
 
   const showErrorAlert = (error)=>{
@@ -70,6 +70,7 @@ const ProfessionalSignup = () => {
         value={fullName}
         onChange={(e) => setFullName(e.target.value)}
         className="border rounded w-full py-2 px-3"
+        required
       />
     </div>
 
@@ -81,6 +82,7 @@ const ProfessionalSignup = () => {
         value={emailAddress}
         onChange={(e) => setEmailAddress(e.target.value)}
         className="border rounded w-full py-2 px-3"
+        required
       />
     </div>
 
@@ -103,6 +105,8 @@ const ProfessionalSignup = () => {
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
         className="border rounded w-full py-2 px-3"
+        pattern="^[6789]\d{9}$"
+        required
       />
     </div>
 
@@ -114,6 +118,7 @@ const ProfessionalSignup = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         className="border rounded w-full py-2 px-3"
+        required
       />
     </div>
     <div className="mb-4">
@@ -129,11 +134,11 @@ const ProfessionalSignup = () => {
 
     <div className="mb-4">
         <input
-          type="number" // Change the input type to "number"
+          type="number" 
           name="experience"
           placeholder="Experience"
           value={experience}
-          onChange={(e) => setExperience(parseInt(e.target.value, 10) || 0)} 
+          onChange={(e) => setExperience(Math.max(parseInt(e.target.value, 10) || 0, 0))}
           className="border rounded w-full py-2 px-3"
         />
       </div>

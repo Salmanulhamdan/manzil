@@ -41,9 +41,11 @@ class PostsViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
-        
-        self.perform_create(serializer)
+        print(serializer,"daata")
+        print("gg",hashtag_instence)
         serializer.instance.hashtag.set(hashtag_instence)
+        # self.perform_create(serializer)
+        
        
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -90,8 +92,9 @@ class PostsViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['GET'])
     def get_user_posts_by_id(self, request, pk=None):
-    
+            
         target_user = get_object_or_404(CustomUser, pk=pk)
+        print(target_user,"jjj")
         posts = Posts.objects.filter(user=target_user)
         serialized_posts = self.get_serializer(posts, many=True)
         
@@ -116,14 +119,58 @@ class PostsViewSet(viewsets.ModelViewSet):
         return Response({'success': 'Post deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
     
+class EditPostView(generics.UpdateAPIView):
+    queryset = Posts.objects.all()
+    serializer_class = PostSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        # Check if hashtags are provided in the request
+        hashtags_data = request.data.get('hashtag', [])
+        hashtagssplit = hashtags_data.split(',')
+        if hashtagssplit:
+            # Assuming 'hashtag' is a list of strings representing hashtags
+            hashtags = []
+            for hashtag_text in hashtagssplit:
+                hashtag, created = Hashtags.objects.get_or_create(hashtag=hashtag_text)
+                hashtags.append(hashtag)
+
+            # Update the post's hashtags
+            instance.hashtag.set(hashtags)
+
+        self.perform_update(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
-
-class SavesListCreateView(generics.ListCreateAPIView):
+class SavesPostView(viewsets.ModelViewSet):
     queryset = Saves.objects.all()
     serializer_class = SavesSerializer
     permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['post'])
+    def save_post(self, request):
+        post_pk = request.data.get('post')  
+        post = Posts.objects.get(pk=post_pk)
+        user = request.user
+
+        # Check if the user has already liked the post
+        existing_savedpost=Saves.objects.filter(post=post, user=user).first()
+        if existing_savedpost:
+            # User has already liked the post, unlike it
+            existing_savedpost.delete()
+            return Response({"detail": "Post unsaved successfully."}, status=status.HTTP_200_OK)
+
+        Save_post = Saves(post=post, user=user)
+        Save_post.save()
+
+        return Response({"detail": "Post saved successfully."}, status=status.HTTP_201_CREATED)
+
+
 
 class LikesViewSet(viewsets.ModelViewSet):
     queryset = Likes.objects.all()
@@ -150,6 +197,16 @@ class LikesViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Post liked successfully.","total_likes": total_likes}, status=status.HTTP_201_CREATED)
     
 
+class LikedPostsView(generics.ListAPIView):
+    serializer_class = LikesSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Retrieve liked posts for the logged-in user
+        user = self.request.user
+        return Likes.objects.filter(user=user)
+    
+
    
 
 
@@ -157,3 +214,6 @@ class SharesListCreateView(generics.ListCreateAPIView):
     queryset = Shares.objects.all()
     serializer_class = SharesSerializer
     permission_classes = [IsAuthenticated]
+
+
+

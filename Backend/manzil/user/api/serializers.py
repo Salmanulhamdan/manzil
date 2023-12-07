@@ -3,15 +3,9 @@ from user.models import CustomUser ,HouseownerProfile,Professions,ProfessionalsP
 class Custom_user_serializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = [
-            "id",
-            "username",
-            "usertype",
-            "email",
-            "phonenumber",
-            "profile_photo",
-            "password",
-        ]
+        fields = '__all__'
+
+        
 class GetUserSerializer(serializers.ModelSerializer):
     post_count = serializers.SerializerMethodField()
     followers_count = serializers.SerializerMethodField()
@@ -91,3 +85,27 @@ class ProfilePhotoUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['profile_photo']
+
+class UserPdateSerializer(serializers.ModelSerializer):
+    houseowner_profile = HouseownerProfileSerializer(required=False)
+    professional_profile = ProfessionalsProfileSerializer(required=False)
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'usertype', 'email', 'phonenumber', 'houseowner_profile', 'professional_profile']
+
+    def update(self, instance, validated_data):
+        houseowner_profile_data = validated_data.pop('houseowner_profile', None)
+        professional_profile_data = validated_data.pop('professional_profile', None)
+
+        instance = super().update(instance, validated_data)
+
+        if instance.usertype == CustomUser.HOUSE_OWNER and houseowner_profile_data:
+            houseowner_profile, created = HouseownerProfile.objects.get_or_create(user=instance)
+            HouseownerProfileSerializer().update(houseowner_profile, houseowner_profile_data)
+
+        elif instance.usertype == CustomUser.PROFESSIONAL and professional_profile_data:
+            professional_profile, created = ProfessionalsProfile.objects.get_or_create(user=instance)
+            ProfessionalsProfileSerializer().update(professional_profile, professional_profile_data)
+
+        return instance

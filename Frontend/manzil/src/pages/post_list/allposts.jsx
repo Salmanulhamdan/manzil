@@ -3,7 +3,7 @@ import './allpost.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
-import { baseUrl,like ,post} from '../../utilits/constants';
+import { baseUrl,like ,post,save} from '../../utilits/constants';
 import axios from 'axios';
 import FollowUnfollowApi from '../../api/followunfollow';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,6 +21,8 @@ function PostListing(){
   const closeModal = () => {
     setModalIsOpen(false);
   };
+
+
   const [likes, setLikes] = useState({})
   const handleLike = async (postId) => {
   const token = localStorage.getItem('jwtToken');
@@ -48,6 +50,37 @@ function PostListing(){
       console.error('Error liking post:', error);
     }
   };
+
+
+  const [saves, setSaves] = useState({})
+  const handlesave = async (postId) => {
+  const token = localStorage.getItem('jwtToken');
+  console.log('Token:', token);
+  
+  const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const formData = new FormData();
+      formData.append('post', postId);
+      console.log("like clicked")
+      const response = await axios.post(`${baseUrl}${save}`,formData, config);
+      if (response.status === 201) {
+        // If the like was successful, update the like state
+        setSaves((prevSaves) => ({
+          ...prevSaves,
+          [postId]: true,
+        }));
+        setTrigger(false)
+      }
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
+
+
 
   const handleFollowUnfollow = async (userId) => {
     try {
@@ -135,8 +168,8 @@ function PostListing(){
             <FontAwesomeIcon icon={faHeart} color={post.is_liked ? 'red' : 'black'} />
             <span className='ml-1'>{post.like_count || 0}</span>
           </div>
-          <div className='save-btn ml-4'>
-            <FontAwesomeIcon icon={faBookmark} />
+          <div className='save-btn ml-4' onClick={() =>{handlesave(post.id);setTrigger(true);}}>
+            <FontAwesomeIcon icon={faBookmark} color= {post.is_saved ? 'blue':'black'}/>
           </div>
           <div className='share-btn ml-4'>
             <FontAwesomeIcon icon={faShare} />

@@ -46,3 +46,16 @@ class Shares(models.Model):
 
 
 
+
+class Requirment(models.Model):
+    creater=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    description=models.TextField()
+    time=models.DateTimeField(default=timezone.now,editable=False)
+
+
+class intrests(models.Model):
+    professional=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    requirment=models.ForeignKey(Requirment,on_delete=models.CASCADE)
+    conformation=models.BooleanField(default=False)
+    time=models.DateTimeField(default=timezone.now,editable=False)
+

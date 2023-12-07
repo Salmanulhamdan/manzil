@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import razorpay
-from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer,UserPlanSerializer, UserProfileStatusSerializer
+from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer, UserPdateSerializer,UserPlanSerializer, UserProfileStatusSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
@@ -50,8 +50,6 @@ class Signup(APIView):
                 Return with generated JWT tokens.
                 """
 
-                # Creating user and setting the password (save() doesn't hash the password)
-                # hashed_password = make_password(serializer.validated_data["password"])
                 user = CustomUser.objects.create_user(
                     username=serializer.validated_data["username"],
                     usertype=selected_user_type,
@@ -197,7 +195,7 @@ class RegisteredUsers(APIView):
  
     def get(self,request):
         users = CustomUser.objects.filter(is_superuser=False)
-        serializer = GetUserSerializer(instance=users, many=True)
+        serializer = Custom_user_serializer(instance=users, many=True)
         return Response(serializer.data,status=200)
 
 # get details of user with a  email
@@ -207,7 +205,7 @@ class UserDetail(APIView):
         print(" requested for details of user")
         detail = CustomUser.objects.get(email=userEmail)
         print(detail)
-        serializer = GetUserSerializer(instance=detail)
+        serializer = Custom_user_serializer(instance=detail)
         return Response(serializer.data,status=200)
 
     
@@ -421,6 +419,16 @@ class UserProfileStatusView(APIView):
     
 class ProfilePhotoUpdateAPIView(generics.UpdateAPIView):
     serializer_class = ProfilePhotoUpdateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+    
+
+
+class UserUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserPdateSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):

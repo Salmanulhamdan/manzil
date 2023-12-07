@@ -38,7 +38,7 @@ function UserDetail(props){
       const fetchData = async () => {
         try {
           const token = localStorage.getItem('jwtToken');
-          console.log('Tokenzzz:', token);
+          console.log('Tokenddzzz:', token);
     
           const config = {
             headers: {
@@ -48,7 +48,7 @@ function UserDetail(props){
           const response = await axios.get(`${baseUrl}${userdetail}/${userEmail}`);
           setUsers(response.data);
           console.log(response.data);
-          const postresponse = await axios.get(`${baseUrl}/api/posts/${response.data.id}/get_user_posts_by_id/`, config);
+          const postresponse = await axios.get(`${baseUrl}api/posts/${response.data.id}/get_user_posts_by_id/`, config); 
           
           setUserPosts(postresponse.data);
         } catch (error) {

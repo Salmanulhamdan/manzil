@@ -15,17 +15,15 @@ class PostSerializer(serializers.ModelSerializer):
     like_count = serializers.SerializerMethodField()
     is_following_author = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
+    is_saved = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Posts
-        fields = ['id', 'user', 'media', 'caption', 'hashtag', 'created_at', 'updated_at', 'like_count','is_following_author', 'is_liked']
+        fields = ['id', 'user', 'media', 'caption', 'hashtag', 'created_at', 'updated_at', 'like_count','is_following_author', 'is_liked','is_saved']
         extra_kwargs = {'hashtag': {'required': False}}        
 
-    # def get_user(self, obj):
-    #     user_instance = obj.user
-    #     print(user_instance,"lkld")
-    #     user_serializer = GetUserSerializer(user_instance)
-    #     return user_serializer.data
+   
     
     def get_is_following_author(self, obj):
         user = self.context['request'].user
@@ -45,6 +43,16 @@ class PostSerializer(serializers.ModelSerializer):
                 like_instance = Likes.objects.get(post=obj, user=user)
                 return True
             except Likes.DoesNotExist:
+                return False
+        return False
+    
+    def get_is_saved(self, obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            try:
+                like_instance = Saves.objects.get(post=obj, user=user)
+                return True
+            except Saves.DoesNotExist:
                 return False
         return False
 

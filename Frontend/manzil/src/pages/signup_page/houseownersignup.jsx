@@ -112,7 +112,7 @@ const HouseownerSignUpForm = () => {
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
         className="border rounded w-full py-2 px-3 "
-        pattern="\d{10}"  
+        pattern="^[6789]\d{9}$"   
         required
       />
  
