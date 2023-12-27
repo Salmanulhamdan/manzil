@@ -7,6 +7,7 @@ const navigate = useNavigate();
  const token=localStorage.getItem("jwtToken")
  const logout=()=>{
   localStorage.removeItem("jwtToken");
+  localStorage.removeItem("refreshjwtToken")
   console.log(localStorage.getItem("jwtToken"))
   navigate('/')
 
@@ -17,8 +18,8 @@ const navigate = useNavigate();
   <div className="logo">
     <img src={img} alt="Logo" />
   </div>
-  <div className="nav-links">
-    <a className='home' href="/homepage">Home</a>
+  <div className="nav-links">{localStorage.getItem("jwtToken") ?
+    <a className='home' href="/homepage">Home</a> : <a className='home' href="/">Home</a>}
     <div className='frame1'>
       <a className='post' href="/about">Post</a>
     </div>

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import razorpay
-from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer, UserPdateSerializer,UserPlanSerializer, UserProfileStatusSerializer
+from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer, UserPdateSerializer,UserPlanSerializer, UserProfileStatusSerializer,ProfessionsSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
@@ -433,3 +433,8 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class ProfessionsViewSet(viewsets.ModelViewSet):
+    queryset = Professions.objects.all()
+    serializer_class = ProfessionsSerializer

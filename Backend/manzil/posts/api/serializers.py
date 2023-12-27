@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from user.models import Follow
 from user.api.serializers import GetUserSerializer
-from posts.models import Posts, Hashtags,Saves, Likes, Shares
+from posts.models import Posts, Hashtags, Requirment,Saves, Likes, Shares
 
 class HashtagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -79,4 +79,9 @@ class LikesSerializer(serializers.ModelSerializer):
 class SharesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Shares
+        fields = '__all__'
+
+class RequirmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Requirment
         fields = '__all__'

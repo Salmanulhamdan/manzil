@@ -2,63 +2,49 @@ import './sidebar.css';
 // import { baseUrl } from '../../utilits/constants';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch,faUser } from '@fortawesome/free-solid-svg-icons';
+import { faToolbox,faUser ,faCircleQuestion,faMessage} from '@fortawesome/free-solid-svg-icons';
 
 
 function SideBar({username}){
     
     const navigate = useNavigate()
-    const handleUserLogout = ()=>{
-        localStorage.removeItem('jwtToken');
-    
-        navigate('/')
-      }
+ 
 console.log("ddd",{username})
     return(
-        <div className="box2">
-    <div className='myprofile'>
-        {username ? (
-            <div>
-                <FontAwesomeIcon icon={faUser} className="text-black" />
-                <Link className="myprofile_text" to='/myprofile'>{username}</Link>
-            </div>
-        ) : (
-            <div>
-                <FontAwesomeIcon icon={faUser} className="text-black" />
-                <Link className="myprofile_text" to='/myprofile'>My Profile</Link>
-            </div>
-        )}
-    </div>
-            <div className='myposts'>
-                <img className="myposts_pic" />
-                <span className="myposts_text">My Posts</span>
-            </div>
-            <div className='savedpost'>
-                <img className="savedpost_pic"  />
-                <span className="savedpost_text">Saved Posts</span>
-            </div>
-            <div className='followers'>
-                <img className="followers_pic"  />
-                <span className="followers_text">Followers</span>
-            </div>
-            <div className='following'>
-                <img className="following_pic"  />
-                <span className="following_text">Followings</span>
-            </div>
-            <div className='messages'>
-                  <img className="messages_pic" />
-                  <span className="messages_text">Messages</span>
-            </div>
-            <div className='logout'>
-                  {/* <img className="messages_pic" src={baseUrl+pic} /> */}
-                  <button className="logout_link" onClick={handleUserLogout}>Log Out</button>
-            </div>
-              
-              
+<div className="box2 bg-white p-4 shadow-md">
+  {/* My Profile */}
+  <div className="myprofile flex items-center">
+    <FontAwesomeIcon icon={faUser} className="text-black" />
+    {username ? (
+      <Link to="/myprofile" className="myprofile_text ml-2">
+        {username}
+      </Link>
+    ) : (
+      <Link to="/myprofile" className="myprofile_text ml-2">
+        My Profile
+      </Link>
+    )}
+  </div>
 
+  {/* My Posts */}
+  <div className="myposts flex items-center mt-4">
+  <FontAwesomeIcon icon={faToolbox} />
+    <span className="myposts_text ml-2">Requirements</span>
+  </div>
 
+  {/* Saved Posts */}
+  <div className="savedpost flex items-center mt-4">
+  <FontAwesomeIcon icon={faCircleQuestion} />
+    <span className="savedpost_text ml-2">My Questions</span>
+  </div>
 
-        </div>
+  {/* Messages */}
+  <div className="messages flex items-center mt-4">
+  <FontAwesomeIcon icon={faMessage} className="text-black" />
+    <span className="messages_text ml-2">Messages</span>
+  </div>
+</div>
+
     )
 }
 

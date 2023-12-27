@@ -14,6 +14,10 @@ export const myprofile = '/api/myprofile';
 export const userprofile='api/userprofile';
 export const updateprofile='api/customuser-update/'
 export const save="api/saves/save_post/";
+export const requirment="api/requirements/";
+export const professions="api/professions/";
+export const likedpost="api/liked-posts/";
+
 // admin side urls
 export const registeredUsers = "api/registeredUsers";
 export const userdetail = "api/userdetail";

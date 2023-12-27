@@ -7,7 +7,8 @@ import { baseUrl,like ,post,save} from '../../utilits/constants';
 import axios from 'axios';
 import FollowUnfollowApi from '../../api/followunfollow';
 import { Link, useNavigate } from 'react-router-dom';
-
+import RequirmentModal from '../../Components/modals/requirmentmodal';
+import QustionModal from '../../Components/modals/qustionmodal';
 
 
 function PostListing(){
@@ -21,6 +22,24 @@ function PostListing(){
   const closeModal = () => {
     setModalIsOpen(false);
   };
+  const [RequirementModalOpen ,setRequirementModalOpen] =useState(false);
+  const openrequirmentModal = () =>{
+    setRequirementModalOpen(true);
+
+  }
+ const closerequirmentModal =() =>{
+  setRequirementModalOpen(false);
+ }
+
+ const [QustionModalOpen ,setQustionModalOpen] =useState(false);
+ const openqustionModal = () =>{
+  setQustionModalOpen(true);
+
+ }
+const closequstionModal =() =>{
+  setQustionModalOpen(false);
+}
+
 
 
   const [likes, setLikes] = useState({})
@@ -129,14 +148,19 @@ function PostListing(){
         Create Post
       </button>
       <CreateModal isOpen={modalIsOpen} onClose={closeModal} />
-        <button className='hover:bg-gray-200 text-black font-bold py-2 px-4 rounded'>
+
+        <button className='hover:bg-gray-200 text-black font-bold py-2 px-4 rounded' onClick={openrequirmentModal}>
+        
           <FontAwesomeIcon icon={faPlus} className='mr-2' />
           Create Requirement
         </button>
-        <button className='hover:bg-gray-200 text-black font-bold py-2 px-4 rounded'>
+        <RequirmentModal isOpen={RequirementModalOpen} onClose={closerequirmentModal} />
+
+        <button className='hover:bg-gray-200 text-black font-bold py-2 px-4 rounded' onClick={openqustionModal}>
           <FontAwesomeIcon icon={faQuestion} className='mr-2' />
           Ask Question
         </button>
+        <QustionModal isOpen={QustionModalOpen} onClose={closequstionModal} />
     
       </div>
       {/* List of posts */}

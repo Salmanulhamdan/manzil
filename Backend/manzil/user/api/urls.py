@@ -1,13 +1,14 @@
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import FollowUnfollowUserView,  PlanViewSet, ProfilePhotoUpdateAPIView, Signup, MyProfile, UserProfile, UserProfileStatusView, UserUpdateView,login,FacebookLogin,GoogleLogin,RegisteredUsers,UserDetail,BlockUser,DeletePost,GetUserView,RazorpayOrderView,UserPlanViewSet
+from .views import FollowUnfollowUserView,  PlanViewSet, ProfilePhotoUpdateAPIView, Signup, MyProfile, UserProfile, UserProfileStatusView, UserUpdateView,login,FacebookLogin,GoogleLogin,RegisteredUsers,UserDetail,BlockUser,DeletePost,GetUserView,RazorpayOrderView,UserPlanViewSet,ProfessionsViewSet
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'plans', PlanViewSet)
 router.register(r'userplans', UserPlanViewSet, basename='userplan')
+router.register(r'professions', ProfessionsViewSet)
 
 urlpatterns = [
     path('signup', Signup.as_view(), name='user-signup'),

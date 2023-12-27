@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from user.models import CustomUser
 from posts.models import Hashtags, Posts,Saves, Likes, Shares,Requirment
-from .serializers import HashtagSerializer, PostSerializer,SavesSerializer, LikesSerializer, SharesSerializer
+from .serializers import HashtagSerializer, PostSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 
 
@@ -34,17 +34,15 @@ class PostsViewSet(viewsets.ModelViewSet):
         for hashtag_name in hashtags:
             hashtag, created = Hashtags.objects.get_or_create(hashtag=hashtag_name)
             hashtag_instence.append(hashtag)
-        newdata = request.data
+        newdata = request.data   
         # Update the request data with the hashtag instances
         newdata['hashtag'] = [hashtag.id for hashtag in hashtag_instence]
         newdata['user'] = user.id
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
-        print(serializer,"daata")
-        print("gg",hashtag_instence)
         serializer.instance.hashtag.set(hashtag_instence)
-        # self.perform_create(serializer)
+
         
        
 
@@ -220,6 +218,25 @@ class SharesListCreateView(generics.ListCreateAPIView):
 
 class RequirmentViewset(viewsets.ModelViewSet):
     queryset=Requirment.objects.all()
+    serializer_class = RequirmentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        print("gglll")
+        user=request.user
+        newdata=request.data.copy()
+        print(newdata,"newdata")
+        newdata['creater'] = user.id
+        serializer = self.get_serializer(data=newdata)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(creater=user)
+        print(serializer,"daata")
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+
 
 
 
