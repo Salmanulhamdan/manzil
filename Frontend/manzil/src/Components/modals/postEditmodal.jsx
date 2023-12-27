@@ -4,7 +4,7 @@ import axios from "axios";
 import { baseUrl,createpost } from '../../utilits/constants';
 import Swal from "sweetalert2";
 
-const PosteditModal = ({ isOpen, closeModal , post}) => {
+const PosteditModal = ({ isOpen, closeModal , post,setUpdateUI}) => {
   const [media,setmedia]=useState(post?.media??'No Media')
   const [caption, setCaption] = useState(post?.caption ?? 'caption');
   const [hashtag, setHashtag] = useState(post?.hashtag?.map((hashtag) => (hashtag.hashtag)) || []);
@@ -39,6 +39,7 @@ const PosteditModal = ({ isOpen, closeModal , post}) => {
       if (response.status) {
         // Handle successful post creation, e.g., show a success message, redirect, etc.
         console.log('Post updated successfully!');
+        setUpdateUI(prev => !prev)
         Swal.fire("Updated!", "Your post has been Updated.", "success");
       } else {
         // Handle errors, e.g., show an error message to the user

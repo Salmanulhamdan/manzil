@@ -5,12 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faEllipsisVertical, faEdit, faTrash,} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { baseUrl } from '../../utilits/constants';
-const Posts =({posts,ismypost})=>{
-    const [userposts,setUserPosts] = useState(posts?posts:"null")
-
+const Posts =({posts,ismypost,setUpdateUI})=>{
+    const [userposts,setUserPosts] = useState(posts ? posts:"null")
     const [postEditModalOpen,setpostEditModalOpen]=useState(false);
+    const [trigger, setTrigger] = useState(false);
+
+    useEffect( () =>{
+      setUserPosts(posts ? posts:"null")
+      console.log("sss")
+
+    },[posts,trigger,postEditModalOpen,userposts])
+
+
+
     const openPosteditmodal=()=>{
       setpostEditModalOpen(true);
+
     };
     const closePosteditmodal=()=>{
       setpostEditModalOpen(false);
@@ -23,7 +33,7 @@ const Posts =({posts,ismypost})=>{
       setExpandedPostId(expandedPostId === postId ? null : postId);
     };
 
-    const [trigger, setTrigger] = useState(false);
+   
 
     const handleDeletePost = async (postId) => {
         setTrigger(true);
@@ -44,6 +54,7 @@ const Posts =({posts,ismypost})=>{
             await axios.delete(url);
   
             setUserPosts(userposts.filter(post => post.id !== postId));
+            setUpdateUI(prev => !prev)
       
             // Assuming the request was successful, you can handle the success case here
             Swal.fire("Deleted!", "Your post has been deleted.", "success");
@@ -56,11 +67,7 @@ const Posts =({posts,ismypost})=>{
         }
       };
 
-      useEffect( () =>{
-        setUserPosts(posts?posts:"null")
-        console.log("sss")
 
-      },[trigger,postEditModalOpen])
 
 
       return(
@@ -69,7 +76,7 @@ const Posts =({posts,ismypost})=>{
           {/* Section to show user's posts */}
     <div className="mt-8">
       <div className="grid grid-cols-4 gap-4">
-        {userposts.map((post) => (
+        {userposts ? userposts.map((post) => (
           <div key={post.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md relative'>
             {post.media && (
   <div className='mb-4 rounded-md'>
@@ -100,7 +107,7 @@ const Posts =({posts,ismypost})=>{
     <div className="edit-delete-buttons mt-6 grid grid-cols-1">
   <button className="bg-blue-400 text-white px-2 py-2 ml-3 hover:bg-blue-600 focus:outline-none  rounded-md"onClick={openPosteditmodal}><FontAwesomeIcon icon={faEdit}  />
   </button>
-  <PosteditModal isOpen={postEditModalOpen} closeModal={closePosteditmodal} post={post}/>
+  <PosteditModal isOpen={postEditModalOpen} closeModal={closePosteditmodal} post={post} setUpdateUI={setUpdateUI}/>
   <button className="bg-red-400 text-white px-2 py-2 hover:bg-red-600 focus:outline-none mt-2 ml-3 rounded-md" onClick={() => handleDeletePost(post.id)}><FontAwesomeIcon icon={faTrash}/>
  
   </button>
@@ -109,7 +116,7 @@ const Posts =({posts,ismypost})=>{
   )}
 </div>
           </div>
-        ))}
+        )):""}
       </div>
     </div>
         </>

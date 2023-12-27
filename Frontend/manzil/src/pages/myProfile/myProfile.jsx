@@ -17,6 +17,7 @@ const MyProfile = () => {
   const [user,setUser] = useState([])
   const [userPosts, setUserPosts] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
+  const [updateUI, setUpdateUI]= useState(false)
 
 
   const fileInput = useRef(null);
@@ -126,7 +127,7 @@ const MyProfile = () => {
   
     // Call fetchData when the component mounts
     fetchData();
-  }, [iseditModalOpen]); 
+  }, [iseditModalOpen,updateUI]); 
   
 
  return (
@@ -221,7 +222,7 @@ const MyProfile = () => {
       </div>
     </div>
   </div>
-<Posts posts={userPosts} ismypost={true} />
+<Posts posts={userPosts} ismypost={true} setUpdateUI={setUpdateUI} />
   </div>
 </div>
 
