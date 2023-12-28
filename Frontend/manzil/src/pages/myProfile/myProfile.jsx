@@ -1,5 +1,5 @@
 import React, { useEffect, useState ,useRef} from 'react';
-import { baseUrl ,myprofile} from '../../utilits/constants';
+import { baseUrl ,myprofile,savedPosts,likedPost} from '../../utilits/constants';
 import 'tailwindcss/tailwind.css';
 import Navbar from '../../Components/navbar/navbar';
 import Posts from '../../Components/posts/posts';
@@ -17,8 +17,14 @@ const MyProfile = () => {
   const [user,setUser] = useState([])
   const [userPosts, setUserPosts] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
-  const [updateUI, setUpdateUI]= useState(false)
+  const [updateUI, setUpdateUI]= useState(false);
+  const[saved,setSaved]=useState(false);
+  const[liked,setLiked]=useState(false);
+  const[savedposts,setSavedposts]=useState([]);
+  const[likedposts,setLikedposts]=useState([]);
+  const [trigger, setTrigger] = useState(false);
 
+ 
 
   const fileInput = useRef(null);
   const handleImageClick = () => {
@@ -43,7 +49,6 @@ const MyProfile = () => {
           Authorization: `Bearer ${localStorage.getItem('jwtToken')}`, 
         },
       });
-
       // Assuming the API returns the updated user object
       setUser(response.data);
       setTrigger(false);
@@ -55,7 +60,44 @@ const MyProfile = () => {
 
 
   
+ const fetchsavedposts = async ()=>{
+  const token = localStorage.getItem('jwtToken');
+  console.log('Tokenzzz:', token);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const savedpostsresponse = await axios.get(baseUrl+savedPosts,config)
+  console.log(savedposts.data,"kkkoo")
+  setSavedposts(savedpostsresponse.data)
+  setLiked(false)
+  setSaved(true)
+  
+ }
+
+ const fetchlikedposts = async ()=>{
+  const token = localStorage.getItem('jwtToken');
+  console.log('Tokenzzz:', token);
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+  const likedpostsresponse = await axios.get(baseUrl+likedPost,config)
+  console.log(savedposts.data,"kkkoo")
+  setLikedposts(likedpostsresponse.data)
+  setSaved(false)
+  setLiked(true)
+  
+ }
+ const mypostsshow =()=>{
+  setLiked(false)
+  setSaved(false)
  
+ }
 
 
   const [iseditModalOpen, setIseditModalOpen] = useState(false);
@@ -101,8 +143,7 @@ const MyProfile = () => {
         setUserProfile(data);
       })
       .catch(error => console.error('Error fetching user profile:', error));
-    const fetchData = async () => {
-      try {
+      const fetchuserData =async () =>{
         const token = localStorage.getItem('jwtToken');
         console.log('Tokenzzz:', token);
   
@@ -114,9 +155,23 @@ const MyProfile = () => {
   
         const response = await axios.get(`${baseUrl}/api/user`, config);
         setUser(response.data);
-        console.log(response.data,"yyyy")
+      }
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        console.log('Tokenzzz:', token);
+  
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(`${baseUrl}/api/user`, config);
+        setUser(response.data);
         const postresponse = await axios.get(`${baseUrl}api/posts/${response.data.id}/get_user_posts_by_id/`, config);  
         setUserPosts(postresponse.data);
+        // setLiked(false)
+        // setSaved(false)
         console.log(postresponse,"llll")
 
       } catch (error) {
@@ -126,8 +181,22 @@ const MyProfile = () => {
     };
   
     // Call fetchData when the component mounts
-    fetchData();
-  }, [iseditModalOpen,updateUI]); 
+    fetchuserData();
+     
+    if (liked){
+      fetchlikedposts()
+      }
+      else if(saved){
+      fetchsavedposts();
+      }
+      else{
+        fetchData();
+
+      }
+
+
+  }, [iseditModalOpen,updateUI,trigger]); 
+
   
 
  return (
@@ -145,10 +214,10 @@ const MyProfile = () => {
         <div className="absolute top-12 right-0 p-4 bg-white border rounded shadow">
           <button className="block mb-2 text-gray-600 hover:text-blue-500" onClick={openeditModal}><FontAwesomeIcon icon={faUserEdit} />Edit </button>
             <UserupdateModal isOpen={iseditModalOpen} closeModal={closeeditModal} profile={userProfile}/>
-          <button className="block mb-2 text-gray-600 hover:text-blue-500" onClick={() => console.log('Saved Posts')}>
+          <button className="block mb-2 text-gray-600 hover:text-blue-500" onClick={fetchsavedposts}>
           <FontAwesomeIcon icon={faBookmark} /> Saved
           </button>
-          <button className="block text-gray-600 hover:text-blue-500" onClick={() => console.log('Liked Posts')}>
+          <button className="block text-gray-600 hover:text-blue-500" onClick={fetchlikedposts}>
           <FontAwesomeIcon icon={faThumbsUp} /> Liked 
           </button>
         </div>
@@ -184,7 +253,7 @@ const MyProfile = () => {
         <div className="grid grid-cols-3 gap-4">
           <div>
             <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{user.post_count}</p>
-            <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }}>Posts</p>
+            <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }} onClick={mypostsshow}>Posts</p>
           </div>
           <div>
             <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{user.followers_count}</p>
@@ -222,7 +291,10 @@ const MyProfile = () => {
       </div>
     </div>
   </div>
-<Posts posts={userPosts} ismypost={true} setUpdateUI={setUpdateUI} />
+  <div className="mt-8 p-4 bg-gray-100 rounded-md text-center">
+  {saved ? <p className="text-xl font-bold text-blue-500">Saved Posts</p> : liked ? <p className="text-xl font-bold text-green-500">Liked Posts</p> : <p className="text-xl font-bold text-gray-700">My Posts</p>}
+</div>
+<Posts posts={saved == false && liked == false ? userPosts : saved == true ? savedposts ? savedposts:"" : likedposts } ismypost={saved == false && liked == false ? true : false } setUpdateUI={setUpdateUI} />
   </div>
 </div>
 

@@ -7,6 +7,7 @@ from user.models import CustomUser
 from posts.models import Hashtags, Posts,Saves, Likes, Shares,Requirment
 from .serializers import HashtagSerializer, PostSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
+from rest_framework.views import APIView
 
 
 from rest_framework.decorators import action
@@ -161,6 +162,7 @@ class SavesPostView(viewsets.ModelViewSet):
         if existing_savedpost:
             # User has already liked the post, unlike it
             existing_savedpost.delete()
+            print("post unsaved")
             return Response({"detail": "Post unsaved successfully."}, status=status.HTTP_200_OK)
 
         Save_post = Saves(post=post, user=user)
@@ -195,15 +197,27 @@ class LikesViewSet(viewsets.ModelViewSet):
         return Response({"detail": "Post liked successfully.","total_likes": total_likes}, status=status.HTTP_201_CREATED)
     
 
-class LikedPostsView(generics.ListAPIView):
-    serializer_class = LikesSerializer
+class LikedPostsView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
+    def get(self,request):
         # Retrieve liked posts for the logged-in user
-        user = self.request.user
-        return Likes.objects.filter(user=user)
+        user = request.user
+        userliked=Likes.objects.filter(user=user)
+        post_serializer = PostSerializer([liked_post.post for liked_post in userliked], many=True,context={'request':request})
+        return Response(post_serializer.data, status=status.HTTP_200_OK)
     
+
+
+
+class SavedPostsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_saved_posts = Saves.objects.filter(user=request.user)
+        post_serializer = PostSerializer([saved_post.post for saved_post in user_saved_posts], many=True,context={'request':request})
+        print(post_serializer.data,"saved postss")
+        return Response(post_serializer.data, status=status.HTTP_200_OK)
 
    
 

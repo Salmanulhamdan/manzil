@@ -37,7 +37,7 @@ function UserDetail(props){
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const token = localStorage.getItem('jwtToken');
+          const token = localStorage.getItem('jwtTokenAdmin');
           console.log('Tokenddzzz:', token);
     
           const config = {

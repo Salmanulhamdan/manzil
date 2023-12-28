@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import './navbar.css';
 import img from "../../assets/logo.svg";
 import { useNavigate } from 'react-router-dom';
-function Navbar  (){
+function Navbar(){
+
+
 const navigate = useNavigate();
  const token=localStorage.getItem("jwtToken")
  const logout=()=>{
@@ -19,7 +21,7 @@ const navigate = useNavigate();
     <img src={img} alt="Logo" />
   </div>
   <div className="nav-links">{localStorage.getItem("jwtToken") ?
-    <a className='home' href="/homepage">Home</a> : <a className='home' href="/">Home</a>}
+    <a className='home' href="/homepage" >Home</a> : <a className='home'  href="/">Home</a>}
     <div className='frame1'>
       <a className='post' href="/about">Post</a>
     </div>
@@ -28,7 +30,7 @@ const navigate = useNavigate();
     </div>
     <a className='about' href="/contact">About</a>
   </div>
-  <input type="text" placeholder="Search" className="search-bar" />
+  {/* <input type="text" placeholder="Search" className="search-bar" /> */}
 <button type="submit" className="search-button">
   <i className="fa fa-search"></i> 
 </button>

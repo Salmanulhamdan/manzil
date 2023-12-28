@@ -11,7 +11,7 @@ const FollowUnfollowApi = async (userId, fetchData) => {
                 Authorization: `Bearer ${accessToken}`,
             },
         });
-        if (response.status === 200) {
+        if (response.status === 200 || 201) {
             console.log('follow/unfollow is working');
             if (fetchData) {
                 fetchData();

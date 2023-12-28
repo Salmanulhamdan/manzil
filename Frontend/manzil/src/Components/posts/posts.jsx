@@ -2,9 +2,11 @@ import Swal from "sweetalert2";
 import React, { useEffect, useState } from 'react';
 import PosteditModal from '../../Components/modals/postEditmodal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  faEllipsisVertical, faEdit, faTrash,} from '@fortawesome/free-solid-svg-icons';
+import {  faEllipsisVertical, faEdit, faTrash,faHeart,faBookmark,faShare} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
-import { baseUrl } from '../../utilits/constants';
+import { baseUrl ,like,post,save} from '../../utilits/constants';
+import { Link } from 'react-router-dom';
+import FollowUnfollowApi from '../../api/followunfollow';
 const Posts =({posts,ismypost,setUpdateUI})=>{
     const [userposts,setUserPosts] = useState(posts ? posts:"null")
     const [postEditModalOpen,setpostEditModalOpen]=useState(false);
@@ -13,10 +15,84 @@ const Posts =({posts,ismypost,setUpdateUI})=>{
     useEffect( () =>{
       setUserPosts(posts ? posts:"null")
       console.log("sss")
+      console.log(posts,"userpost")
 
     },[posts,trigger,postEditModalOpen,userposts])
 
 
+    const [saves, setSaves] = useState({})
+    const handlesave = async (postId) => {
+    const token = localStorage.getItem('jwtToken');
+    console.log('Token:', token);
+    
+    const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        const formData = new FormData();
+        formData.append('post', postId);
+        console.log("like clicked")
+        const response = await axios.post(`${baseUrl}${save}`,formData, config);
+        if (response.status === 201 || 200) {
+          console.log("saved,unsaved")
+          // If the like was successful, update the like state
+          setSaves((prevSaves) => ({
+            ...prevSaves,
+            [postId]: true,
+          }));
+          setTrigger(false)
+          console.log("like happnd")
+          setUpdateUI(prev => !prev)
+        }
+      } catch (error) {
+        console.error('Error liking post:', error);
+      }
+    };
+  
+  
+  
+    const handleFollowUnfollow = async (userId) => {
+      try {
+        await FollowUnfollowApi(userId);
+        setTrigger(false);
+        setUpdateUI(prev => !prev)
+      } catch {
+        console.log("follow/unfollow got error");
+      }
+    };
+    
+
+    const [likes, setLikes] = useState({})
+    const handleLike = async (postId) => {
+    const token = localStorage.getItem('jwtToken');
+    console.log('Token:', token);
+    
+    const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      try {
+        const formData = new FormData();
+        formData.append('post', postId);
+        console.log("like clicked")
+        const response = await axios.post(`${baseUrl}${like}`,formData, config);
+        if (response.status === 201 || 201) {
+          // If the like was successful, update the like state
+          setLikes((prevLikes) => ({
+            ...prevLikes,
+            [postId]: true,
+          }));
+          setUserPosts(userposts.filter(post => post.id !== postId));
+          console.log("like handeld")
+          setUpdateUI(prev => !prev)
+        }
+      } catch (error) {
+        console.error('Error liking post:', error);
+      }
+    };
 
     const openPosteditmodal=()=>{
       setpostEditModalOpen(true);
@@ -78,6 +154,17 @@ const Posts =({posts,ismypost,setUpdateUI})=>{
       <div className="grid grid-cols-4 gap-4">
         {userposts ? userposts.map((post) => (
           <div key={post.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md relative'>
+            {ismypost ? "" :    <div className='flex items-center justify-between mb-2'>
+        <div className='flex items-center'>
+          <img src={post.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />
+          <Link className="userrofile_text font-bold" to={`/userprofile/${post.user.id}`}>{post.user.username}</Link>
+        </div>
+        <button onClick={() => {handleFollowUnfollow(post.user.id);setTrigger(true); }}
+          className={`className='follow-btn bg-gray-200 text-black-700 px-4 py-1 rounded-md hover:bg-gray-400 focus:outline-none focus:shadow-outline-gray active:bg-gray-500' ${
+          post.is_following_author ? "bg-red-400 hover:bg-red-500" : ""}`} >
+          {post.is_following_author ? "Unfollow" : "Follow"}
+       </button>
+      </div> }
             {post.media && (
   <div className='mb-4 rounded-md'>
     {post.media.endsWith('.mp4') || post.media.endsWith('.avi') ? (
@@ -98,10 +185,24 @@ const Posts =({posts,ismypost,setUpdateUI})=>{
                 <span key={hashtag.id} className='hashtag mr-2'>#{hashtag.hashtag}</span>
               ))}
             </div>
+      {ismypost ? "" :      <div className='flex items-center justify-between mt-4'>
+        <div className='post-actions'>
+          <div className='like-btn' onClick={() => {handleLike(post.id);setTrigger(true); }}>
+            <FontAwesomeIcon icon={faHeart} color={post.is_liked ? 'red' : 'black'} />
+            <span className='ml-1'>{post.like_count || 0}</span>
+          </div>
+          <div className='save-btn ml-4' onClick={() =>{handlesave(post.id);setTrigger(true);}}>
+            <FontAwesomeIcon icon={faBookmark} color= {post.is_saved ? 'blue':'black'}/>
+          </div>
+          <div className='share-btn ml-4'>
+            <FontAwesomeIcon icon={faShare} />
+          </div>
+        </div>
+      </div>}
             <div className="expand-buttons absolute top-0 right-2">
-  <div className={`absolute top-0 right-0  cursor-pointer ${expandedPostId === post.id ? "text-red-500" : "text-gray-600"}`} onClick={() => handleExpandToggle(post.id)}>
+ { ismypost? <div className={`absolute top-0 right-0  cursor-pointer ${expandedPostId === post.id ? "text-red-500" : "text-gray-600"}`} onClick={() => handleExpandToggle(post.id)}>
   <FontAwesomeIcon icon={faEllipsisVertical} />
-  </div>
+  </div>:""}
 
   {expandedPostId === post.id && (
     <div className="edit-delete-buttons mt-6 grid grid-cols-1">

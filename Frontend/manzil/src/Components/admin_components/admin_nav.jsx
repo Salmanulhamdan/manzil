@@ -12,6 +12,7 @@ function AdminNav() {
 
   const handleLogout = ()=>{
     localStorage.removeItem('jwtTokenAdmin');
+    localStorage.removeItem("refreshjwtTokenAdmin")
 
     navigate('/admin')
   }
