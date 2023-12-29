@@ -8,6 +8,7 @@ import LoginForm from '../pages/login_page/login';
 import Home from '../pages/Home_page/home_Page';
 import MyProfile from '../pages/myProfile/myProfile';
 import UserProfile from '../pages/userprofile/userprofile';
+import { PrivateRoutes } from './privateroute';
 // import Home from "../pages/HomePage";
 // import Profile from "../pages/ProfilePage";
 
@@ -19,14 +20,19 @@ export default function UserRouter(){
         <div>
      
         <Routes>
+        
         <Route path='/'element={<LandingPage />}/>
         <Route path='/signup/houseowner'element={<HouseownerSignUpForm />}/>
         <Route path='/signup/professional'element={<ProfessionalSignup />}/>
         <Route path='/login'element={<LoginForm />}/>
         <Route path='/choice'element={<ChoicePage />}/>
+
+
+        <Route element={<PrivateRoutes />}>
         <Route path='/homepage' element={<Home />}/>
         <Route path='/myprofile' element={<MyProfile />}/>
         <Route path='/userprofile/:userId'element={<UserProfile/>}/>
+        </Route>
         </Routes>
         </div>
     )

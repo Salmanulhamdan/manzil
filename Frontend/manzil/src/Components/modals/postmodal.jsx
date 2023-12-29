@@ -51,6 +51,7 @@ const CreateModal = ({ isOpen, onClose }) => {
      
     >
    <div className="modal-content p-4 bg-white  max-w-md mx-auto mt-20">
+    <form  onSubmit ={handleSubmit}>
   <h2 className="text-2xl font-bold mb-4">Share</h2>
   <div className="form-group">
     <label htmlFor="media" className="block text-sm font-medium text-gray-700">Media</label>
@@ -59,6 +60,7 @@ const CreateModal = ({ isOpen, onClose }) => {
       id="media"
       className="mt-1 p-2 border rounded-md w-full"
       onChange={(e) => setMedia(e.target.files[0])}
+      required
     />
   </div>
   <div className="form-group">
@@ -83,9 +85,11 @@ const CreateModal = ({ isOpen, onClose }) => {
   </div>
   <br />
   <div className="flex justify-between">
-    <button onClick={handleSubmit} className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>
+    <button type="submit" className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>
+    
     <button onClick={onClose} className="p-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancel</button>
   </div>
+  </form>
 </div>
 
 
