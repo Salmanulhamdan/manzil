@@ -86,26 +86,34 @@ class ProfilePhotoUpdateSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['profile_photo']
 
-class UserPdateSerializer(serializers.ModelSerializer):
+class UserUpdateSerializer(serializers.ModelSerializer):
     houseowner_profile = HouseownerProfileSerializer(required=False)
     professional_profile = ProfessionalsProfileSerializer(required=False)
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'usertype', 'email', 'phonenumber', 'houseowner_profile', 'professional_profile']
+        fields = [ 'username', 'usertype', 'email', 'phonenumber', 'houseowner_profile', 'professional_profile']
 
     def update(self, instance, validated_data):
+        print(validated_data,"validated dta")
         houseowner_profile_data = validated_data.pop('houseowner_profile', None)
+        print(houseowner_profile_data,"lllssasa")
         professional_profile_data = validated_data.pop('professional_profile', None)
 
         instance = super().update(instance, validated_data)
+        print(instance)
+
+        print(instance.usertype,"lll")
 
         if instance.usertype == CustomUser.HOUSE_OWNER and houseowner_profile_data:
+            print("kkinstance")
             houseowner_profile, created = HouseownerProfile.objects.get_or_create(user=instance)
             HouseownerProfileSerializer().update(houseowner_profile, houseowner_profile_data)
+           
 
         elif instance.usertype == CustomUser.PROFESSIONAL and professional_profile_data:
             professional_profile, created = ProfessionalsProfile.objects.get_or_create(user=instance)
             ProfessionalsProfileSerializer().update(professional_profile, professional_profile_data)
+            print("kkinstance")
 
         return instance

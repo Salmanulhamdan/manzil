@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import razorpay
-from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer, UserPdateSerializer,UserPlanSerializer, UserProfileStatusSerializer,ProfessionsSerializer
+from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer, UserUpdateSerializer,UserPlanSerializer, UserProfileStatusSerializer,ProfessionsSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
@@ -37,14 +37,11 @@ class Signup(APIView):
             """
             # Serializing request.data
             serializer = self.serializer_class(data=request.data)
-            # print("hh",request.data)
-            # print(serializer,"ended")
             selected_user_type = request.data.get('usertype', None)
-            print(selected_user_type)
             place=request.data.get('place',None)
 
             if serializer.is_valid(raise_exception=True):
-                print("serlizr valid")
+                
                 """
                 If the data is validated, the password is hashed, and a new user is created.
                 Return with generated JWT tokens.
@@ -59,13 +56,13 @@ class Signup(APIView):
                     profile_photo=serializer.validated_data.get("profile_photo"),
 
                 )
-                print(user.usertype)
+       
                 if selected_user_type=="houseowner":
                     user.houseowner_profile.place = place
                     user.houseowner_profile.save()
                 else:
                     profession=request.data.get('profession',None)
-                    print(profession)
+               
                     professional_instance,create=Professions.objects.get_or_create(profession_name=profession)
                     experience=request.data.get('experience',None)
                     user.professional_profile.place=place
@@ -74,7 +71,7 @@ class Signup(APIView):
                     user.professional_profile.save()
                 response_data = serializer.data
 
-                print("f",user)
+           
 
                 response_data.pop('password')
 
@@ -89,7 +86,7 @@ class Signup(APIView):
                 error_messages.append(field_errors)
 
             error_message = ', '.join(error_messages)
-            print(error_message)
+     
 
             logger.error(f"Validation error: {error_message}")
                     
@@ -107,7 +104,7 @@ class login(APIView):
         validating the user credencials and generating access and refresh
         jwt tocken if the user is validated otherwise return error message
         """
-        print("request hit.....")
+
         # serializing data
         seriazed_data = self.serializer_class(data=reuqest.data)
 
@@ -120,7 +117,7 @@ class login(APIView):
             password = seriazed_data.validated_data['password']
             user1=CustomUser.objects.get(email=email)
             username=user1.username
-            print(username)
+    
             # authenticate func returns user instence if authenticated
             user = authenticate(email=email, password=password)
             # if user is authenticated generate jwt
@@ -131,7 +128,7 @@ class login(APIView):
                 refresh['is_superuser'] = user.is_superuser
                 access_token = str(refresh.access_token)
                 refresh_token = str(refresh)
-                print(access_token)
+         
                 # returning response with access and refresh tocken
                 # refresh tocken used to generate new tocken before tockens session expired
                 return Response(
@@ -156,24 +153,15 @@ class GetUserView(APIView):
     authentication_classes=[JWTAuthentication]
  
     def get(self,request):
-        print("fffff")
+
     
         user_email = request.user
-        print(request.user)
+      
         user_details = CustomUser.objects.get(email=user_email)
         serializer = GetUserSerializer(instance=user_details)
-        print(serializer.data)
-        return Response(serializer.data,status=200)
 
-# class GetOneUser(APIView):
- 
-#     def get(self,request,userId):
-#         print(" requested for details of user")
-#         detail = CustomUser.objects.get(pk=userId)
-#         print(detail)
-#         serializer = GetUserSerializer(instance=detail)
-#         return Response(serializer.data,status=200)
-            
+        return Response(serializer.data,status=200)
+    
 
 #social_login
 class FacebookLogin(SocialLoginView):
@@ -202,9 +190,7 @@ class RegisteredUsers(APIView):
 class UserDetail(APIView):
  
     def get(self,request,userEmail):
-        print(" requested for details of user")
         detail = CustomUser.objects.get(email=userEmail)
-        print(detail)
         serializer = Custom_user_serializer(instance=detail)
         return Response(serializer.data,status=200)
 
@@ -214,10 +200,9 @@ class BlockUser(APIView):
     def patch(self, request, id):
         try:
             user = CustomUser.objects.get(id=id)
-            print(user.is_active,"in block fun checking user")
             b = user.is_active
             user.is_active = not b
-            print(user.is_active,"after change")
+ 
             user.save()
             return Response({"message": "success"}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
@@ -311,7 +296,7 @@ class RazorpayOrderView(APIView):
                     'key':config('RAZORPAY_KEY_ID'),
                 },
             }
-            print(order_params,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+            
 
             order = client.order.create(data=order_params)
 
@@ -341,6 +326,7 @@ class MyProfile(APIView):
 
     def put(self, request, *args, **kwargs):
         user = request.user
+       
 
         if user.usertype == 'professional':
             profile = ProfessionalsProfile.objects.get(user=user)
@@ -428,11 +414,48 @@ class ProfilePhotoUpdateAPIView(generics.UpdateAPIView):
 
 class UserUpdateView(generics.RetrieveUpdateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = UserPdateSerializer
+    serializer_class = UserUpdateSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
+        print(self.request.user,"kkksadq")
         return self.request.user
+    
+    def put(self, request, *args, **kwargs):
+        print("put enabled")
+        user = self.request.user
+        print(user, "killlo")
+        print(request.data)
+
+        # Extract nested data for houseowner_profile
+        if user.usertype == "houseowner":
+            print("houseowner")
+            houseowner_profile_data = {
+                'place': request.data.get('place', None),
+            }
+            combined_data = {
+                **request.data,
+                'houseowner_profile': houseowner_profile_data
+            }
+        else:
+            # Extract nested data for professional_profile
+            professional_profile_data = {
+                'place': request.data.get('place', None),
+                'profession': request.data.get('profession', None),
+                'experience': request.data.get('experience', None),
+                'bio': request.data.get('bio', None),
+            }
+            combined_data = {
+                **request.data,
+                'professional_profile': professional_profile_data,
+            }
+
+        # Create a combined data dictionary
+        serializer = UserUpdateSerializer(user, data=combined_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
 
 class ProfessionsViewSet(viewsets.ModelViewSet):

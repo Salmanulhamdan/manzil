@@ -50,7 +50,7 @@ const UserupdateModal = ({ isOpen, closeModal,profile }) => {
 
       if (response.status) {
         // Handle successful post creation, e.g., show a success message, redirect, etc.
-        console.log('user updated successfully!');
+        console.log(response.data,'user updated successfully!');
         Swal.fire("Updated!", "Your profile Updated.", "success");
       } else {
         // Handle errors, e.g., show an error message to the user
@@ -70,6 +70,7 @@ const UserupdateModal = ({ isOpen, closeModal,profile }) => {
       className="modal-content p-4 bg-white shadow-md max-w-md mx-auto mt-20"
      
     >
+      <form onSubmit = {handleSubmit}>
   {profile? <div className="modal-content p-4 bg-white  max-w-md mx-auto mt-20">
   <h2 className="text-2xl font-bold mb-4">UpdateProfile</h2>
   <div className="form-group">
@@ -89,6 +90,7 @@ const UserupdateModal = ({ isOpen, closeModal,profile }) => {
       id="Email"
       value={email}
       onChange={(e) => setEmail(e.target.value)}
+      required
       className="mt-1 p-2 border rounded-md w-full"
     />
   </div>
@@ -100,6 +102,8 @@ const UserupdateModal = ({ isOpen, closeModal,profile }) => {
       value={phonenumber}
       onChange={(e) => setPhonenumber(e.target.value)}
       className="mt-1 p-2 border rounded-md w-full"
+      pattern="^(?!([0-9])\1+$)[6789]\d{9}$"
+      required
     />
   </div>
   <div className="form-group">
@@ -146,10 +150,11 @@ const UserupdateModal = ({ isOpen, closeModal,profile }) => {
   </div>:""}
   <br />
   <div className="flex justify-between">
-    <button onClick={handleSubmit} className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>
+    <button  type="submit"  className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>
     <button onClick={closeModal} className="p-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">Cancel</button>
   </div>
 </div>:""}
+</form>
 
 
     </Modal>

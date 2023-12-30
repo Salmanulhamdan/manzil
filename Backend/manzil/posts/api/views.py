@@ -216,7 +216,7 @@ class SavedPostsView(APIView):
     def get(self, request):
         user_saved_posts = Saves.objects.filter(user=request.user)
         post_serializer = PostSerializer([saved_post.post for saved_post in user_saved_posts], many=True,context={'request':request})
-        print(post_serializer.data,"saved postss")
+    
         return Response(post_serializer.data, status=status.HTTP_200_OK)
 
    
