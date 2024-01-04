@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import axios from "axios";
-import { baseUrl,register } from "../../utilits/constants";
+import { baseUrl,register,professions  } from "../../utilits/constants";
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 
@@ -54,6 +54,18 @@ const ProfessionalSignup = () => {
       showErrorAlert( e.response.data.error)
     })
   }
+  const [allprofessions, setAllProfessions] = useState([]);
+  useEffect(() => {
+    // Fetch professions from the database when the component mounts
+    const fetchData = async () => {
+      const professionsData = await axios.get(baseUrl+professions);
+      setAllProfessions(professionsData.data);
+     
+      
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="flex h-screen">
@@ -121,7 +133,7 @@ const ProfessionalSignup = () => {
         required
       />
     </div>
-    <div className="mb-4">
+    {/* <div className="mb-4">
       <input
         type="text"
         name="profession"
@@ -130,7 +142,23 @@ const ProfessionalSignup = () => {
         onChange={(e) => setProfession(e.target.value)}
         className="border rounded w-full py-2 px-3"
       />
-    </div>
+    </div> */}
+    <div className="mb-4">
+    <select
+        id="profession"
+        className="mt-1 p-2 border rounded-md w-full"
+        value={profession}
+        onChange={(e) => setProfession(e.target.value)}
+        required
+      >
+        <option value="" disabled>Select a profession</option>
+        {allprofessions ?  allprofessions.map((profession) => (
+          <option key={profession.id} value={profession.profession_name}>
+            {profession.profession_name}
+          </option>
+        )):""}
+      </select>
+      </div>
 
     <div className="mb-4">
         <input

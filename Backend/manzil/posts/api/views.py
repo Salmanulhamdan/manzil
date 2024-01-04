@@ -72,6 +72,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         recommended_posts_serializer = self.get_serializer(recommended_posts, many=True)
         # Combine the two lists (recommended posts followed by other posts)
         combined_posts = recommended_posts_serializer.data + remaining_posts_serializer.data
+        print(combined_posts)
 
         return Response(combined_posts)
     
@@ -240,13 +241,34 @@ class RequirmentViewset(viewsets.ModelViewSet):
         user=request.user
         newdata=request.data.copy()
         print(newdata,"newdata")
-        newdata['creater'] = user.id
+        newdata['user'] = user.id
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
-        serializer.save(creater=user)
+        serializer.save(user=user)
         print(serializer,"daata")
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+
+    @action(detail=False, methods=['GET'])
+    def get_requirments(self,request):
+        try:
+            print("kkk")
+            user = request.user
+            print(user,"user")
+            if hasattr(user, 'professional_profile'):
+                
+                profession = user.professional_profile.profession
+                print(profession,"profession")
+                requirments = Requirment.objects.filter(profession=profession).exclude(user=user)
+                print(requirments,"requirments")
+                serializer = self.get_serializer(requirments, many=True)
+                print(serializer.data,"serializer")
+
+                return Response(serializer.data,status=200)
+            return Response({"detail": "User is not a professional."}, status=403)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=500)
 
 
 

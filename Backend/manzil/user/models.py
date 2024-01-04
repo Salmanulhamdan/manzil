@@ -78,6 +78,11 @@ class HouseownerProfile(models.Model):
     
 class Professions(models.Model):
     profession_name=models.CharField(max_length=200,)
+
+    def __str__(self):
+        return self.profession_name
+
+    
 class ProfessionalsProfile(models.Model):
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,related_name="professional_profile")
     place=models.CharField(max_length=200,null=True)

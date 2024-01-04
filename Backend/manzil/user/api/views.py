@@ -63,7 +63,7 @@ class Signup(APIView):
                 else:
                     profession=request.data.get('profession',None)
                
-                    professional_instance,create=Professions.objects.get_or_create(profession_name=profession)
+                    professional_instance = Professions.objects.get(profession_name=profession)
                     experience=request.data.get('experience',None)
                     user.professional_profile.place=place
                     user.professional_profile.profession=professional_instance
