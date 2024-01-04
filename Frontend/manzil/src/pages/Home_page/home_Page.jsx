@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { baseUrl,user,refresh,post} from '../../utilits/constants';
 import PostListing from '../post_list/allposts';
+import RequirmentListing from '../Requirmentlisting/requirmentlitsing';
 
 // import { Link } from "react-router-dom";
 import Navbar from '../../Components/navbar/navbar';
@@ -11,6 +12,23 @@ import SideBar from '../../Components/sidebar/sidebar';
 
 function Home() {
   const [userName, setUserName] = useState(null);
+  const [selectedComponent, setSelectedComponent] = useState('post');
+
+  const toggleComponent = (component) => {
+    setSelectedComponent(component);
+  };
+  const renderSelectedComponent = () => {
+    switch (selectedComponent) {
+      case 'post':
+        return <PostListing />;
+      case 'requirements':
+        return <RequirmentListing />;
+      // case 'questions':
+      //   return <QuestionsComponent />;
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,10 +93,10 @@ function Home() {
 
   return (
     <>
-  <Navbar/>
+  <Navbar  usertype={userName ? userName.usertype : null } onToggleComponent={toggleComponent}/>
   {/* <SideBar/> */}
   <SideBar username={userName ? userName.username : null} />
-  <PostListing />
+  {renderSelectedComponent()}
       
     </>
   );
