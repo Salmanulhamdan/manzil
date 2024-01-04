@@ -69,4 +69,18 @@ class intrests(models.Model):
 
 
 
+class Qustions(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    qustion=models.TextField()
+
+
+class Answers(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='answers')
+    qustion=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='answers_to_question')
+    answer=models.TextField()
+class Ratinganswer(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answers, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+
 

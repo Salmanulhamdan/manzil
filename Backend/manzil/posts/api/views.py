@@ -4,8 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from user.models import CustomUser
-from posts.models import Hashtags, Posts,Saves, Likes, Shares,Requirment
-from .serializers import HashtagSerializer, PostSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
+from posts.models import Hashtags, Posts, Qustions,Saves, Likes, Shares,Requirment
+from .serializers import HashtagSerializer, PostSerializer, QuestionSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 from rest_framework.views import APIView
 
@@ -271,6 +271,27 @@ class RequirmentViewset(viewsets.ModelViewSet):
             return Response({"detail": str(e)}, status=500)
 
 
+
+
+
+
+class QustionViewset(viewsets.ModelViewSet):
+    queryset=Qustions.objects.all()
+    serializer_class=QuestionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        print("gglll")
+        user=request.user
+        newdata=request.data.copy()
+        print(newdata,"newdata")
+        newdata['user'] = user.id
+        serializer = self.get_serializer(data=newdata)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=user)
+        print(serializer,"daata")
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 

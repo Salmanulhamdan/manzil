@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from user.models import Follow
 from user.api.serializers import Custom_user_serializer, GetUserSerializer, ProfessionsSerializer
-from posts.models import Posts, Hashtags, Requirment,Saves, Likes, Shares
+from posts.models import Posts, Hashtags, Qustions, Requirment,Saves, Likes, Shares
 
 class HashtagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,3 +103,10 @@ class RequirmentSerializer(serializers.ModelSerializer):
             except Follow.DoesNotExist:
                 return False
         return False 
+    
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Qustions
+        fields = '__all__'
