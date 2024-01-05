@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal'; 
 import axios from "axios";
-import { baseUrl,createpost } from '../../utilits/constants';
+import { baseUrl,createquestion } from '../../utilits/constants';
 import Swal from "sweetalert2";
 
 const QustionModal = ({ isOpen, onClose }) => {
-  const [media, setMedia] = useState('');
-  const [caption, setCaption] = useState('');
-  const [hashtag, setHashtag] = useState('');
+  
+  
+  const [qustion, setQustion] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('jwtToken');
       const formData = new FormData();
-      formData.append('media', media);
-      formData.append('caption', caption);
-      formData.append('hashtag', hashtag);
+      formData.append('qustion', qustion);
+   
       console.log(formData)
 
-      const response = await axios.post(baseUrl+createpost, formData, {
+      const response = await axios.post(baseUrl+createquestion, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -29,14 +28,14 @@ const QustionModal = ({ isOpen, onClose }) => {
 
       if (response.status) {
         // Handle successful post creation, e.g., show a success message, redirect, etc.
-        console.log('Post created successfully!');
-        Swal.fire("Created!", "Your post has been Created.", "success");
+        console.log('qustion created successfully!');
+        Swal.fire("Created!", "Your qustion has been Created.", "success");
       } else {
         // Handle errors, e.g., show an error message to the user
-        console.error('Error creating post:', response.statusText);
+        console.error('Error creating qustion:', response.statusText);
       }
     } catch (error) {
-      console.error('Error creating post:', error.message);
+      console.error('Error creating qustion:', error.message);
     }
     onClose();
   };
@@ -51,36 +50,16 @@ const QustionModal = ({ isOpen, onClose }) => {
      
     >
    <div className="modal-content p-4 bg-white  max-w-md mx-auto mt-20">
-  <h2 className="text-2xl font-bold mb-4">Share</h2>
+  <h2 className=" font-bold mb-4">Ask Your Qustion</h2>
   <div className="form-group">
-    <label htmlFor="media" className="block text-sm font-medium text-gray-700">Media</label>
-    <input
-      type="file"
-      id="media"
-      className="mt-1 p-2 border rounded-md w-full"
-      onChange={(e) => setMedia(e.target.files[0])}
-    />
+<textarea
+  id="caption"
+  value={qustion}
+  onChange={(e) => setQustion(e.target.value)}
+  className="mt-1 p-2 border rounded-md w-full"
+/>
   </div>
-  <div className="form-group">
-    <label htmlFor="caption" className="block text-sm font-medium text-gray-700">Caption</label>
-    <input
-      type="text"
-      id="caption"
-      value={caption}
-      onChange={(e) => setCaption(e.target.value)}
-      className="mt-1 p-2 border rounded-md w-full"
-    />
-  </div>
-  <div className="form-group">
-    <label htmlFor="hashtag" className="block text-sm font-medium text-gray-700">Hashtag</label>
-    <input
-      type="text"
-      id="hashtag"
-      value={hashtag}
-      onChange={(e) => setHashtag(e.target.value)}
-      className="mt-1 p-2 border rounded-md w-full"
-    />
-  </div>
+
   <br />
   <div className="flex justify-between">
     <button onClick={handleSubmit} className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Submit</button>

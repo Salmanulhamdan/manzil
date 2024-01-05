@@ -9,7 +9,23 @@ import PlanModal from '../../Components/modals/plansmodal';
 
 const UserProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
+  const [selectedComponent, setSelectedComponent] = useState();
+  const toggleComponent = (component) => {
+    setSelectedComponent(component);
+  };
+  const renderSelectedComponent = () => {
+    switch (selectedComponent) {
+      case 'post':
+        return <PostListing />;
+      case 'requirements':
+        return <RequirmentListing />;
+      // case 'questions':
+      //   return <QuestionsComponent />;
+      default:
+        return null;
+    }
+  };
+
 
   const openModal = () => {
     console.log("working")
@@ -63,7 +79,7 @@ const UserProfile = () => {
     // console.log(userProfile,"gg")
    return (
       <>
-      <Navbar/>
+      <Navbar  onToggleComponent={toggleComponent} naveitems={'profile'}/>
       <div className="bg-gray-100 min-h-screen">
     <div className="container mx-auto p-8">
     <div className="bg-white p-8 rounded-lg shadow-lg">

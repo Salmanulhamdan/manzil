@@ -93,7 +93,7 @@ function Home() {
 
   return (
     <>
-  <Navbar  usertype={userName ? userName.usertype : null } onToggleComponent={toggleComponent}/>
+  <Navbar  usertype={userName ? userName.usertype : null } onToggleComponent={toggleComponent} naveitems={'homepage'}/>
   {/* <SideBar/> */}
   <SideBar username={userName ? userName.username : null} />
   {renderSelectedComponent()}

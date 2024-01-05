@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import './navbar.css';
 import img from "../../assets/logo.svg";
-import { useNavigate } from 'react-router-dom';
-function Navbar({usertype,onToggleComponent }){
+import { useNavigate ,NavLink } from 'react-router-dom';
+function Navbar({usertype,onToggleComponent,naveitems }){
 
 const is_professional = usertype ==="professional"
 
@@ -22,22 +22,57 @@ const navigate = useNavigate();
   <div className="logo">
     <img src={img} alt="Logo" />
   </div>
-  <div className="nav-links">{localStorage.getItem("jwtToken") ?
-    <a className='home' onClick={() => onToggleComponent('post')}>
-    Home
-  </a>: <a className='home'  href="/">Home</a>}
   
+  <div className="nav-links">
+  {naveitems !== "landingpage" 
+    ? naveitems === "homepage"
+      ? <NavLink className='home' to ="homepage" onClick={() => onToggleComponent('post')}>
+          Home
+        </NavLink>
+      : naveitems === "profile"
+        ? <NavLink className='home' to ="homepage" onClick={() => onToggleComponent('post')}>
+        Home
+      </NavLink>
+        : null // If you want to render nothing for the 'else' condition
+    : null // If you want to render nothing for the 'if' condition
+  }
+
     <div className='group'>
-      <a className='professional' href="/services">Professionals</a>
+    {naveitems !== "landingpage" 
+    ? naveitems === "homepage"
+      ? <a className='professional' href="/services">Professionals</a>
+      : naveitems === "profile"
+        ? null
+        : null // If you want to render nothing for the 'else' condition
+    : null // If you want to render nothing for the 'if' condition
+  }
+      
       
     </div>
-    {is_professional ? 
+    
     <div className='group'>
-      <a className='professional' onClick={() => onToggleComponent('requirements')} >Requirements</a>
+    {naveitems !== "landingpage" 
+  ? naveitems === "homepage"
+    ? is_professional 
+      ? <a className='Requirements' onClick={() => onToggleComponent('requirements')}>Requirements</a>
+      : null
+    : naveitems === "profile"
+      ? null
+      : null // If you want to render nothing for the 'else' condition
+  : null // If you want to render nothing for the 'if' condition
+}
+    
+    </div>
+    <div className='group'>
+    {naveitems !== "landingpage" 
+    ? naveitems === "homepage"
+      ? <a className='Qustions' onClick={() => onToggleComponent('questions')}>Qustions</a>
+      : naveitems === "profile"
+        ? null
+        : null // If you want to render nothing for the 'else' condition
+    : null // If you want to render nothing for the 'if' condition
+  }
       
-    </div>:""}
-    <div className='group'>
-      <a className='professional' onClick={() => onToggleComponent('questions')}>Qustions</a>
       
     </div>
     {/* <a className='about' href="/contact">About</a> */}

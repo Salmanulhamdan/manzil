@@ -23,8 +23,22 @@ const MyProfile = () => {
   const[savedposts,setSavedposts]=useState([]);
   const[likedposts,setLikedposts]=useState([]);
   const [trigger, setTrigger] = useState(false);
-
- 
+  const [selectedComponent, setSelectedComponent] = useState();
+  const toggleComponent = (component) => {
+    setSelectedComponent(component);
+  };
+  const renderSelectedComponent = () => {
+    switch (selectedComponent) {
+      case 'post':
+        return <PostListing />;
+      case 'requirements':
+        return <RequirmentListing />;
+      // case 'questions':
+      //   return <QuestionsComponent />;
+      default:
+        return null;
+    }
+  };
 
   const fileInput = useRef(null);
   const handleImageClick = () => {
@@ -201,7 +215,7 @@ const MyProfile = () => {
 
  return (
     <>
-    <Navbar/>
+    <Navbar  usertype={user ? user.usertype : null } onToggleComponent={toggleComponent} naveitems={'profile'}/>
     <div className="bg-gray-100 min-h-screen">
     <div className="container mx-auto p-8">
   

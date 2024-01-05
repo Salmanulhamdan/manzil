@@ -5,7 +5,7 @@ import Navbar from "../../Components/navbar/navbar"
 function LandingPage() {
   return (
     <div className="landing-page">
-    <Navbar/>
+    <Navbar naveitems={'landingpage'}/>
     
     
 
