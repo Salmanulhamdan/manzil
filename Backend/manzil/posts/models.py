@@ -76,7 +76,7 @@ class Qustions(models.Model):
 
 class Answers(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='answers')
-    qustion=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='answers_to_question')
+    qustion=models.ForeignKey(Qustions,on_delete=models.CASCADE,related_name='answers_to_question')
     answer=models.TextField()
 class Ratinganswer(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

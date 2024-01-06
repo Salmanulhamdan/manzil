@@ -20,19 +20,23 @@ const navigate = useNavigate();
     return (
 <nav className="navbar">
   <div className="logo">
-    <img src={img} alt="Logo" />
+   
+    <a className='home' href ="homepage" >
+
+          <img src={img} alt="Logo" />
+        </a>
   </div>
   
   <div className="nav-links">
   {naveitems !== "landingpage" 
     ? naveitems === "homepage"
-      ? <NavLink className='home' to ="homepage" onClick={() => onToggleComponent('post')}>
+      ? <a className='home' href ="homepage" onClick={() => onToggleComponent('post')}>
           Home
-        </NavLink>
+        </a>
       : naveitems === "profile"
-        ? <NavLink className='home' to ="homepage" onClick={() => onToggleComponent('post')}>
+        ?  <a className='home' href ="homepage" onClick={() => onToggleComponent('post')}>
         Home
-      </NavLink>
+      </a>
         : null // If you want to render nothing for the 'else' condition
     : null // If you want to render nothing for the 'if' condition
   }

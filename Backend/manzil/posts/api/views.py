@@ -3,9 +3,10 @@ from rest_framework import viewsets,generics,permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Count
 from user.models import CustomUser
-from posts.models import Hashtags, Posts, Qustions,Saves, Likes, Shares,Requirment
-from .serializers import HashtagSerializer, PostSerializer, QuestionSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
+from posts.models import Hashtags, Posts, Qustions,Saves, Likes, Shares,Requirment, intrests
+from .serializers import HashtagSerializer, IntrestsSerializer, PostSerializer, QuestionSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 from rest_framework.views import APIView
 
@@ -269,7 +270,28 @@ class RequirmentViewset(viewsets.ModelViewSet):
             return Response({"detail": "User is not a professional."}, status=403)
         except Exception as e:
             return Response({"detail": str(e)}, status=500)
+        
 
+
+class IntrestsViewset(viewsets.ModelViewSet):
+    queryset=intrests.objects.all()
+    serializer_class=IntrestsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        print("gglll")
+        user=request.user
+        print(user,"user")
+        newdata=request.data.copy()
+        print(newdata,"newdata")
+        newdata['user'] = user.id
+        serializer = self.get_serializer(data=newdata)
+        serializer.is_valid(raise_exception=True)
+        print('serlizerisvali')
+        serializer.save(user=user)
+        print(serializer,"daata")
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 
@@ -292,6 +314,17 @@ class QustionViewset(viewsets.ModelViewSet):
         print(serializer,"daata")
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def get_queryset(self):
+        # Get the logged-in user
+        logged_in_user = self.request.user
+
+        # Exclude questions asked by the logged-in user and questions they have answered
+        return Qustions.objects.exclude(user=logged_in_user) \
+                               .exclude(answers_to_question__user=logged_in_user) \
+                               .annotate(num_answers=Count('answers_to_question')) \
+                               .order_by('-num_answers')
+        
 
 
 

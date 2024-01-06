@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from user.models import Follow
 from user.api.serializers import Custom_user_serializer, GetUserSerializer, ProfessionsSerializer
-from posts.models import Posts, Hashtags, Qustions, Requirment,Saves, Likes, Shares
+from posts.models import Answers, Posts, Hashtags, Qustions, Requirment,Saves, Likes, Shares, intrests
 
 class HashtagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -104,9 +104,42 @@ class RequirmentSerializer(serializers.ModelSerializer):
                 return False
         return False 
     
+class IntrestsSerializer(serializers.ModelSerializer):
+    user = Custom_user_serializer(read_only=True)
+  
+
+    class Meta:
+        model = intrests
+        fields = ('id','user','requirment','conformation','time')
+
+
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+    is_following_author = serializers.SerializerMethodField()
+    user =  Custom_user_serializer(read_only=True)
     class Meta:
         model = Qustions
-        fields = '__all__'
+        fields = ['id','user','qustion','is_following_author']
+
+    def get_is_following_author(self, obj):
+        
+        print ("enterrsd int folooe")
+        # print(dir(self.context['request']),"ceking")
+        user = self.context['request'].user
+        print(user,"userfrom serlizer")
+        author = obj.user
+        if user.is_authenticated: 
+            try:
+                follow_instance = Follow.objects.get(follower=user, following=author)
+                return True
+            except Follow.DoesNotExist:
+                return False
+        return False
+    
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answers
+        fields = ['user', 'qustion', 'answer']

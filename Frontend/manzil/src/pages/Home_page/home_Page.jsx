@@ -7,6 +7,7 @@ import RequirmentListing from '../Requirmentlisting/requirmentlitsing';
 // import { Link } from "react-router-dom";
 import Navbar from '../../Components/navbar/navbar';
 import SideBar from '../../Components/sidebar/sidebar';
+import QuestionsListing from '../qustionlisting/oustionslisting';
 
 
 
@@ -23,8 +24,8 @@ function Home() {
         return <PostListing />;
       case 'requirements':
         return <RequirmentListing />;
-      // case 'questions':
-      //   return <QuestionsComponent />;
+      case 'questions':
+        return <QuestionsListing />;
       default:
         return null;
     }

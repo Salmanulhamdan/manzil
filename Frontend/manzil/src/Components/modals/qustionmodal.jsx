@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal'; 
 import axios from "axios";
-import { baseUrl,createquestion } from '../../utilits/constants';
+import { baseUrl,questions } from '../../utilits/constants';
 import Swal from "sweetalert2";
 
 const QustionModal = ({ isOpen, onClose }) => {
@@ -18,7 +18,7 @@ const QustionModal = ({ isOpen, onClose }) => {
    
       console.log(formData)
 
-      const response = await axios.post(baseUrl+createquestion, formData, {
+      const response = await axios.post(baseUrl+questions, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

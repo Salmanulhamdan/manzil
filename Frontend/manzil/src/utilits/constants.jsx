@@ -19,7 +19,8 @@ export const professions="api/professions/";
 export const likedPost="api/liked-posts/";
 export const savedPosts="api/savedposts/";
 export const requirements="api/requirements/get_requirments"
-export const createquestion="api/questions/"
+export const questions="api/questions/"
+
 
 // admin side urls
 export const registeredUsers = "api/registeredUsers";

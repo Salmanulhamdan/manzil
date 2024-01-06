@@ -3,7 +3,7 @@ import React, { useState,useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
-import { baseUrl,requirements,save} from '../../utilits/constants';
+import { baseUrl,questions} from '../../utilits/constants';
 import axios from 'axios';
 import FollowUnfollowApi from '../../api/followunfollow';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,10 +11,11 @@ import RequirmentModal from '../../Components/modals/requirmentmodal';
 import QustionModal from '../../Components/modals/qustionmodal';
 
 
-function RequirmentListing(){
+function QuestionsListing(){
   const [trigger, setTrigger] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const[requirmentlist,setRequirmentlist]=useState([]);
+  const[qustionlist, setQustionlist] =useState([])
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -44,33 +45,6 @@ const closequstionModal =() =>{
 
 
 
-  const [saves, setSaves] = useState({})
-  const handlesave = async (postId) => {
-  const token = localStorage.getItem('jwtToken');
-  console.log('Token:', token);
-  
-  const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    try {
-      const formData = new FormData();
-      formData.append('post', postId);
-      console.log("like clicked")
-      const response = await axios.post(`${baseUrl}${save}`,formData, config);
-      if (response.status === 201) {
-        // If the like was successful, update the like state
-        setSaves((prevSaves) => ({
-          ...prevSaves,
-          [postId]: true,
-        }));
-        setTrigger(false)
-      }
-    } catch (error) {
-      console.error('Error liking post:', error);
-    }
-  };
 
 
 
@@ -94,9 +68,9 @@ const closequstionModal =() =>{
       };
 
       console.log('Making request...new');
-      const response = await axios.get(baseUrl + requirements, config);
-      console.log(response.data,"requ");
-      setRequirmentlist(response.data)
+      const response = await axios.get(baseUrl + questions, config);
+      console.log(response.data,"kk")
+      setQustionlist(response.data)
     } catch (error) {
       console.error('Error:', error);
 
@@ -139,26 +113,26 @@ const closequstionModal =() =>{
       </div>
       {/* List of posts */}
       <div>
-  {requirmentlist.map((requirment, index) => (
-    <div key={requirment.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md'>
+  {qustionlist.map((qustion, index) => (
+    <div key={qustion.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md'>
       <div className='flex items-center justify-between mb-2'>
         <div className='flex items-center'>
-        <img src={requirment.user.profile_photo} alt="Profle" className='w-10 h-10 rounded-full mr-2' />
-          <Link className="userrofile_text font-bold" to={`/userprofile/${requirment.user.id}`}>{requirment.user.username}</Link>
+        <img src={qustion.user.profile_photo} alt="Profle" className='w-10 h-10 rounded-full mr-2' />
+          <Link className="userrofile_text font-bold" to={`/userprofile/${qustion.user.id}`}>{qustion.user.username}</Link>
         </div>
-        <button onClick={() => {handleFollowUnfollow(requirment.user.id);setTrigger(true); }}
+        <button onClick={() => {handleFollowUnfollow(qustion.user.id);setTrigger(true); }}
           className={`className='follow-btn bg-gray-200 text-black-700 px-4 py-1 rounded-md hover:bg-gray-400 focus:outline-none focus:shadow-outline-gray active:bg-gray-500' ${
-            requirment.is_following_author ? "bg-red-400 hover:bg-red-500" : ""}`} >
-          {requirment.is_following_author ? "Unfollow" : "Follow"}
+            qustion.is_following_author ? "bg-red-400 hover:bg-red-500" : ""}`} >
+          {qustion.is_following_author ? "Unfollow" : "Follow"}
        </button>
-       {requirment.user.email}
+       {qustion.user.email}
       </div>
-      {requirment.description && (
+      {qustion.description && (
   <div className='mb-4 rounded-md'>
-  <p>{requirment.description} </p>
+  <p>{qustion.description} </p>
   </div>
 )}
-      <p className='mb-2'>{requirment ? requirment.profession:"kkk"}</p>
+      <p className='mb-2'>{qustion ? qustion.profession:"kkk"}</p>
      
 
       <div className='flex items-center justify-between mt-4'>
@@ -179,4 +153,4 @@ const closequstionModal =() =>{
   );
 }
 
-export default RequirmentListing;
+export default QuestionsListing;
