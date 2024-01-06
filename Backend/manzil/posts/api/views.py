@@ -55,31 +55,36 @@ class PostsViewSet(viewsets.ModelViewSet):
     def recommended_posts(self, request):
         # Get the user who liked the posts
         liked_user = request.user  
-        print("user",liked_user)
+
         # Get the hashtags of posts liked by the user
         liked_post_hashtags = Hashtags.objects.filter(posts__likes__user=liked_user)
-        print("likedpost",liked_post_hashtags)
+  
 
         # Find other posts with similar hashtags
         recommended_posts = (Posts.objects.filter(hashtag__in=liked_post_hashtags).exclude(Q(likes__user=liked_user) | Q(user=liked_user)).distinct())
-        print("reccomende",recommended_posts)
+        print("recomende",recommended_posts)
+        
+
 
         # Serialize all posts excluding liked and own posts
         remaining_posts = Posts.objects.exclude(Q(user=liked_user)| Q(id__in=recommended_posts.values('id')))
+        print("remainif",remaining_posts)
         remaining_posts_serializer = self.get_serializer(remaining_posts, many=True)
+
 
 
         # Serialize recommended posts
         recommended_posts_serializer = self.get_serializer(recommended_posts, many=True)
         # Combine the two lists (recommended posts followed by other posts)
         combined_posts = recommended_posts_serializer.data + remaining_posts_serializer.data
-        print(combined_posts)
+
+        
+        
 
         return Response(combined_posts)
     
     @action(detail=False, methods=['GET'])
     def user_posts(self,request):
-        print("userpost")
         user=request.user
         posts=Posts.objects.filter(user=user)
         posts_count = posts.count()
@@ -102,20 +107,14 @@ class PostsViewSet(viewsets.ModelViewSet):
         return Response(serialized_posts.data)
     
     def delete(self, request, pk=None):
-        print("enterdd")
         post = self.get_object()
-        print("Before deletion:", post)
-
         # Check if the user making the request is an admin
         if not request.user.is_staff:
-            print("User is not an admin.")
             # If not an admin, check if the user is the owner of the post
             if request.user != post.user:
                 return Response({'error': 'You do not have permission to delete this post.'}, status=status.HTTP_403_FORBIDDEN)
-        print("User is an admin or the owner.")
 
         post.delete()
-        print("After deletion:", post)
 
         return Response({'success': 'Post deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
@@ -164,7 +163,6 @@ class SavesPostView(viewsets.ModelViewSet):
         if existing_savedpost:
             # User has already liked the post, unlike it
             existing_savedpost.delete()
-            print("post unsaved")
             return Response({"detail": "Post unsaved successfully."}, status=status.HTTP_200_OK)
 
         Save_post = Saves(post=post, user=user)
@@ -238,15 +236,12 @@ class RequirmentViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        print("gglll")
         user=request.user
         newdata=request.data.copy()
-        print(newdata,"newdata")
         newdata['user'] = user.id
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
-        print(serializer,"daata")
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
@@ -254,17 +249,12 @@ class RequirmentViewset(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def get_requirments(self,request):
         try:
-            print("kkk")
             user = request.user
-            print(user,"user")
             if hasattr(user, 'professional_profile'):
                 
                 profession = user.professional_profile.profession
-                print(profession,"profession")
                 requirments = Requirment.objects.filter(profession=profession).exclude(user=user)
-                print(requirments,"requirments")
                 serializer = self.get_serializer(requirments, many=True)
-                print(serializer.data,"serializer")
 
                 return Response(serializer.data,status=200)
             return Response({"detail": "User is not a professional."}, status=403)
@@ -279,18 +269,13 @@ class IntrestsViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        print("gglll")
         user=request.user
-        print(user,"user")
         newdata=request.data.copy()
-        print(newdata,"newdata")
         newdata['user'] = user.id
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
-        print('serlizerisvali')
         serializer.save(user=user)
-        print(serializer,"daata")
-        
+ 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 

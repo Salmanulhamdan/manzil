@@ -44,26 +44,28 @@ const closequstionModal =() =>{
 
   const [likes, setLikes] = useState({})
   const handleLike = async (postId) => {
-  const token = localStorage.getItem('jwtToken');
-  console.log('Token:', token);
-  
-  const config = {
+    const token = localStorage.getItem('jwtToken');
+    const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
+  
     try {
       const formData = new FormData();
       formData.append('post', postId);
       console.log("like clicked")
       const response = await axios.post(`${baseUrl}${like}`,formData, config);
-      if (response.status === 201) {
-        // If the like was successful, update the like state
-        setLikes((prevLikes) => ({
-          ...prevLikes,
-          [postId]: true,
-        }));
-        setTrigger(false)
+      if (response.status === 201 || 200) {
+        // If the like was successful, update the like state for the specific post
+        setPostslist((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, is_liked: !post.is_liked, like_count: post.is_liked ? post.like_count - 1 : post.like_count + 1 }
+            : post
+        )
+      );
+       
       }
     } catch (error) {
       console.error('Error liking post:', error);
@@ -122,6 +124,7 @@ const closequstionModal =() =>{
 
       console.log('Making request...new');
       const response = await axios.get(baseUrl + post, config);
+      console.log(response.data,"response");
       setPostslist(response.data)
     } catch (error) {
       console.error('Error:', error);
@@ -201,7 +204,7 @@ const closequstionModal =() =>{
 
       <div className='flex items-center justify-between mt-4'>
         <div className='post-actions'>
-          <div className='like-btn' onClick={() => {handleLike(post.id);setTrigger(true); }}>
+          <div className='like-btn' onClick={() => {handleLike(post.id); }}>
             <FontAwesomeIcon icon={faHeart} color={post.is_liked ? 'red' : 'black'} />
             <span className='ml-1'>{post.like_count || 0}</span>
           </div>

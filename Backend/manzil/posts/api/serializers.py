@@ -90,11 +90,8 @@ class RequirmentSerializer(serializers.ModelSerializer):
 
 
     def get_is_following_author(self, obj):
-        
-        print ("enterrsd int folooe")
-        # print(dir(self.context['request']),"ceking")
         user = self.context['request'].user
-        print(user,"userfrom serlizer")
+
         author = obj.user
         if user.is_authenticated: 
             try:
@@ -106,8 +103,6 @@ class RequirmentSerializer(serializers.ModelSerializer):
     
 class IntrestsSerializer(serializers.ModelSerializer):
     user = Custom_user_serializer(read_only=True)
-  
-
     class Meta:
         model = intrests
         fields = ('id','user','requirment','conformation','time')
@@ -123,11 +118,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ['id','user','qustion','is_following_author']
 
     def get_is_following_author(self, obj):
-        
-        print ("enterrsd int folooe")
-        # print(dir(self.context['request']),"ceking")
         user = self.context['request'].user
-        print(user,"userfrom serlizer")
+
         author = obj.user
         if user.is_authenticated: 
             try:
