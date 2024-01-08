@@ -88,13 +88,15 @@ const closequstionModal =() =>{
       formData.append('post', postId);
       console.log("like clicked")
       const response = await axios.post(`${baseUrl}${save}`,formData, config);
-      if (response.status === 201) {
+      if (response.status === 201 || 200) {
         // If the like was successful, update the like state
-        setSaves((prevSaves) => ({
-          ...prevSaves,
-          [postId]: true,
-        }));
-        setTrigger(false)
+        setPostslist((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, is_saved: !post.is_saved}
+            : post
+        )
+      );
       }
     } catch (error) {
       console.error('Error liking post:', error);
@@ -208,7 +210,7 @@ const closequstionModal =() =>{
             <FontAwesomeIcon icon={faHeart} color={post.is_liked ? 'red' : 'black'} />
             <span className='ml-1'>{post.like_count || 0}</span>
           </div>
-          <div className='save-btn ml-4' onClick={() =>{handlesave(post.id);setTrigger(true);}}>
+          <div className='save-btn ml-4' onClick={() =>{handlesave(post.id);}}>
             <FontAwesomeIcon icon={faBookmark} color= {post.is_saved ? 'blue':'black'}/>
           </div>
           <div className='share-btn ml-4'>

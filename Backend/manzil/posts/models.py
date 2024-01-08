@@ -63,7 +63,7 @@ class RequirementSaves(models.Model):
 
 class intrests(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    requirment=models.ForeignKey(Requirment,on_delete=models.CASCADE)
+    requirment=models.ForeignKey(Requirment,on_delete=models.CASCADE,related_name="intrested")
     conformation=models.BooleanField(default=False)
     time=models.DateTimeField(default=timezone.now,editable=False)
 
@@ -78,9 +78,15 @@ class Answers(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='answers')
     qustion=models.ForeignKey(Qustions,on_delete=models.CASCADE,related_name='answers_to_question')
     answer=models.TextField()
+
+class AnswerReply(models.Model):
+    answer = models.ForeignKey(Answers, on_delete=models.CASCADE, related_name='replies')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    reply_text = models.TextField()
+    parent_reply = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies_to_reply')
 class Ratinganswer(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answers, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answers, on_delete=models.CASCADE,related_name='raitinganswer')
     rating = models.PositiveIntegerField()
 
 

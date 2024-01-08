@@ -5,11 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count
 from user.models import CustomUser
-from posts.models import Hashtags, Posts, Qustions,Saves, Likes, Shares,Requirment, intrests
-from .serializers import HashtagSerializer, IntrestsSerializer, PostSerializer, QuestionSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
+from posts.models import Answers, Hashtags, Posts, Qustions,Saves, Likes, Shares,Requirment, intrests
+from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, PostSerializer, QuestionSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 from rest_framework.views import APIView
-
+from django.db.models import Subquery
 
 from rest_framework.decorators import action
 
@@ -247,20 +247,21 @@ class RequirmentViewset(viewsets.ModelViewSet):
     
 
     @action(detail=False, methods=['GET'])
-    def get_requirments(self,request):
+    def get_requirments(self, request):
         try:
             user = request.user
             if hasattr(user, 'professional_profile'):
-                
                 profession = user.professional_profile.profession
-                requirments = Requirment.objects.filter(profession=profession).exclude(user=user)
-                serializer = self.get_serializer(requirments, many=True)
 
-                return Response(serializer.data,status=200)
+                # Get the requirements excluding those the user has shown interest in
+                requirements_not_intrested = Requirment.objects.exclude(intrested__user=user).exclude(user=user).exclude(profession=profession)
+
+                serializer = self.get_serializer(requirements_not_intrested, many=True)
+                return Response(serializer.data, status=200)
+
             return Response({"detail": "User is not a professional."}, status=403)
         except Exception as e:
             return Response({"detail": str(e)}, status=500)
-        
 
 
 class IntrestsViewset(viewsets.ModelViewSet):
@@ -270,6 +271,11 @@ class IntrestsViewset(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user=request.user
+        requirment=request.data.get('requirment')
+        existing_interest = intrests.objects.filter(user=user,requirment=requirment).first()
+        if existing_interest:
+            return Response({"detail": "User already has an interest."}, status=status.HTTP_400_BAD_REQUEST)
+
         newdata=request.data.copy()
         newdata['user'] = user.id
         serializer = self.get_serializer(data=newdata)
@@ -309,9 +315,14 @@ class QustionViewset(viewsets.ModelViewSet):
                                .exclude(answers_to_question__user=logged_in_user) \
                                .annotate(num_answers=Count('answers_to_question')) \
                                .order_by('-num_answers')
-        
 
 
 
+class AnswersViewSet(viewsets.ModelViewSet):
+    queryset = Answers.objects.all()
+    serializer_class = AnswersSerializer
+    permission_classes = [IsAuthenticated]
 
-
+    def perform_create(self, serializer):
+        # Associate the logged-in user with the answer
+        serializer.save(user=self.request.user)

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from user.models import Follow
 from user.api.serializers import Custom_user_serializer, GetUserSerializer, ProfessionsSerializer
-from posts.models import Answers, Posts, Hashtags, Qustions, Requirment,Saves, Likes, Shares, intrests
+from posts.models import AnswerReply, Answers, Posts, Hashtags, Qustions, Requirment,Saves, Likes, Shares, intrests
 
 class HashtagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -83,10 +83,12 @@ class SharesSerializer(serializers.ModelSerializer):
 
 class RequirmentSerializer(serializers.ModelSerializer):
     is_following_author = serializers.SerializerMethodField()
+    is_intrested = serializers.SerializerMethodField()
     user =  Custom_user_serializer(read_only=True)
+
     class Meta:
         model = Requirment
-        fields = ('id','profession','description','time','user','is_following_author')
+        fields = ('id','profession','description','time','user','is_following_author', 'is_intrested')
 
 
     def get_is_following_author(self, obj):
@@ -101,6 +103,20 @@ class RequirmentSerializer(serializers.ModelSerializer):
                 return False
         return False 
     
+    def get_is_intrested(self, obj):
+        user = self.context['request'].user
+        try:
+            interest_instance = intrests.objects.get(user=user, requirment=obj)
+            return True
+        except intrests.DoesNotExist:
+            return False
+        except Exception as e:
+            print(f"Error in get_is_intrested: {e}")
+            return False
+
+        
+
+
 class IntrestsSerializer(serializers.ModelSerializer):
     user = Custom_user_serializer(read_only=True)
     class Meta:
@@ -131,7 +147,21 @@ class QuestionSerializer(serializers.ModelSerializer):
     
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class AnswerReplySerializer(serializers.ModelSerializer):
+    replies = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AnswerReply
+        fields = ['id', 'user', 'reply_text', 'replies']
+
+    def get_replies(self, obj):
+        serializer = AnswerReplySerializer(obj.replies_to_reply.all(), many=True)
+        return serializer.data if serializer.data else None
+
+class AnswersSerializer(serializers.ModelSerializer):
+    replies = AnswerReplySerializer(many=True, read_only=True)
+
     class Meta:
         model = Answers
-        fields = ['user', 'qustion', 'answer']
+        fields = ['id', 'user', 'qustion', 'answer', 'replies']
+        read_only_fields = ['user']

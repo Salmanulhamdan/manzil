@@ -4,10 +4,11 @@ import axios from "axios";
 import { baseUrl,questions } from '../../utilits/constants';
 import Swal from "sweetalert2";
 
-const QustionModal = ({ isOpen, onClose }) => {
+const AnswerModal = ({ qustion,isOpen, onClose }) => {
   
+    console.log(qustion,"dd");
   
-  const [qustion, setQustion] = useState('');
+  const [answer, setAnswer] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,14 +50,15 @@ const QustionModal = ({ isOpen, onClose }) => {
       className="modal-content p-4 bg-white shadow-md max-w-md mx-auto mt-20"
      
     >
-   <div className="modal-content p-4 bg-white  max-w-md mx-auto mt-20">
-  <h2 className=" font-bold mb-4">Ask Your Qustion</h2>
 
+   <div className="modal-content p-4 bg-white  max-w-md mx-auto mt-20">
+    <p> {qustion } ?</p>
+  <h2 className=" font-bold mb-4">Ask Your Qustion</h2>
   <div className="form-group">
 <textarea
   id="caption"
-  value={qustion}
-  onChange={(e) => setQustion(e.target.value)}
+  value=""
+  onChange={(e) => setAnswer(e.target.value)}
   className="mt-1 p-2 border rounded-md w-full"
 />
   </div>
@@ -73,4 +75,4 @@ const QustionModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default QustionModal;
+export default AnswerModal;

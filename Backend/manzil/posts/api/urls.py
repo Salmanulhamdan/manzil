@@ -1,7 +1,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import IntrestsViewset, PostsViewSet,HashtagsViewSet ,LikesViewSet, QustionViewset,SharesListCreateView,EditPostView,SavesPostView,LikedPostsView,RequirmentViewset,SavedPostsView
+from .views import AnswersViewSet, IntrestsViewset, PostsViewSet,HashtagsViewSet ,LikesViewSet, QustionViewset,SharesListCreateView,EditPostView,SavesPostView,LikedPostsView,RequirmentViewset,SavedPostsView
 
 router = DefaultRouter()
 router.register(r'hashtags', HashtagsViewSet,basename='hashtags')
@@ -11,6 +11,7 @@ router.register(r'saves', SavesPostView, basename='saves')
 router.register(r'requirements', RequirmentViewset, basename='requirement')
 router.register(r'intrests', IntrestsViewset,basename='intrests')
 router.register(r'questions', QustionViewset,basename='qustions')
+router.register(r'answers', AnswersViewSet, basename='answers')
 
 
 urlpatterns = [

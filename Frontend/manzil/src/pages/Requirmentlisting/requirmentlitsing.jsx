@@ -3,7 +3,7 @@ import React, { useState,useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
-import { baseUrl,requirements,save} from '../../utilits/constants';
+import { baseUrl,requirements,intrests} from '../../utilits/constants';
 import axios from 'axios';
 import FollowUnfollowApi from '../../api/followunfollow';
 import { Link, useNavigate } from 'react-router-dom';
@@ -74,16 +74,39 @@ const closequstionModal =() =>{
 
   const[intrest,setIntrest] =useState({})
  
-  const handleExpressInterest = async (requirment_id)=>{
-    const token =localStorage.getItem('jwtToken');
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    
+  const handleExpressInterest = async (requirment_id) => {
+    // Display confirmation message
+    const userConfirmed = window.confirm("Are you sure you want to express interest?");
+  
+    // If the user confirms, proceed with the API call
+    if (userConfirmed) {
+      console.log("userconnirmed");
+      const token = localStorage.getItem('jwtToken');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+  
+      try {
+        const formdata= new FormData();
+        formdata.append('requirment',requirment_id);
+        formdata.append('conformation',true);
+       
+        const response = await axios.post(`${baseUrl}${intrests}`,formdata, config);
+        console.log(response.data);
+        if (response.status === 201) {
 
-  }
+        }
+      } catch (error) {
+        // Handle errors
+        console.error("Error:", error);
+      }
+    } else {
+      // Handle if the user cancels the action
+      console.log("Express interest action canceled by the user");
+    }
+  };
 
 
   const handleFollowUnfollow = async (userId) => {
@@ -184,12 +207,20 @@ const closequstionModal =() =>{
         </div>
       
         {/* Button for expressing interest */}
+        {requirment.is_intrested ?
+        <button
+        className='withdraw-interest-btn bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-700'
+        onClick={() => { handleWithdrawInterest(requirment.id); setTrigger(true); }}
+      >
+        Withdraw Interest
+      </button> :
         <button
           className='interest-btn bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-700'
           onClick={() => { handleExpressInterest(requirment.id); setTrigger(true); }}
         >
           Express Interest
         </button>
+}
       </div>
     </div>
   ))}
