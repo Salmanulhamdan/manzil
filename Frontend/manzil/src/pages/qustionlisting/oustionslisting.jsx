@@ -43,14 +43,22 @@ const closequstionModal =() =>{
 }
 
 
-const [AnswerModalOpen ,setAnswerModalOpen]=useState(false);
-const openAnswerModal=()=>{
-  setAnswerModalOpen(true);
-}
-const closeAnswerModal=()=>{
-  setAnswerModalOpen(false);
+const [answerModalStates, setAnswerModalStates] = useState({});
+// Function to open the modal for a specific question
+const openAnswerModal = (questionId) => {
+  setAnswerModalStates((prevStates) => ({
+    ...prevStates,
+    [questionId]: true,
+  }));
+};
 
-}
+// Function to close the modal for a specific question
+const closeAnswerModal = (questionId) => {
+  setAnswerModalStates((prevStates) => ({
+    ...prevStates,
+    [questionId]: false,
+  }));
+};
 
 
 
@@ -138,23 +146,24 @@ const closeAnswerModal=()=>{
       </div>
       <div className='flex items-center justify-between mt-4'>
         <div className='post-actions'>
-          <div className='share-btn ml-4'>
+          {/* <div className='share-btn ml-4'>
             <FontAwesomeIcon icon={faShare} />
-          </div>
+          </div> */}
           <div className='ml-4'>
-            <button onClick={() => openAnswerModal()} className='answer-btn bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-700'>
+            <button onClick={() => openAnswerModal(qustion.id)} className='answer-btn bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-700'>
               Answer
             </button>
-            <AnswerModal  qustion={qustion.qustion} isOpen={AnswerModalOpen} onClose={closeAnswerModal} />
+            <AnswerModal question_id ={qustion.id} question={qustion.qustion} isOpen={answerModalStates[qustion.id]} onClose={() => closeAnswerModal(qustion.id)} />
+
           </div>
         </div>
       </div>
       {/* Show Answer button */}
       <div className='mt-4'>
-  <span onClick={() => openAnswerModal()} className='text-blue-500 cursor-pointer  hover:text-green-600 focus:outline-none focus:shadow-outline-green active:text-green-700'>
+  <span onClick={() => openAnswerModal(qustion.id)} className='text-blue-500 cursor-pointer  hover:text-green-600 focus:outline-none focus:shadow-outline-green active:text-green-700'>
     View all answers
   </span>
-  <AnswerModal  qustion={qustion.qustion} isOpen={AnswerModalOpen} onClose={closeAnswerModal} />
+  <AnswerModal question_id ={qustion.id} question={qustion.qustion} isOpen={answerModalStates[qustion.id]} onClose={() => closeAnswerModal(qustion.id)} />
 </div>
     </div>
   ))}

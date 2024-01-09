@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user',
     'posts',
+    'chat',
+    
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'rest_framework.authtoken',
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
+    
    
 ]
 
@@ -96,7 +99,11 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'manzil.wsgi.application'
+# WSGI_APPLICATION = 'manzil.wsgi.application'
+
+ASGI_APPLICATION = 'manzil.asgi.application'
+
+
 
 
 # Database

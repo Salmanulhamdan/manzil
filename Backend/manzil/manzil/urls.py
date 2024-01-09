@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/',include('user.api.urls')),
     path('api/',include('posts.api.urls')),
+    # path('api/',include('chat.api.urls')),
     
 ]
 if settings.DEBUG:

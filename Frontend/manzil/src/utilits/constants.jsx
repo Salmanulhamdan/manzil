@@ -21,6 +21,7 @@ export const savedPosts="api/savedposts/";
 export const requirements="api/requirements/get_requirments";
 export const intrests="api/intrests/";
 export const questions="api/questions/";
+export const answers="api/answers/"
 
 
 
