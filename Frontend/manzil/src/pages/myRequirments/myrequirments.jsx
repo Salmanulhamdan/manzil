@@ -3,7 +3,7 @@ import React, { useState,useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
-import { baseUrl,requirements,intrests} from '../../utilits/constants';
+import { baseUrl,myrequirments,intrests} from '../../utilits/constants';
 import axios from 'axios';
 import FollowUnfollowApi from '../../api/followunfollow';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ import RequirmentModal from '../../Components/modals/requirmentmodal';
 import QustionModal from '../../Components/modals/qustionmodal';
 
 
-function RequirmentListing(){
+function MyrequirmentListing(){
   const [trigger, setTrigger] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const[requirmentlist,setRequirmentlist]=useState([]);
@@ -129,7 +129,7 @@ const closequstionModal =() =>{
       };
 
       console.log('Making request...new');
-      const response = await axios.get(baseUrl + requirements, config);
+      const response = await axios.get(baseUrl + myrequirments, config);
       console.log(response.data,"requ");
       setRequirmentlist(response.data)
     } catch (error) {
@@ -181,13 +181,7 @@ const closequstionModal =() =>{
           <img src={requirment.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />
           <Link className="userrofile_text font-bold" to={`/userprofile/${requirment.user.id}`}>{requirment.user.username}</Link>
         </div>
-        <button
-          onClick={() => { handleFollowUnfollow(requirment.user.id); setTrigger(true); }}
-          className={`follow-btn bg-gray-200 text-black-700 px-4 py-1 rounded-md hover:bg-gray-400 focus:outline-none focus:shadow-outline-gray active:bg-gray-500 ${
-            requirment.is_following_author ? "bg-red-400 hover:bg-red-500" : ""}`}
-        >
-          {requirment.is_following_author ? "Unfollow" : "Follow"}
-        </button>
+    
       </div>
 
       {requirment.description && (
@@ -230,4 +224,4 @@ const closequstionModal =() =>{
   );
 }
 
-export default RequirmentListing;
+export default MyrequirmentListing;

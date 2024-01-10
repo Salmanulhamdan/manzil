@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Modal from 'react-modal'; 
 import axios from "axios";
 import { baseUrl,answers } from '../../utilits/constants';
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark} from '@fortawesome/free-solid-svg-icons';
-
+import { Link} from 'react-router-dom';
 const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
   
     console.log(question_id,"dd");
   
-  const [answerlist, setAnswerlist] = useState([1,2,3,4,5,6,7,8,9,5,7,8,9,7,2,]);
+  const [answerlist, setAnswerlist] = useState([]);
   const [answer,setAnswer] = useState()
 
   const handleSubmit = async (e) => {
@@ -22,7 +22,7 @@ const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
       formData.append('qustion',question_id)
       formData.append('answer', answer);
    
-      console.log(formData,"formdata")
+      console.log(formData,"formvvvvvdata")
 
       const response = await axios.post(baseUrl+ answers, formData, {
         headers: {
@@ -46,13 +46,40 @@ const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
     onClose();
   };
 
+  useEffect(() => {
+  
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('jwtToken');
+        // Ensure token is not null or undefined before making the request
+        if (token) {
+           const answer_response = await axios.get(baseUrl + answers, {
+              params: { question: question_id },
+              headers: {
+                 'Content-Type': 'multipart/form-data',
+                 Authorization: `Bearer ${token}`,
+              },
+            
+           });
+           setAnswerlist(answer_response.data)
+        }
+        
+       console.log("ansers",answer_response.data);
+      } catch (error) {
+        // Handle errors...
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchData();
+  }, []); 
+
   return (
     <Modal
   ariaHideApp={false}
   isOpen={isOpen}
   onRequestClose={onClose}
   contentLabel="Answer Modal"
-  className="modal-content p-4 bg-white shadow-md max-w-md mx-auto mt-20 relative border border-gray-800"
+  className="modal-content p-4 bg-white shadow-md max-w-xl mx-auto mt-20 relative border border-gray-800"
 >
 
   <div >
@@ -68,10 +95,27 @@ const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
     </div>
 
     <div className="answers-container overflow-y-auto max-h-40 mb-4">
-      {/* Map through answers and display them */}
       {answerlist.map((answer, index) => (
-        <div key={index} className=" p-1 mb-4">
-          {answer}
+        <div key={index} className="p-4 mb-4 ">
+          <div className="flex items-center mb-1">
+          {answer.user.profile_photo && (
+          <img
+            src={answer.user.profile_photo}
+            alt=""
+            className="w-8 h-8 rounded-full mr-2"
+          />
+        )}
+            {/* <span className="font-bold mr-2">{answer.user.username}</span>  */}
+            <Link className="userrofile_text font-bold mr-2" to={`/userprofile/${answer.user.id}`}>{answer.user.username}</Link>
+            <span className="text-gray-500">{/* Add timestamp or other user information if needed */}</span>
+          </div>
+          <div className="mb-2">{answer.answer}</div>
+          {/* <div
+            className="text-blue-500 cursor-pointer"
+            onClick=""
+          >
+            Reply
+          </div> */}
         </div>
       ))}
     </div>

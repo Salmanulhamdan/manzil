@@ -1,7 +1,7 @@
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import FollowUnfollowUserView,  PlanViewSet, ProfilePhotoUpdateAPIView, Signup, MyProfile, UserProfile, UserProfileStatusView, UserUpdateView,login,FacebookLogin,GoogleLogin,RegisteredUsers,UserDetail,BlockUser,DeletePost,GetUserView,RazorpayOrderView,UserPlanViewSet,ProfessionsViewSet
+from .views import ContactListvView, FollowUnfollowUserView,  PlanViewSet, ProfilePhotoUpdateAPIView, Signup, MyProfile, UserProfile, UserProfileStatusView, UserUpdateView,login,FacebookLogin,GoogleLogin,RegisteredUsers,UserDetail,BlockUser,DeletePost,GetUserView,RazorpayOrderView,UserPlanViewSet,ProfessionsViewSet
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
 
@@ -34,6 +34,10 @@ urlpatterns = [
     path('userdetail/<str:userEmail>/',UserDetail.as_view(),name='userdetail'),
     path('blockuser/<int:id>/',BlockUser.as_view(),name='blockuser'),
     path('deletepost/<int:id>/',DeletePost.as_view(),name='deletepost'),
+
+
+
+    path('contacts',ContactListvView.as_view(), name='followers-following'),
     
     
 

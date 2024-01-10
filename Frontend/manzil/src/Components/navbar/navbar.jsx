@@ -18,7 +18,7 @@ const navigate = useNavigate();
 
  }
     return (
-<nav className="navbar">
+<nav className="navbar fixed w-full">
   <div className="logo">
    
     <a className='home' href ="homepage" >

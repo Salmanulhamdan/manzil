@@ -3,11 +3,13 @@ import axios from 'axios';
 import { baseUrl,user,refresh,post} from '../../utilits/constants';
 import PostListing from '../post_list/allposts';
 import RequirmentListing from '../Requirmentlisting/requirmentlitsing';
-
+import MyrequirmentListing from '../myRequirments/myrequirments';
+import MyQuestionsListing from '../myqustions/myquestions';
 // import { Link } from "react-router-dom";
 import Navbar from '../../Components/navbar/navbar';
 import SideBar from '../../Components/sidebar/sidebar';
 import QuestionsListing from '../qustionlisting/oustionslisting';
+import MessageApp from '../messege/message';
 
 
 
@@ -26,6 +28,12 @@ function Home() {
         return <RequirmentListing />;
       case 'questions':
         return <QuestionsListing />;
+      case 'message':
+        return<MessageApp />
+      case 'myrequirment':
+        return <MyrequirmentListing />
+      case 'myquestions':
+        return <MyQuestionsListing />
       default:
         return null;
     }
@@ -96,7 +104,7 @@ function Home() {
     <>
   <Navbar  usertype={userName ? userName.usertype : null } onToggleComponent={toggleComponent} naveitems={'homepage'}/>
   {/* <SideBar/> */}
-  <SideBar username={userName ? userName.username : null} />
+  <SideBar username={userName ? userName.username : null} onToggleComponent={toggleComponent} />
   {renderSelectedComponent()}
       
     </>

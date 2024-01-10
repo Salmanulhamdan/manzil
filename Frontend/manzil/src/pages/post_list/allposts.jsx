@@ -142,10 +142,10 @@ const closequstionModal =() =>{
 
  
   return (
-    <div className='center-container'>
+    <div className='center-container pt-16'>
       <br></br>
       {/* Create options at the top */}
-      <div className='flex items-center justify-between mb-4'>
+      <div className='flex items-center justify-between mb-4 '>
       <button
         className=' hover:bg-gray-200 text-black font-bold py-2 px-4 rounded'
         onClick={openModal}
@@ -171,7 +171,7 @@ const closequstionModal =() =>{
       {/* List of posts */}
       <div>
   {postslist.map((post, index) => (
-    <div key={post.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md'>
+    <div key={post.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md '>
       <div className='flex items-center justify-between mb-2'>
         <div className='flex items-center'>
           <img src={post.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />

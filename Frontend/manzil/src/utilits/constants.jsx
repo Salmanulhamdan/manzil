@@ -10,7 +10,7 @@ export const oneuser="api/userprofile/";
 export const userpost="api/posts/user_posts";
 export const razorpay="api/create-razorpay/";
 export const userupgrade="api/userplans/"
-export const myprofile = '/api/myprofile';
+export const myprofile = 'api/myprofile';
 export const userprofile='api/userprofile';
 export const updateprofile='api/customuser-update/'
 export const save="api/saves/save_post/";
@@ -19,9 +19,15 @@ export const professions="api/professions/";
 export const likedPost="api/liked-posts/";
 export const savedPosts="api/savedposts/";
 export const requirements="api/requirements/get_requirments";
+export const myrequirments="api/requirements/get_myrequirments"
 export const intrests="api/intrests/";
 export const questions="api/questions/";
+export const myquestions="api/questions/get_myqustions"
 export const answers="api/answers/"
+
+
+
+export const contacts = "api/contacts";
 
 
 

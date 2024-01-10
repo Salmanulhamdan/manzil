@@ -19,6 +19,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from rest_auth.registration.views import SocialLoginView
 from decouple import config 
 from rest_framework.decorators import api_view, permission_classes
+from chat.models import Message
 
 # Create your views here.
 # user creation
@@ -461,3 +462,54 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
 class ProfessionsViewSet(viewsets.ModelViewSet):
     queryset = Professions.objects.all()
     serializer_class = ProfessionsSerializer
+
+
+
+
+
+class ContactListvView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.request.user
+        print(user)
+        followers = user.followers.all()
+        following = user.following.all()
+        unique_user_ids = set()
+        response_data = []
+        
+        for follower in followers:
+            if follower.follower.id not in unique_user_ids and follower.follower != user:
+                follower_data = {
+                    "id": follower.follower.id,
+                    "username": follower.follower.username,
+                    "profile_pic": follower.follower.profile_photo.url
+                        if follower.follower.profile_photo else None,
+                    # "last_login": follower.follower.last_login,
+                }
+                # Count unread messages for this follower
+                unread_message_count = Message.objects.filter(
+                    room__members=user, sender=follower.follower, is_seen=False
+                ).count()
+                follower_data["unseen_message_count"] = unread_message_count
+                response_data.append(follower_data)
+                unique_user_ids.add(follower.follower.id)
+        
+        for followed in following:
+            if followed.following.id not in unique_user_ids and followed.following != user:
+                following_data = {
+                    "id": followed.following.id,
+                    "username": followed.following.username,
+                    "profile_pic": followed.following.profile_photo.url
+                        if followed.following.profile_photo else None,
+                    # "last_login": followed.following.last_login,
+                }
+                # Count unread messages for this followed user
+                unread_message_count = Message.objects.filter(
+                    room__members=user, sender=followed.following, is_seen=False
+                ).count()
+                following_data["unread_message_count"] = unread_message_count
+                response_data.append(following_data)
+                unique_user_ids.add(followed.following.id)
+
+        return Response(response_data)

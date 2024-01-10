@@ -167,7 +167,7 @@ const MyProfile = () => {
           },
         };
   
-        const response = await axios.get(`${baseUrl}/api/user`, config);
+        const response = await axios.get(`${baseUrl}api/user`, config);
         setUser(response.data);
       }
     const fetchData = async () => {
@@ -180,7 +180,7 @@ const MyProfile = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`${baseUrl}/api/user`, config);
+        const response = await axios.get(`${baseUrl}api/user`, config);
         setUser(response.data);
         const postresponse = await axios.get(`${baseUrl}api/posts/${response.data.id}/get_user_posts_by_id/`, config);  
         setUserPosts(postresponse.data);
@@ -242,7 +242,7 @@ const MyProfile = () => {
        
       <img
         className="rounded-full w-48 h-48 object-cover mx-auto"
-        src={user.profile_photo?baseUrl + user.profile_photo:"https://via.placeholder.com/150"}
+        src={user.profile_photo}
         alt="User Profile"
         onClick={handleImageClick}
         onMouseOver={(e)=> {e.currentTarget.style.cursor='pointer',e.currentTarget.style.opacity= 0.5}}

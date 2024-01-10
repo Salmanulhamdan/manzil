@@ -149,6 +149,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class AnswerReplySerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
+    user =  Custom_user_serializer(read_only=True)
 
     class Meta:
         model = AnswerReply
@@ -160,6 +161,7 @@ class AnswerReplySerializer(serializers.ModelSerializer):
 
 class AnswersSerializer(serializers.ModelSerializer):
     replies = AnswerReplySerializer(many=True, read_only=True)
+    user =  Custom_user_serializer(read_only=True)
 
     class Meta:
         model = Answers

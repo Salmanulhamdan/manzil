@@ -3,7 +3,7 @@ import React, { useState,useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
-import { baseUrl,questions} from '../../utilits/constants';
+import { baseUrl,myquestions} from '../../utilits/constants';
 import axios from 'axios';
 import FollowUnfollowApi from '../../api/followunfollow';
 import { Link, useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ import QustionModal from '../../Components/modals/qustionmodal';
 import AnswerModal from '../../Components/modals/answermodal';
 
 
-function QuestionsListing(){
+function MyQuestionsListing(){
   const [trigger, setTrigger] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const[qustionlist, setQustionlist] =useState([])
@@ -83,7 +83,7 @@ const closeAnswerModal = (questionId) => {
       };
 
       console.log('Making request...new');
-      const response = await axios.get(baseUrl + questions, config);
+      const response = await axios.get(baseUrl + myquestions, config);
       console.log(response.data,"kk")
       setQustionlist(response.data)
     } catch (error) {
@@ -135,11 +135,11 @@ const closeAnswerModal = (questionId) => {
           <img src={qustion.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />
           <Link className="userrofile_text font-bold" to={`/userprofile/${qustion.user.id}`}>{qustion.user.username}</Link>
         </div>
-        <button onClick={() => { handleFollowUnfollow(qustion.user.id); setTrigger(true); }}
+        {/* <button onClick={() => { handleFollowUnfollow(qustion.user.id); setTrigger(true); }}
           className={`follow-btn bg-gray-200 text-black-700 px-4 py-1 rounded-md hover:bg-gray-400 focus:outline-none focus:shadow-outline-gray active:bg-gray-500 ${
             qustion.is_following_author ? "bg-red-400 hover:bg-red-500" : ""}`} >
           {qustion.is_following_author ? "Unfollow" : "Follow"}
-        </button>
+        </button> */}
       </div>
       <div className='qustion mb-4 rounded-md' style={{ wordWrap: 'break-word' }}>
         {qustion.qustion && <p>{qustion.qustion}</p>}
@@ -173,4 +173,4 @@ const closeAnswerModal = (questionId) => {
   );
 }
 
-export default QuestionsListing;
+export default MyQuestionsListing;

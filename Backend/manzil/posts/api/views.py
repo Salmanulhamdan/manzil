@@ -262,6 +262,18 @@ class RequirmentViewset(viewsets.ModelViewSet):
             return Response({"detail": "User is not a professional."}, status=403)
         except Exception as e:
             return Response({"detail": str(e)}, status=500)
+    
+    @action(detail=False, methods=['GET'])
+    def get_myrequirments(self,request):
+        try:
+            user =request.user
+            requirments=Requirment.objects.filter(user=user)
+            serlizer=self.get_serializer(requirments,many=True)
+            return Response(serlizer.data,status=200)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=500)
+        
+    
 
 
 class IntrestsViewset(viewsets.ModelViewSet):
@@ -315,7 +327,17 @@ class QustionViewset(viewsets.ModelViewSet):
                                .exclude(answers_to_question__user=logged_in_user) \
                                .annotate(num_answers=Count('answers_to_question')) \
                                .order_by('-num_answers')
+    
 
+    @action(detail=False, methods=['GET'])
+    def get_myqustions(self,request):
+        try:
+            user=request.user
+            qustions=Qustions.objects.filter(user=user)
+            serlizer=self.get_serializer(qustions,many=True)
+            return Response(serlizer.data,status=200)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=500)
 
 
 class AnswersViewSet(viewsets.ModelViewSet):
@@ -326,3 +348,14 @@ class AnswersViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Associate the logged-in user with the answer
         serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        print("answere")
+        # Retrieve answers based on the specific question
+        question_id = self.request.query_params.get('question')
+        print(question_id)
+        print(Answers.objects.filter(qustion=question_id))
+        if question_id:
+            return Answers.objects.filter(qustion=question_id)
+
+    
