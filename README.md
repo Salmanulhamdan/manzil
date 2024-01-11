@@ -1,0 +1,1 @@
+Manzil is a platform for construction based users,a community type application. We have two users ,house owners and professionals. Both of them can post ideas about constructions. And they can ask their doubts as a question in publicly. Also both of them can create requirements. 
