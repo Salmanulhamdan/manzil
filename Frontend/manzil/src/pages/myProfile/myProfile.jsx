@@ -242,7 +242,7 @@ const MyProfile = () => {
        
       <img
         className="rounded-full w-48 h-48 object-cover mx-auto"
-        src={user.profile_photo}
+        src={user.profile_photo? baseUrl + user.profile_photo:"https://via.placeholder.com/150"}
         alt="User Profile"
         onClick={handleImageClick}
         onMouseOver={(e)=> {e.currentTarget.style.cursor='pointer',e.currentTarget.style.opacity= 0.5}}

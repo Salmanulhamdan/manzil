@@ -340,6 +340,11 @@ class QustionViewset(viewsets.ModelViewSet):
             return Response({"detail": str(e)}, status=500)
 
 
+  
+
+    
+
+
 class AnswersViewSet(viewsets.ModelViewSet):
     queryset = Answers.objects.all()
     serializer_class = AnswersSerializer

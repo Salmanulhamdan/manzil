@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {  faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
+import {  faBookmark, faShare , faEdit, faQuestion, faPlus,faEllipsisVertical} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
 import { baseUrl,myquestions} from '../../utilits/constants';
 import axios from 'axios';
@@ -60,17 +60,15 @@ const closeAnswerModal = (questionId) => {
   }));
 };
 
+const [expandedPostId, setExpandedPostId] = useState(null);
+
+const handleExpandToggle = (postId) => {
+  setExpandedPostId(expandedPostId === postId ? null : postId);
+};
 
 
 
-  const handleFollowUnfollow = async (userId) => {
-    try {
-      await FollowUnfollowApi(userId);
-      setTrigger(false);
-    } catch {
-      console.log("follow/unfollow got error");
-    }
-  };
+
   const fetchData = async () => {
     try {
       const token = localStorage.getItem('jwtToken');
@@ -115,7 +113,7 @@ const closeAnswerModal = (questionId) => {
         <button className='hover:bg-gray-200 text-black font-bold py-2 px-4 rounded' onClick={openrequirmentModal}>
         
           <FontAwesomeIcon icon={faPlus} className='mr-2' />
-          Create Requirement
+          Create Requirementxx
         </button>
         <RequirmentModal isOpen={RequirementModalOpen} onClose={closerequirmentModal} />
 
@@ -127,19 +125,18 @@ const closeAnswerModal = (questionId) => {
     
       </div>
       {/* List of posts */}
-      <div className='mainclass'>
+     <div className='mainclass'>
+    
   {qustionlist.map((qustion, index) => (
-    <div key={qustion.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md'>
+    <div key={qustion.id} className='post-container bg-white border border-gray-300 p-4 my-4 rounded-md shadow-md '>
+      <button className='top-right-button absolute top-0 right-0 bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-700'>
+        Your Button
+      </button>
       <div className='flex items-center justify-between mb-2'>
         <div className='flex items-center'>
           <img src={qustion.user.profile_photo} alt="Profile" className='w-10 h-10 rounded-full mr-2' />
           <Link className="userrofile_text font-bold" to={`/userprofile/${qustion.user.id}`}>{qustion.user.username}</Link>
         </div>
-        {/* <button onClick={() => { handleFollowUnfollow(qustion.user.id); setTrigger(true); }}
-          className={`follow-btn bg-gray-200 text-black-700 px-4 py-1 rounded-md hover:bg-gray-400 focus:outline-none focus:shadow-outline-gray active:bg-gray-500 ${
-            qustion.is_following_author ? "bg-red-400 hover:bg-red-500" : ""}`} >
-          {qustion.is_following_author ? "Unfollow" : "Follow"}
-        </button> */}
       </div>
       <div className='qustion mb-4 rounded-md' style={{ wordWrap: 'break-word' }}>
         {qustion.qustion && <p>{qustion.qustion}</p>}
@@ -149,6 +146,9 @@ const closeAnswerModal = (questionId) => {
           {/* <div className='share-btn ml-4'>
             <FontAwesomeIcon icon={faShare} />
           </div> */}
+       
+
+
           <div className='ml-4'>
             <button onClick={() => openAnswerModal(qustion.id)} className='answer-btn bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-700'>
               Answer
