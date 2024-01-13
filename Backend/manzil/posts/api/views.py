@@ -338,6 +338,25 @@ class QustionViewset(viewsets.ModelViewSet):
             return Response(serlizer.data,status=200)
         except Exception as e:
             return Response({"detail": str(e)}, status=500)
+        
+
+class EditQustionView(generics.UpdateAPIView):
+    queryset = Qustions.objects.all()
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        user=request.user
+        instance = self.get_object()
+        if user==instance.user:
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            print(instance.user.username,"instance")
+
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "you are not the owner of the qustion."}, status=status.HTTP_400_BAD_REQUEST)
 
 
   
@@ -362,5 +381,30 @@ class AnswersViewSet(viewsets.ModelViewSet):
         print(Answers.objects.filter(qustion=question_id))
         if question_id:
             return Answers.objects.filter(qustion=question_id)
+        
+
+
+class AnswerEditView(generics.UpdateAPIView):
+    queryset=Answers.objects.all()
+    serializer_class=AnswersSerializer
+    permission_classes=[IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        user=request.user
+        instance = self.get_object()
+        if user==instance.user:
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            print(instance.user.username,"instance")
+
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "you are not the owner of the answer."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+  
+
+
 
     
