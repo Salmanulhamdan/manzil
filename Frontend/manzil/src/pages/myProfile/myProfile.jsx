@@ -57,7 +57,7 @@ const MyProfile = () => {
     formData.append('profile_photo', event.target.files[0]);
 
     try {
-      const response = await axios.put(`${baseUrl}api/update-profile-photo/`, formData, {
+      const response = await axios.put(`${baseUrl}/api/update-profile-photo/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('jwtToken')}`, 
@@ -167,7 +167,7 @@ const MyProfile = () => {
           },
         };
   
-        const response = await axios.get(`${baseUrl}api/user`, config);
+        const response = await axios.get(`${baseUrl}/api/user`, config);
         setUser(response.data);
       }
     const fetchData = async () => {
@@ -180,9 +180,9 @@ const MyProfile = () => {
             Authorization: `Bearer ${token}`,
           },
         };
-        const response = await axios.get(`${baseUrl}api/user`, config);
+        const response = await axios.get(`${baseUrl}/api/user`, config);
         setUser(response.data);
-        const postresponse = await axios.get(`${baseUrl}api/posts/${response.data.id}/get_user_posts_by_id/`, config);  
+        const postresponse = await axios.get(`${baseUrl}/api/posts/${response.data.id}/get_user_posts_by_id/`, config);  
         setUserPosts(postresponse.data);
         // setLiked(false)
         // setSaved(false)

@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count
-from user.models import CustomUser
+from user.models import CustomUser, Professions
 from posts.models import Answers, Hashtags, Posts, Qustions,Saves, Likes, Shares,Requirment, intrests
 from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, PostSerializer, QuestionSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
@@ -106,17 +106,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         
         return Response(serialized_posts.data)
     
-    def delete(self, request, pk=None):
-        post = self.get_object()
-        # Check if the user making the request is an admin
-        if not request.user.is_staff:
-            # If not an admin, check if the user is the owner of the post
-            if request.user != post.user:
-                return Response({'error': 'You do not have permission to delete this post.'}, status=status.HTTP_403_FORBIDDEN)
 
-        post.delete()
-
-        return Response({'success': 'Post deleted successfully.'}, status=status.HTTP_204_NO_CONTENT)
 
     
 class EditPostView(generics.UpdateAPIView):
@@ -238,9 +228,23 @@ class RequirmentViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         user=request.user
         newdata=request.data.copy()
+        profession_id = newdata.get('profession')
+        print(f"Profession ID from request data: {profession_id}")
+
+        if not profession_id:
+            return Response({'error': 'Profession is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Assuming your 'Professions' model has an 'id' field
+        try:
+            profession = Professions.objects.get(id=profession_id)
+        except Professions.DoesNotExist:
+            return Response({'error': 'Invalid profession ID.'}, status=status.HTTP_400_BAD_REQUEST)
         newdata['user'] = user.id
+        newdata['profession']=profession.id
+        print(f"New data before serializer: {newdata}")
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
+        serializer.validated_data['profession'] = profession
         serializer.save(user=user)
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -272,6 +276,24 @@ class RequirmentViewset(viewsets.ModelViewSet):
             return Response(serlizer.data,status=200)
         except Exception as e:
             return Response({"detail": str(e)}, status=500)
+        
+    def destroy(self, request, pk=None):
+        try:
+            print(pk,"pk")
+            user=request.user
+            print(user,"ggg")
+            instance = Requirment.objects.get(pk=pk)
+            print(instance.user,"ggg")
+            if user==instance.user:
+                instance.delete()
+                return Response({"detail": "Deleted"},status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"detail": "you are not the owner of the Requirment."}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Requirment.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+
         
     
 
@@ -328,6 +350,7 @@ class QustionViewset(viewsets.ModelViewSet):
                                .annotate(num_answers=Count('answers_to_question')) \
                                .order_by('-num_answers')
     
+    
 
     @action(detail=False, methods=['GET'])
     def get_myqustions(self,request):
@@ -338,6 +361,22 @@ class QustionViewset(viewsets.ModelViewSet):
             return Response(serlizer.data,status=200)
         except Exception as e:
             return Response({"detail": str(e)}, status=500)
+        
+    def destroy(self, request, pk=None):
+        try:
+            print(pk,"pk")
+            user=request.user
+            print(user,"ggg")
+            instance = Qustions.objects.get(pk=pk)
+            print(instance.user,"ggg")
+            if user==instance.user:
+                instance.delete()
+                return Response({"detail": "Deleted"},status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"detail": "you are not the owner of the qustion."}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Qustions.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
 
 class EditQustionView(generics.UpdateAPIView):
@@ -357,11 +396,7 @@ class EditQustionView(generics.UpdateAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response({"detail": "you are not the owner of the qustion."}, status=status.HTTP_400_BAD_REQUEST)
-
-
-  
-
-    
+        
 
 
 class AnswersViewSet(viewsets.ModelViewSet):
@@ -381,6 +416,22 @@ class AnswersViewSet(viewsets.ModelViewSet):
         print(Answers.objects.filter(qustion=question_id))
         if question_id:
             return Answers.objects.filter(qustion=question_id)
+        
+    def destroy(self, request, pk=None):
+        try:
+            print(pk,"pk")
+            user=request.user
+            print(user,"ggg")
+            instance = Answers.objects.get(pk=pk)
+            print(instance.user,"ggg")
+            if user==instance.user:
+                instance.delete()
+                return Response({"detail": "Deleted"},status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"detail": "you are not the owner of the Answers."}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Answers.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
 
 

@@ -3,7 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from django.utils.timesince import timesince
 
-from .serializers import UserSerializer
+from user.api.serializers import Custom_user_serializer
 from chat.models import Message, ChatRoom
 from django.contrib.auth import get_user_model
 
@@ -11,6 +11,7 @@ User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print("connectedasgiww")
         self.room_id = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = f"chat_{self.room_id}"
         # Add the channel to the room's group
@@ -33,7 +34,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         user = self.scope["user"]
-        user_serializer = UserSerializer(user)
+        user_serializer = Custom_user_serializer(user)
         email = user_serializer.data['email']
 
         new_message = await self.create_message(self.room_id, message, email)

@@ -6,10 +6,7 @@ from user.api.serializers import Custom_user_serializer
 
 
 
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CustomUser
-#         fields = ['id', 'email', 'first_name', 'last_name','username', 'profile_pic']
+
 
 
 class ChatRoomSerializer(serializers.ModelSerializer):

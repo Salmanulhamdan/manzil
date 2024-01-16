@@ -85,6 +85,8 @@ class RequirmentSerializer(serializers.ModelSerializer):
     is_following_author = serializers.SerializerMethodField()
     is_intrested = serializers.SerializerMethodField()
     user =  Custom_user_serializer(read_only=True)
+    profession=ProfessionsSerializer(read_only=True)
+   
 
     class Meta:
         model = Requirment
