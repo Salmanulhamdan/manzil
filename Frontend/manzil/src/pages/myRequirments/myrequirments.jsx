@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-
+import Swal from "sweetalert2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faBookmark, faShare , faEdit, faQuestion, faPlus,faEllipsisVertical,faTrash} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
@@ -16,6 +16,8 @@ function MyrequirmentListing(){
   const [trigger, setTrigger] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const[requirmentlist,setRequirmentlist]=useState([]);
+  const [updateUI, setUpdateUI] = useState(false);
+
   const openModal = () => {
     setModalIsOpen(true);
   };
@@ -178,7 +180,7 @@ const handleDeleteRequirment = async (requirmentId) => {
       await axios.delete(url,config);
 
       setRequirmentlist(requirmentlist.filter(requirmnt => requirmnt.id !== requirmentId));
-      // setUpdateUI(prev => !prev)
+      setUpdateUI(prev => !prev)
 
       // Assuming the request was successful, you can handle the success case here
       Swal.fire("Deleted!", "Your post has been deleted.", "success");
@@ -200,7 +202,7 @@ const handleDeleteRequirment = async (requirmentId) => {
     
     fetchData();
     
-  }, [trigger]);
+  }, [trigger,updateUI]);
   
 
  
@@ -249,7 +251,7 @@ const handleDeleteRequirment = async (requirmentId) => {
     <div className="edit-delete-buttons mt-6 grid grid-cols-1">
   <button className="bg-blue-400 text-white px-2 py-2 ml-3 hover:bg-blue-600 focus:outline-none  rounded-md"onClick={openRequirmenteditmodal}><FontAwesomeIcon icon={faEdit}  />
   </button>
-  <RequirmenteditModal isOpen={requirmentEditModalOpen} closeModal={closeRequirmenteditmodal} requirment={requirment} />
+  <RequirmenteditModal isOpen={requirmentEditModalOpen} closeModal={closeRequirmenteditmodal} requirment={requirment} setUpdateUI={setUpdateUI} />
   <button className="bg-red-400 text-white px-2 py-2 hover:bg-red-600 focus:outline-none mt-2 ml-3 rounded-md" onClick={() => handleDeleteRequirment(requirment.id)}><FontAwesomeIcon icon={faTrash}/>
  
   </button>
@@ -269,29 +271,19 @@ const handleDeleteRequirment = async (requirmentId) => {
 
       <div className='flex items-center justify-between mt-4'>
         <div className='post-actions'>
-          <div className='save-btn ml-4' onClick={() => { handlesave(requirment.id); setTrigger(true); }}>
+          {/* <div className='save-btn ml-4' onClick={() => { handlesave(requirment.id); setTrigger(true); }}>
             <FontAwesomeIcon icon={faBookmark} color={requirment.is_saved ? 'blue' : 'black'} />
           </div>
           <div className='save-btn ml-4' onClick={() =>{ handlesave(requirment.id);setTrigger(true);}}>
             <FontAwesomeIcon icon={faShare} color= {requirment.is_saved ? 'blue':'black'}/>
-          </div>
-        </div>
-      
-        {/* Button for expressing interest */}
-        {requirment.is_intrested ?
-        <button
-        className='withdraw-interest-btn bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600 focus:outline-none focus:shadow-outline-red active:bg-red-700'
-        onClick={() => { handleWithdrawInterest(requirment.id); setTrigger(true); }}
-      >
-        Withdraw Interest
-      </button> :
-        <button
+          </div> */}
+        </div> 
+    <button
           className='interest-btn bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-700'
           onClick={() => { handleExpressInterest(requirment.id); setTrigger(true); }}
         >
-          Express Interest
+          View Interests
         </button>
-}
       </div>
     </div>
   ))}

@@ -4,7 +4,7 @@ import axios from "axios";
 import { baseUrl,createpost } from '../../utilits/constants';
 import Swal from "sweetalert2";
 
-const QuestioneditModal = ({ isOpen, closeModal , question}) => {
+const QuestioneditModal = ({ isOpen, closeModal , question,setUpdateUI}) => {
   const [Question,setQuestion]=useState(question?.qustion??'No Question')
   console.log(question,"qustion");
  
@@ -36,10 +36,11 @@ const QuestioneditModal = ({ isOpen, closeModal , question}) => {
 
 
       if (response.status) {
-        // Handle successful post creation, e.g., show a success message, redirect, etc.
+        
         console.log('Post updated successfully!');
-        // setUpdateUI(prev => !prev)
+        
         Swal.fire("Updated!", "Your question has been Updated.", "success");
+        setUpdateUI(prev => !prev)
       } else {
         // Handle errors, e.g., show an error message to the user
         console.error('Error creating question:', response.statusText);

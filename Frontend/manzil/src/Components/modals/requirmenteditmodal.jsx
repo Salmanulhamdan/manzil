@@ -4,7 +4,7 @@ import axios from "axios";
 import { baseUrl,createpost } from '../../utilits/constants';
 import Swal from "sweetalert2";
 
-const RequirmenteditModal = ({ isOpen, closeModal , requirment}) => {
+const RequirmenteditModal = ({ isOpen, closeModal , requirment,setUpdateUI}) => {
   const [Profession,setProfession]=useState(requirment?.profession?.profession_name??'No profession')
   const [Description,setDescription]=useState(requirment?.description??'No description')
  
@@ -29,7 +29,7 @@ const RequirmenteditModal = ({ isOpen, closeModal , requirment}) => {
      
       console.log(formData)
 
-      const response = await axios.patch(`${baseUrl}/api/edit-qustion/${requirment.id}/`, formData, {
+      const response = await axios.patch(`${baseUrl}/api/edit-requirment/${requirment.id}/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -40,7 +40,7 @@ const RequirmenteditModal = ({ isOpen, closeModal , requirment}) => {
       if (response.status) {
         // Handle successful post creation, e.g., show a success message, redirect, etc.
         console.log('Post updated successfully!');
-        // setUpdateUI(prev => !prev)
+        setUpdateUI(prev => !prev)
         Swal.fire("Updated!", "Your question has been Updated.", "success");
       } else {
         // Handle errors, e.g., show an error message to the user

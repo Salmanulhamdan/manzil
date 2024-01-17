@@ -1,7 +1,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AnswerEditView, AnswersViewSet, EditQustionView, IntrestsViewset, PostsViewSet,HashtagsViewSet ,LikesViewSet, QustionViewset, ReportViewSet,SharesListCreateView,EditPostView,SavesPostView,LikedPostsView,RequirmentViewset,SavedPostsView
+from .views import AnswerEditView, AnswersViewSet, EditQustionView, EditRequirment, IntrestsViewset, PostsViewSet,HashtagsViewSet ,LikesViewSet, QustionViewset, ReportViewSet,SharesListCreateView,EditPostView,SavesPostView,LikedPostsView,RequirmentViewset,SavedPostsView
 
 router = DefaultRouter()
 router.register(r'hashtags', HashtagsViewSet,basename='hashtags')
@@ -23,4 +23,5 @@ urlpatterns = [
     path('edit-post/<int:pk>/', EditPostView.as_view(), name='edit-post'),
     path('edit-qustion/<int:pk>/', EditQustionView.as_view(), name='edit-qustion'),
     path('edit-answer/<int:pk>/', AnswerEditView.as_view(), name='edit-answer'),
+    path('edit-requirment/<int:pk>/', EditRequirment.as_view(), name='edit-requirment'),
 ]

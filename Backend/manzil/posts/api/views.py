@@ -299,6 +299,26 @@ class RequirmentViewset(viewsets.ModelViewSet):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
 
+
+class EditRequirment(generics.UpdateAPIView):
+    queryset = Requirment.objects.all()
+    serializer_class = RequirmentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        user=request.user
+        instance = self.get_object()
+        if user==instance.user:
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            print(instance.user.username,"instance")
+
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({"detail": "you are not the owner of the qustion."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
         
     
 

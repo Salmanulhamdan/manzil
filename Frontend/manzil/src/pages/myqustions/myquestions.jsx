@@ -16,6 +16,7 @@ import QuestioneditModal from '../../Components/modals/questioneditmodal';
 function MyQuestionsListing(){
   const [trigger, setTrigger] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [updateUI, setUpdateUI] = useState(false);
   const[qustionlist, setQustionlist] =useState([])
 
   const openModal = () => {
@@ -140,7 +141,7 @@ const handleDeleteQuestion = async (qustionId) => {
     
     fetchData();
     
-  }, [trigger]);
+  }, [trigger,updateUI]);
   
 
  
@@ -160,7 +161,7 @@ const handleDeleteQuestion = async (qustionId) => {
         <button className='hover:bg-gray-200 text-black font-bold py-2 px-4 rounded' onClick={openrequirmentModal}>
         
           <FontAwesomeIcon icon={faPlus} className='mr-2' />
-          Create Requirementxx
+          Create Requirement
         </button>
         <RequirmentModal isOpen={RequirementModalOpen} onClose={closerequirmentModal} />
 
@@ -190,7 +191,7 @@ const handleDeleteQuestion = async (qustionId) => {
     <div className="edit-delete-buttons mt-6 grid grid-cols-1">
   <button className="bg-blue-400 text-white px-2 py-2 ml-3 hover:bg-blue-600 focus:outline-none  rounded-md"onClick={openQuestioneditmodal}><FontAwesomeIcon icon={faEdit}  />
   </button>
-  <QuestioneditModal isOpen={questionEditModalOpen} closeModal={closeQuestioneditmodal} question={qustion} />
+  <QuestioneditModal isOpen={questionEditModalOpen} closeModal={closeQuestioneditmodal} question={qustion} setUpdateUI={setUpdateUI} />
   <button className="bg-red-400 text-white px-2 py-2 hover:bg-red-600 focus:outline-none mt-2 ml-3 rounded-md" onClick={() => handleDeleteQuestion(qustion.id)}><FontAwesomeIcon icon={faTrash}/>
  
   </button>
