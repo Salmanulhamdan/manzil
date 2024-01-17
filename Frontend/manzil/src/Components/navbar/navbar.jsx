@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './navbar.css';
 import img from "../../assets/logo.svg";
-import { useNavigate ,NavLink } from 'react-router-dom';
+import { useNavigate ,Link } from 'react-router-dom';
 function Navbar({usertype,onToggleComponent,naveitems }){
 
 const is_professional = usertype ==="professional"
@@ -18,7 +18,7 @@ const navigate = useNavigate();
 
  }
     return (
-<nav className="navbar fixed w-full">
+<nav className="navbar fixed top-0 z-10 w-full">
   <div className="logo">
    
     <a className='home' href ="homepage" >
@@ -34,9 +34,9 @@ const navigate = useNavigate();
           Home
         </a>
       : naveitems === "profile"
-        ?  <a className='home' href ="homepage" onClick={() => onToggleComponent('post')}>
+        ? <Link to="/homepage" className="home" onClick={() => onToggleComponent('post')}>
         Home
-      </a>
+      </Link>
         : null // If you want to render nothing for the 'else' condition
     : null // If you want to render nothing for the 'if' condition
   }

@@ -24,6 +24,7 @@ export const intrests="/api/intrests/";
 export const questions="/api/questions/";
 export const myquestions="/api/questions/get_myqustions"
 export const answers="/api/answers/"
+export const report="/api/reports/report_item/"
 
 
 

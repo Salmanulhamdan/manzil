@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from chat.models import ChatRoom, Message
 from . serializers import ChatRoomListSerializer, ChatRoomSerializer, MessageSerializer
-
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 User = get_user_model()
 
@@ -38,14 +38,19 @@ class CreateChatRoom(APIView):
 
 
 class RoomMessagesView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = MessageSerializer
  
     def get(self, request, pk):
         try:
             room = ChatRoom.objects.get(pk=pk)
+            print(room,"rom")
             messages = Message.objects.filter(room=room)
+            print(messages,"romessagesm")
+
             serialized_messages = self.serializer_class(messages, many=True).data
+            print(serialized_messages,"serialized_messages")
+
             return Response(serialized_messages, status=status.HTTP_200_OK)
         except ChatRoom.DoesNotExist:
             return Response("Room not found", status=status.HTTP_404_NOT_FOUND)

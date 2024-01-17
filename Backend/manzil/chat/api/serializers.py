@@ -17,6 +17,7 @@ class ChatRoomSerializer(serializers.ModelSerializer):
 
 class MessageSerializer(serializers.ModelSerializer):
     sender_email = serializers.EmailField(source='sender.email', read_only=True)
+    sender_name = serializers.EmailField(source='sender.username', read_only=True)
     sender_profile_pic = serializers.SerializerMethodField(read_only=True)
     created = serializers.SerializerMethodField(read_only=True)
     
@@ -25,7 +26,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = '__all__'
     
     def get_sender_profile_pic(self, obj):
-        return obj.sender.profile_pic.url if obj.sender.profile_pic else None
+        return obj.sender.profile_photo.url if obj.sender.profile_photo else None
 
     def get_created(self, obj):
         return timesince(obj.timestamp)

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 const QuestioneditModal = ({ isOpen, closeModal , question}) => {
   const [Question,setQuestion]=useState(question?.qustion??'No Question')
+  console.log(question,"qustion");
  
 
   useEffect(() => {

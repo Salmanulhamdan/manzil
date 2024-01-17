@@ -8,23 +8,13 @@ import PlanModal from '../../Components/modals/plansmodal';
 
 
 const UserProfile = () => {
+  // console.log(user_id,"userid");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState();
   const toggleComponent = (component) => {
     setSelectedComponent(component);
   };
-  const renderSelectedComponent = () => {
-    switch (selectedComponent) {
-      case 'post':
-        return <PostListing />;
-      case 'requirements':
-        return <RequirmentListing />;
-      // case 'questions':
-      //   return <QuestionsComponent />;
-      default:
-        return null;
-    }
-  };
+
 
 
   const openModal = () => {
@@ -38,49 +28,46 @@ const UserProfile = () => {
   };
 
 
-  const {userId} = useParams()
- console.log(userId,"get")
+  const { userId } = useParams();
   const [userPosts, setUserPosts] = useState([]);
   const [userProfile, setUserProfile] = useState(null);
   const [userProfilesatus, setUserProfilesatus] = useState(null);
   
   useEffect(() => {
-    console.log("jjj")
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('jwtToken');
-        console.log('Tokenzzz:', token);
-  
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
         
-        const statusresponse = await axios.get(`${baseUrl}api/userprofile-status/`, config);
+        const statusresponse = await axios.get(`${baseUrl}/api/userprofile-status/`, config);
         setUserProfilesatus(statusresponse.data)
+        console.log(statusresponse.data,"statusresponse");
         const response = await axios.get(`${baseUrl}${userprofile}/${userId}`, config);
         setUserProfile(response.data);
         console.log(response.data,"yyyy")
         const postresponse = await axios.get(`${baseUrl}/api/posts/${response.data.user.id}/get_user_posts_by_id/`, config);  
         setUserPosts(postresponse.data);
-        console.log(postresponse,"llll")
+        console.log(postresponse.data,"llll")
       } catch (error) {
         // Handle errors...
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching user datassss:', error);
       }
     };
   
     // // Call fetchData when the component mounts
     fetchData();
-    console.log("jjjaaa")
+   
   }, [userId]);  
   
     // console.log(userProfile,"gg")
    return (
       <>
       <Navbar  onToggleComponent={toggleComponent} naveitems={'profile'}/>
-      <div className="bg-gray-100 min-h-screen">
+      <div className="bg-gray-100 min-h-screen pt-16">
     <div className="container mx-auto p-8">
     <div className="bg-white p-8 rounded-lg shadow-lg">
   <div className="grid grid-cols-3 gap-4">

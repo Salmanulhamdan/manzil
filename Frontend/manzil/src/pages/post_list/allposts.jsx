@@ -1,14 +1,15 @@
 import React, { useState,useEffect } from 'react';
 import './allpost.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faBookmark, faShare , faEdit, faQuestion, faPlus} from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faBookmark, faShare , faEdit, faQuestion, faPlus ,faTriangleExclamation} from '@fortawesome/free-solid-svg-icons';
 import CreateModal from '../../Components/modals/postmodal';
-import { baseUrl,like ,post,save} from '../../utilits/constants';
+import { baseUrl,like ,post,save,report} from '../../utilits/constants';
 import axios from 'axios';
 import FollowUnfollowApi from '../../api/followunfollow';
 import { Link, useNavigate } from 'react-router-dom';
 import RequirmentModal from '../../Components/modals/requirmentmodal';
 import QustionModal from '../../Components/modals/qustionmodal';
+import ReportModal from '../../Components/modals/reportmodal';
 
 
 function PostListing(){
@@ -40,7 +41,19 @@ const closequstionModal =() =>{
   setQustionModalOpen(false);
 }
 
+const handleshare =()=>{
+  
+}
 
+const [reportmodal, setReportmodal]=useState(false);
+const [selectedPost, setSelectedPost] = useState(null);
+const openreportmodal =(post)=>{
+  setSelectedPost(post);
+  setReportmodal(true)
+}
+const closereportmodal =()=>{
+  setReportmodal(false)
+}
 
   const [likes, setLikes] = useState({})
   const handleLike = async (postId) => {
@@ -54,6 +67,7 @@ const closequstionModal =() =>{
     try {
       const formData = new FormData();
       formData.append('post', postId);
+     
       console.log("like clicked")
       const response = await axios.post(`${baseUrl}${like}`,formData, config);
       if (response.status === 201 || 200) {
@@ -213,9 +227,13 @@ const closequstionModal =() =>{
           <div className='save-btn ml-4' onClick={() =>{handlesave(post.id);}}>
             <FontAwesomeIcon icon={faBookmark} color= {post.is_saved ? 'blue':'black'}/>
           </div>
-          <div className='share-btn ml-4'>
+          {/* <div className='share-btn ml-4'>
             <FontAwesomeIcon icon={faShare} />
-          </div>
+          </div> */}
+          <button className='report-btn  ml-96 pl-24' onClick={() => openreportmodal(post)}>
+            <FontAwesomeIcon icon={faTriangleExclamation} color= {post.is_reported ? 'red':'black'} />
+          </button>
+          <ReportModal isOpen={reportmodal} onClose={closereportmodal} Item={selectedPost} setPostslist={setPostslist} />
         </div>
       </div>
     </div>

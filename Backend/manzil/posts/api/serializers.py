@@ -1,13 +1,19 @@
 from rest_framework import serializers
 from user.models import Follow
 from user.api.serializers import Custom_user_serializer, GetUserSerializer, ProfessionsSerializer
-from posts.models import AnswerReply, Answers, Posts, Hashtags, Qustions, Requirment,Saves, Likes, Shares, intrests
+from posts.models import AnswerReply, Answers, Posts, Hashtags, Qustions, Report, Requirment,Saves, Likes, Shares, intrests
 
 class HashtagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Hashtags
         fields = '__all__'
         extra_kwargs = {'posts': {'required': False}}
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = '__all__'
+
 
 class PostSerializer(serializers.ModelSerializer):
     hashtag = HashtagSerializer(many=True, read_only=True)
@@ -16,11 +22,12 @@ class PostSerializer(serializers.ModelSerializer):
     is_following_author = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
     is_saved = serializers.SerializerMethodField()
+    is_reported=serializers.SerializerMethodField()
 
 
     class Meta:
         model = Posts
-        fields = ['id', 'user', 'media', 'caption', 'hashtag', 'created_at', 'updated_at', 'like_count','is_following_author', 'is_liked','is_saved']
+        fields = ['id', 'user', 'media', 'caption', 'hashtag', 'created_at', 'updated_at', 'like_count','is_following_author', 'is_liked','is_saved','is_reported']
         extra_kwargs = {'hashtag': {'required': False}}        
 
    
@@ -59,6 +66,18 @@ class PostSerializer(serializers.ModelSerializer):
 
     def get_like_count(self, obj):
         return obj.like_count()
+    
+
+    def get_is_reported(self,obj):
+        user = self.context['request'].user
+        if user.is_authenticated:
+            try: 
+                report_instance=Report.objects.get(reported_item_id=obj.id,user=user)
+                return True
+            except Report.DoesNotExist:
+                return False
+        return False
+
 
   
 

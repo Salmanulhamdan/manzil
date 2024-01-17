@@ -81,7 +81,7 @@ const MessageApp = () => {
       const accessToken = t;
       const websocketProtocol =
         window.location.protocol === "https:" ? "wss://" : "ws://";
-      const wsUrl = `${websocketProtocol}127.0.0.1:8000/chat/${room_id}/?token=${accessToken}`;
+      const wsUrl = `${websocketProtocol}127.0.0.1:8000/ws/chat/${room_id}/?token=${accessToken}`;
 
       console.log(wsUrl);
    
@@ -133,11 +133,11 @@ const MessageApp = () => {
 
   return (
     <>
-      <div className="flex h-screen bg-gray-100 pt-16">
-        <div className="w-3/5 p-4">
+      <div className=" ml-96 flex w-4/6 pt-36 ">
+        <div className="w-3/5 p-4 ">
           {/* Chat Messages Container */}
           <div
-            className="bg-white p-4 rounded-lg shadow-xl h-5/6 overflow-y-auto"
+            className="bg-teal-100 p-4 rounded-lg shadow-xl h-5/6 overflow-y-auto "
             ref={chatMessagesContainerRef}
           >
             {messages.map((message, index) => (
@@ -153,12 +153,14 @@ const MessageApp = () => {
                   {message.sender_email !== user.email && (
                     <div className="h-10 w-10 rounded-full bg-gray-300">
                       <img
-                        src={`${BASE_URL}${message.sender_profile_pic}`}
+                        src={`${baseUrl}${message.sender_profile_pic}`}
                         alt="Profile"
                         className="w-full h-full rounded-full object-cover"
                       />
                     </div>
+                  
                   )}
+                  <div>{message.sender_name}</div>
                   <div className="max-w-xs p-3 rounded-lg shadow-xl bg-blue-200">
                     <p className="text-sm">{message.message || message.content}</p>
                     <span className="text-xs text-gray-500 leading-none">

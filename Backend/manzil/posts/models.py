@@ -3,6 +3,24 @@ from user.models import CustomUser, Professions
 from django.utils import timezone
 
 # Create your models here.
+
+class Report(models.Model):
+    REPORT_TYPE_CHOICES = (
+        ('requirement', 'Requirment'),
+        ('question', 'Qustions'),
+        ('post', 'Posts'),
+    )
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    reported_item_id = models.PositiveIntegerField()
+    report_type = models.CharField(max_length=20, choices=REPORT_TYPE_CHOICES)
+    reason = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} reported {self.report_type} - {self.reported_item_id}"
+
+
 class Hashtags(models.Model):
     hashtag=models.CharField(null=True,)
 
@@ -24,6 +42,10 @@ class Posts(models.Model):
     
     def like_count(self):
         return Likes.objects.filter(post=self).count()
+    
+
+    def report_count(self):
+        return Report.objects.filter(reported_item_type='post', reported_item_id=self.id).count()
     
 
 
@@ -56,6 +78,9 @@ class Requirment(models.Model):
     time=models.DateTimeField(default=timezone.now,editable=False)
     is_blocked=models.BooleanField(default=False)
 
+    def report_count(self):
+        return Report.objects.filter(reported_item_type='requirement', reported_item_id=self.id).count()
+
 
 class RequirementSaves(models.Model):
     requirement = models.ForeignKey(Requirment, on_delete=models.CASCADE)
@@ -76,6 +101,9 @@ class Qustions(models.Model):
     qustion=models.TextField()
     is_blocked=models.BooleanField(default=False)
 
+    def report_count(self):
+        return Report.objects.filter(reported_item_type='question', reported_item_id=self.id).count()
+
 
 class Answers(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,related_name='answers')
@@ -89,24 +117,10 @@ class AnswerReply(models.Model):
     reply_text = models.TextField()
     parent_reply = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies_to_reply')
     is_blocked=models.BooleanField(default=False)
+
 class Ratinganswer(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answers, on_delete=models.CASCADE,related_name='raitinganswer')
     rating = models.PositiveIntegerField()
 
 
-class Report(models.Model):
-    REPORT_TYPE_CHOICES = (
-        ('requirement', 'Requirment'),
-        ('question', 'Qustions'),
-        ('post', 'Posts'),
-    )
-
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    reported_item_id = models.PositiveIntegerField()
-    report_type = models.CharField(max_length=20, choices=REPORT_TYPE_CHOICES)
-    reason = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} reported {self.report_type} - {self.reported_item_id}"

@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count
 from user.models import CustomUser, Professions
-from posts.models import Answers, Hashtags, Posts, Qustions,Saves, Likes, Shares,Requirment, intrests
-from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, PostSerializer, QuestionSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
+from posts.models import Answers, Hashtags, Posts, Qustions, Report,Saves, Likes, Shares,Requirment, intrests
+from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, PostSerializer, QuestionSerializer, ReportSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 from rest_framework.views import APIView
 from django.db.models import Subquery
@@ -78,6 +78,10 @@ class PostsViewSet(viewsets.ModelViewSet):
         # Combine the two lists (recommended posts followed by other posts)
         combined_posts = recommended_posts_serializer.data + remaining_posts_serializer.data
 
+       
+
+    
+
         
         
 
@@ -144,7 +148,8 @@ class SavesPostView(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def save_post(self, request):
-        post_pk = request.data.get('post')  
+        post_pk = request.data.get('post')
+        print(post_pk,"saaa")  
         post = Posts.objects.get(pk=post_pk)
         user = request.user
 
@@ -459,3 +464,45 @@ class AnswerEditView(generics.UpdateAPIView):
 
 
     
+class ReportViewSet(viewsets.ModelViewSet):
+    serializer_class = ReportSerializer
+    permission_classes=[IsAuthenticated]
+
+    @action(detail=False, methods=['post'])
+    def report_item(self, request):
+        print("kk")
+        user = request.user
+        reason = request.data.get('reason', '')
+        report_type=request.data.get('report_type')
+        item_id=request.data.get('item_id')
+        print(item_id,"idd")
+
+        if report_type in ['requirement', 'question', 'post']:
+            model_mapping = {
+                'requirement': Requirment,
+                'question': Qustions,
+                'post': Posts,
+            }
+
+            model = model_mapping[report_type]
+            item = model.objects.get(pk=item_id)
+            existing_report = Report.objects.filter(
+                user=user,
+                reported_item_id=item_id,
+                report_type=report_type
+            ).first()
+
+            if existing_report:
+                existing_report.delete()
+                return Response({"detail": "Deleted"},status=status.HTTP_204_NO_CONTENT)
+
+            Report.objects.create(
+                user=user,
+                reported_item_id=item_id,
+                report_type=report_type,
+                reason=reason,
+            )
+
+            return Response({'status': 'success'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'error', 'message': 'Invalid report type'}, status=status.HTTP_400_BAD_REQUEST)

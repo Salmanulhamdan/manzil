@@ -17,19 +17,17 @@ from django_channels_jwt_auth_middleware.auth import JWTAuthMiddlewareStack
 from .channelsmiddleware import JwtAuthMiddleware
 from channels.routing import ProtocolTypeRouter,URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
-# from chat.routing import websocket_urlpatterns
+from chat.routing import websocket_urlpatterns
 # from posts.api import routing as  postrouting
-from django.urls import path
-from chat.api import consumers
+# from django.urls import path
+# from chat.api import consumers
 
 # application = get_asgi_application()
 
 
 
 django_asgi_application = get_asgi_application()
-websocket_urlpatterns = [
-    path('/chat/<int:room_id>/', consumers.ChatConsumer.as_asgi()),
-]
+
 
 
 application = ProtocolTypeRouter(

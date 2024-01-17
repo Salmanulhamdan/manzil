@@ -215,8 +215,8 @@ const MyProfile = () => {
 
  return (
     <>
-    <Navbar  usertype={user ? user.usertype : null } onToggleComponent={toggleComponent} naveitems={'profile'}/>
-    <div className="bg-gray-100 min-h-screen">
+    <Navbar  usertype={user ? user.usertype : null } onToggleComponent={toggleComponent} naveitems={'profile'} className="fixed w-full  bg-white"/>
+    <div className="bg-gray-100 min-h-screen pt-16">
     <div className="container mx-auto p-8">
   
     <div className="relative bg-white p-8 rounded-lg shadow-lg">

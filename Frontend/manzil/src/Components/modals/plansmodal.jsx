@@ -101,23 +101,27 @@ const PlanModal = ({ isOpen, closeModal, }) => {
       className="fixed inset-0 flex items-center justify-center"
     >
      
-      <div className="bg-white w-96 p-6 rounded shadow-md">
+      <div className="bg-gradient-to-r from-purple-200 via-teal-300 to-blue-200 p-6 rounded shadow-md" style={{ width: '800px', height: 'auto' }}>
           
-          <h2 className="text-2xl font-bold mb-4">Select a Plan</h2>
-          <ul>
+          <h2 className="text-3xl font-extrabold mb-6 text-center text-gray-800">Active Plans</h2>
+           <h4 className="text-lg font-bold mb-4 text-gray-700">Select A Plan</h4>
+          <ul className="space-y-2 py-4">
             {Plans.map((plan, index) => (
               <li
                 key={index}
                 onClick={() => setSelectedPlan(plan)}
-                className={`cursor-pointer py-2 hover:bg-gray-500 transition-all ${
-                  selectedPlan=== plan ? 'bg-blue-400 text-white' : ''
+                className={`cursor-pointer py-2 px-4 rounded-md transition-all ${
+                  selectedPlan=== plan ? 'bg-blue-500 text-white' : 'hover:bg-gray-200'
                 }`}
               >
-                {plan.name}--{plan.price} Rupee
+                  <span className="flex items-center justify-between">
+          <span className={selectedPlan === plan ? 'font-bold' : 'font-normal'}>{plan.name}</span>
+          <span className={` ${selectedPlan === plan ? 'font-bold' : 'font-normal'}`}>{plan.price} Rupee</span>
+        </span>
               </li>
             ))}
           </ul>
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end mt-6">
             <button
               onClick={handleCancel}
               className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 mr-2 rounded"
