@@ -2,7 +2,6 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.utils.translation import gettext_lazy as _
-import uuid
 from django.utils import timezone
 
 # overriding usermanager
@@ -58,8 +57,6 @@ class CustomUser(AbstractUser):
     phonenumber = models.CharField(max_length=12)
     profile_photo = models.ImageField(upload_to="Profile_photos", null=True, blank=True)
 
-
-  
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

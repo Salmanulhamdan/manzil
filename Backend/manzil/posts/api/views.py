@@ -38,8 +38,9 @@ class PostsViewSet(viewsets.ModelViewSet):
             hashtag_instence.append(hashtag)
         newdata = request.data   
         # Update the request data with the hashtag instances
-        newdata['hashtag'] = [hashtag.id for hashtag in hashtag_instence]
+        # newdata['hashtag'] = [hashtag.id for hashtag in hashtag_instence]
         newdata['user'] = user.id
+        print(newdata,"hh")
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
@@ -78,10 +79,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         # Combine the two lists (recommended posts followed by other posts)
         combined_posts = recommended_posts_serializer.data + remaining_posts_serializer.data
 
-       
-
     
-
         
         
 

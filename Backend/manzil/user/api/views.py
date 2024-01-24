@@ -71,13 +71,8 @@ class Signup(APIView):
                     user.professional_profile.experience=experience
                     user.professional_profile.save()
                 response_data = serializer.data
-
-           
-
                 response_data.pop('password')
-
-            
-
+                
                 return Response(response_data, status=201)
         except serializers.ValidationError as e:
             error_messages = []
