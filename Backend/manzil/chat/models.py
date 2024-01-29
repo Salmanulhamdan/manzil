@@ -25,3 +25,26 @@ class Message(models.Model):
 
     def __str__(self):
         return f'{self.sender}'
+    
+
+
+class Call(models.Model):
+    CALL_TYPE_CHOICES = [
+        ('audio', 'Audio Call'),
+        ('video', 'Video Call'),
+    ]
+
+    STATUS_CHOICES = [
+        ('incoming', 'Incoming'),
+        ('outgoing', 'Outgoing'),
+        ('answered', 'Answered'),
+        ('missed', 'Missed'),
+    ]
+
+    caller = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='outgoing_calls')
+    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='incoming_calls')
+    start_time = models.DateTimeField(auto_now_add=True)
+    end_time = models.DateTimeField(null=True, blank=True)
+    is_answered = models.BooleanField(default=False)
+    call_type = models.CharField(max_length=10, choices=CALL_TYPE_CHOICES, default='audio')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='incoming')

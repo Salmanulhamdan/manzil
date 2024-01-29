@@ -132,8 +132,32 @@ const MessageApp = () => {
   console.log(messages,"mess");
 
   return (
-    <>
+    <div className='flex items-center justify-between '>
+     {selectedProfile && (
+    <div className=" bg-gray-200 p-4 rounded-lg mb-4 shadow-md">
+      <div>
+        <h2 className="text-lg font-semibold text-gray-800">
+          Chatting with {selectedProfile.username}
+        </h2>
+      </div>
+      <div className="flex items-center space-x-4">
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded-md"
+          onClick={() => handleVideoCall(selectedProfile.id)}
+        >
+          Video Call
+        </button>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+          onClick={() => handleAudioCall(selectedProfile.id)}
+        >
+          Audio Call
+        </button>
+      </div>
+    </div>
+  )}
       <div className=" ml-96 flex w-4/6 pt-36 ">
+ 
         <div className="w-3/5 p-4 ">
           {/* Chat Messages Container */}
           <div
@@ -232,7 +256,7 @@ const MessageApp = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

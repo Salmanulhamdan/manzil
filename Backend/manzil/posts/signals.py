@@ -1,4 +1,3 @@
-
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Report, Posts,Requirment,Qustions
@@ -6,7 +5,7 @@ from .models import Report, Posts,Requirment,Qustions
 
 @receiver(post_save, sender=Report)
 def handle_report_save(sender, instance,created, **kwargs):
-    print("signaling")
+    print("signaling..............................")
     if created:
         # Check if the reported item has more than 3 reports
         if instance.report_count() > 3:
