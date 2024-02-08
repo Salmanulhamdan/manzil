@@ -21,10 +21,12 @@ export const savedPosts="/api/savedposts/";
 export const requirements="/api/requirements/get_requirments";
 export const myrequirments="/api/requirements/get_myrequirments"
 export const intrests="/api/intrests/";
+export const get_intrests="/api/intrests/get_inrests"
 export const questions="/api/questions/";
 export const myquestions="/api/questions/get_myqustions"
 export const answers="/api/answers/"
 export const report="/api/reports/report_item/"
+
 
 
 
@@ -38,3 +40,4 @@ export const userdetail = "/api/userdetail";
 export const blockuser = "/api/blockuser";
 export const deletepost="/api/deletepost"
 export const planss="/api/plans/";
+export const reported_items="/api/reported-items/"

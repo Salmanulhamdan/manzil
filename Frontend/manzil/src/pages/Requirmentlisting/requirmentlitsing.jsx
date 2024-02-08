@@ -91,8 +91,6 @@ const closequstionModal =() =>{
       try {
         const formdata= new FormData();
         formdata.append('requirment',requirment_id);
-        formdata.append('conformation',true);
-       
         const response = await axios.post(`${baseUrl}${intrests}`,formdata, config);
         console.log(response.data);
         if (response.status === 201) {

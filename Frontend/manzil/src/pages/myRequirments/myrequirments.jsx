@@ -10,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import RequirmentModal from '../../Components/modals/requirmentmodal';
 import QustionModal from '../../Components/modals/qustionmodal';
 import RequirmenteditModal from '../../Components/modals/requirmenteditmodal';
+import IntrestsModal from '../../Components/modals/intrestsmodal';
 
 
 function MyrequirmentListing(){
@@ -43,7 +44,14 @@ const closequstionModal =() =>{
   setQustionModalOpen(false);
 }
 
+const [IntrestsModalOpen ,setIntrestsModalOpen] =useState(false);
+ const openIntrestsModal = () =>{
+  setIntrestsModalOpen(true);
 
+ }
+const closeIntrestsModal =() =>{
+  setIntrestsModalOpen(false);
+}
 
 
 
@@ -278,12 +286,11 @@ const handleDeleteRequirment = async (requirmentId) => {
             <FontAwesomeIcon icon={faShare} color= {requirment.is_saved ? 'blue':'black'}/>
           </div> */}
         </div> 
-    <button
-          className='interest-btn bg-blue-500 text-white px-4 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline-blue active:bg-blue-700'
-          onClick={() => { handleExpressInterest(requirment.id); setTrigger(true); }}
-        >
-          View Interests
+        <button className='hover:bg-gray-200 text-black font-bold py-2 px-4 rounded' onClick={openIntrestsModal}>
+         
+          View Intrests
         </button>
+        <IntrestsModal isOpen={IntrestsModalOpen} closeModal={closeIntrestsModal} />
       </div>
     </div>
   ))}

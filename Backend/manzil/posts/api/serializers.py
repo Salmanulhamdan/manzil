@@ -10,9 +10,18 @@ class HashtagSerializer(serializers.ModelSerializer):
         extra_kwargs = {'posts': {'required': False}}
 
 class ReportSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Report
         fields = '__all__'
+
+class ReportItemSerializer(serializers.Serializer):
+    report_type = serializers.CharField()
+    reported_item_id = serializers.IntegerField()
+    report_count = serializers.IntegerField()
+
+    class Meta:
+        fields = ['report_type', 'reported_item_id', 'report_count']
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -34,6 +43,7 @@ class PostSerializer(serializers.ModelSerializer):
     
     def get_is_following_author(self, obj):
         user = self.context['request'].user
+       
         author = obj.user
         if user.is_authenticated:
             try:
@@ -80,7 +90,10 @@ class PostSerializer(serializers.ModelSerializer):
 
 
   
-
+class PostSerializer_for_Report(serializers.ModelSerializer):
+    class Meta:
+        model = Posts
+        fields = ('id', 'user', 'media', 'caption', 'hashtag', 'created_at', 'updated_at', 'is_blocked')
 
 
 

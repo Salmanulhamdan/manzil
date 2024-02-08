@@ -18,6 +18,10 @@ function AdminSide(){
             <Link to='/admin/plans' className='admin_user_link'>Plans</Link>
             
           </li>
+          <li className="admin_user py-2 text-gray-800 hover:text-blue-500 cursor-pointer">
+            <Link to='/admin/report' className='admin_user_link'>Reports</Link>
+            
+          </li>
         </ul>
       </div>
     )

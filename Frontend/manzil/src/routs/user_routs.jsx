@@ -9,6 +9,7 @@ import Home from '../pages/Home_page/home_Page';
 import MyProfile from '../pages/myProfile/myProfile';
 import UserProfile from '../pages/userprofile/userprofile';
 import { PrivateRoutes } from './privateroute';
+import VideoCallRoom from '../pages/messege/videocallroom';
 // import Home from "../pages/HomePage";
 // import Profile from "../pages/ProfilePage";
 
@@ -32,6 +33,7 @@ export default function UserRouter(){
         <Route path='/homepage' element={<Home />}/>
         <Route path='/myprofile' element={<MyProfile />}/>
         <Route path='/userprofile/:userId'element={<UserProfile/>}/>
+        <Route path="/provider-videocall/:roomId" element={<VideoCallRoom/>}/>
         </Route>
         </Routes>
         </div>

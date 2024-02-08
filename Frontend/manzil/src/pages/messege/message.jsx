@@ -6,7 +6,10 @@ import CreateChatRoomAPI from '../../api/CreateChatRoomAPI';
 import GetChatMessages from '../../api/GetChatMessages';
 import MessageSeenAPI from '../../api/MessageSeenAPI';
 import { AiOutlineSend } from "react-icons/ai";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faVideo } from '@fortawesome/free-solid-svg-icons';
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
 const MessageApp = () => {
 
   const [profiles, setProfiles] = useState([]);
@@ -20,6 +23,7 @@ const MessageApp = () => {
   const [hasJoinedChatroom, setHasJoinedChatroom] = useState(false);
   const t = localStorage.getItem('jwtToken')
   const [users,setusers ]= useState(null)
+  const navigate=useNavigate()
 
   console.log(profiles, "my profiles");
 
@@ -131,6 +135,21 @@ const MessageApp = () => {
 
   console.log(messages,"mess");
 
+   const createRoom = async () => {
+    const { value: roomId } = await Swal.fire({
+      title: "Create a Room",
+      text: "Enter a Room ID",
+      input: "text",
+      showCancelButton: true,
+      confirmButtonText: "Create",
+    });
+    if (roomId) {
+      navigate(`/provider-videocall/${roomId}`);
+      console.log('roomid:', roomId);
+    }
+    
+  }; 
+
   return (
     <div className='flex items-center justify-between '>
      {selectedProfile && (
@@ -140,30 +159,21 @@ const MessageApp = () => {
           Chatting with {selectedProfile.username}
         </h2>
       </div>
-      <div className="flex items-center space-x-4">
-        <button
-          className="bg-green-500 text-white px-4 py-2 rounded-md"
-          onClick={() => handleVideoCall(selectedProfile.id)}
-        >
-          Video Call
-        </button>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-md"
-          onClick={() => handleAudioCall(selectedProfile.id)}
-        >
-          Audio Call
-        </button>
-      </div>
+      
     </div>
   )}
       <div className=" ml-96 flex w-4/6 pt-36 ">
  
         <div className="w-3/5 p-4 ">
+        <button className="bg-red-400 text-white px-2 py-2 hover:bg-red-600 focus:outline-none mt-2 ml-3 rounded-md" onClick={() => createRoom()}><FontAwesomeIcon icon={faVideo}/>
+        </button>
           {/* Chat Messages Container */}
           <div
+        
             className="bg-teal-100 p-4 rounded-lg shadow-xl h-5/6 overflow-y-auto "
             ref={chatMessagesContainerRef}
           >
+            
             {messages.map((message, index) => (
               <div
                 key={index}

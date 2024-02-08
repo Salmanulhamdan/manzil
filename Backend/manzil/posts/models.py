@@ -45,7 +45,8 @@ class Posts(models.Model):
     
 
     def report_count(self):
-        return Report.objects.filter(reported_item_type='post', reported_item_id=self.id).count()
+        
+        return Report.objects.filter(report_type='post', reported_item_id=self.id).count()
     
 
 
@@ -79,7 +80,7 @@ class Requirment(models.Model):
     is_blocked=models.BooleanField(default=False)
 
     def report_count(self):
-        return Report.objects.filter(reported_item_type='requirement', reported_item_id=self.id).count()
+        return Report.objects.filter(report_type='requirement', reported_item_id=self.id).count()
 
 
 class RequirementSaves(models.Model):
@@ -102,7 +103,7 @@ class Qustions(models.Model):
     is_blocked=models.BooleanField(default=False)
 
     def report_count(self):
-        return Report.objects.filter(reported_item_type='question', reported_item_id=self.id).count()
+        return Report.objects.filter(report_type='question', reported_item_id=self.id).count()
 
 
 class Answers(models.Model):

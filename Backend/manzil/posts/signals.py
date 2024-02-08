@@ -6,19 +6,21 @@ from .models import Report, Posts,Requirment,Qustions
 @receiver(post_save, sender=Report)
 def handle_report_save(sender, instance,created, **kwargs):
     print("signaling..............................")
-    if created:
-        # Check if the reported item has more than 3 reports
-        if instance.report_count() > 3:
-            # Set is_blocked to True for the corresponding object
-            if instance.report_type == 'post':
-                post = Posts.objects.get(pk=instance.reported_item_id)
+    print(instance)
+    if created: 
+        # Set is_blocked to True for the corresponding object
+        if instance.report_type == 'post':
+            post = Posts.objects.get(pk=instance.reported_item_id)
+            count=post.report_count()
+            if count > 3:
                 post.is_blocked = True
+                print(post.is_blocked,"blocle")
                 post.save()
-            elif instance.report_type == 'requirement':
-                requirement = Requirment.objects.get(pk=instance.reported_item_id)
-                requirement.is_blocked = True
-                requirement.save()
-            elif instance.report_type == 'question':
-                question = Qustions.objects.get(pk=instance.reported_item_id)
-                question.is_blocked = True
-                question.save()
+        elif instance.report_type == 'requirement':
+            requirement = Requirment.objects.get(pk=instance.reported_item_id)
+            requirement.is_blocked = True
+            requirement.save()
+        elif instance.report_type == 'question':
+            question = Qustions.objects.get(pk=instance.reported_item_id)
+            question.is_blocked = True
+            question.save()

@@ -6,6 +6,7 @@ from .models import CustomUser,HouseownerProfile,ProfessionalsProfile
 
 @receiver(post_save, sender=CustomUser)
 def create_profile(sender,instance,created, **kwargs):
+    
  
     if created:
         if instance.usertype=='houseowner':

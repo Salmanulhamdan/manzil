@@ -6,7 +6,7 @@ from rest_framework import status
 from django.db.models import Count
 from user.models import CustomUser, Professions
 from posts.models import Answers, Hashtags, Posts, Qustions, Report,Saves, Likes, Shares,Requirment, intrests
-from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, PostSerializer, QuestionSerializer, ReportSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
+from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, PostSerializer, PostSerializer_for_Report, QuestionSerializer, ReportItemSerializer, ReportSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 from rest_framework.views import APIView
 from django.db.models import Subquery
@@ -340,6 +340,21 @@ class IntrestsViewset(viewsets.ModelViewSet):
         serializer.save(user=user)
  
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    @action(detail=False, methods=['GET'])
+    def get_inrests(self, request):
+        try:
+            requirment=request.data.get('requirment')
+            all_intrests=intrests.objects.filter(requirment=requirment)
+            serlized_data=self.get_serializer(all_intrests,many=True)
+
+            return Response(serlized_data.data, status=status.HTTP_200_OK)
+        
+        except intrests.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+
+    
 
 
 
@@ -524,3 +539,101 @@ class ReportViewSet(viewsets.ModelViewSet):
             return Response({'status': 'success'}, status=status.HTTP_200_OK)
         else:
             return Response({'status': 'error', 'message': 'Invalid report type'}, status=status.HTTP_400_BAD_REQUEST)
+        
+   
+
+class DeleteReportsByItemAndType(APIView):
+    
+
+    def post(self, request, *args, **kwargs):
+        reported_item_id = request.data.get('reported_item_id')
+        report_type = request.data.get('report_type')
+
+        if not reported_item_id or not report_type:
+            return Response({'error': 'reported_item_id and report_type are required fields.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        reports_to_delete = Report.objects.filter(reported_item_id=reported_item_id, report_type=report_type)
+
+        if not reports_to_delete.exists():
+            return Response({'message': 'No reports found for the specified criteria.'},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        reports_to_delete.delete()
+
+        return Response({'message': 'Reports deleted successfully.'}, status=status.HTTP_200_OK)
+    
+
+class BlockItembyAdmin(APIView):
+
+    def patch(self, request, *args, **kwargs):
+        reported_item_id = request.data.get('reported_item_id')
+        report_type = request.data.get('report_type')
+
+        if not reported_item_id or not report_type:
+            return Response({'detail': 'Missing reported_item_id or report_type in the request.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if report_type == 'post':
+            try:
+                post_to_block = Posts.objects.get(pk=reported_item_id)
+                post_to_block.is_blocked = True
+                post_to_block.save()
+                return Response({'detail': 'Post blocked successfully.'}, status=status.HTTP_200_OK)
+            except Posts.DoesNotExist:
+                return Response({'detail': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({'detail': 'Invalid report type.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+        
+
+
+
+class ReportedItemsView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        reported_items = Report.objects.values('report_type', 'reported_item_id').annotate(report_count=Count('id'))
+        print(reported_items,"kkk")
+        serialized_reported_items = []
+
+        for item in reported_items:
+            report_serializer = ReportItemSerializer(data=item)
+            print(report_serializer,"serlizwe")
+            if report_serializer.is_valid():
+                print("valid")
+                report_data = report_serializer.validated_data
+                print(report_data,"rrrrrrrrrrrrrrrrrrrrrrrr")
+                report_data['report_count'] = item['report_count']
+                report_data['reasons'] = self.get_report_reasons(item['report_type'], item['reported_item_id'])
+                report_data['item_details'] = self.get_item_details(item['report_type'], item['reported_item_id'])
+                serialized_reported_items.append(report_data)
+
+                print(serialized_reported_items,"kkkddd")
+            else:
+                print("notvalid")
+
+        return Response({'reported_items': serialized_reported_items}, status=status.HTTP_200_OK)
+
+    def get_report_reasons(self, report_type, reported_item_id):
+        reasons = Report.objects.filter(report_type=report_type, reported_item_id=reported_item_id).values_list('reason', flat=True)
+        print(reasons,"reasonss")
+        return list(reasons)
+
+    def get_item_details(self, report_type, reported_item_id):
+        print("itemdetailll")
+        # Customize this based on your actual models and relationships
+        if report_type == 'post':
+            try:
+                post = Posts.objects.get(id=reported_item_id)
+                print(post,"poosssst")
+                post_serializer = PostSerializer_for_Report(post)
+                return post_serializer.data
+            except Posts.DoesNotExist:
+                return None
+        # Add more conditions for other report types if needed
+        return None
