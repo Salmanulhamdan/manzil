@@ -3,11 +3,67 @@ import './sidebar.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faToolbox,faUser ,faCircleQuestion,faMessage,faBell} from '@fortawesome/free-solid-svg-icons';
-
+import NotificationModal from '../modals/notificationmodal';
+import { useState,useEffect } from 'react';
 
 function SideBar({username,onToggleComponent}){
+
+
+  
+
+  const [showNotify, setShowNotify] = useState(false);
+  const [notification, setNotification] = useState([]);
+  const token = localStorage.getItem('jwtToken');
     
-    const navigate = useNavigate()
+  useEffect(() => {
+    if (token) {
+      console.log("notification websocket calling")
+      const websocketProtocol =
+        window.location.protocol === "https:" ? "wss://" : "ws://";
+      const socket = new WebSocket(`${websocketProtocol}//127.0.0.1:8000/ws/notification/?token=${token}`);
+    
+      console.log(socket,"notification socket")
+
+      socket.onopen = () => {
+        console.log("WebSocket connection established");
+      };
+
+      socket.onmessage = (event) => {
+        console.log(event,"notification socket event ")
+        const newNotification = JSON.parse(event.data);
+        console.log(newNotification,"new notification");
+        if (newNotification.type === "notification") {
+          setNotification((prevNotifications) => [
+            ...prevNotifications,
+            newNotification.payload,
+          ]);
+        }
+        console.log(notification,"list of notissssss")
+      };
+      socket.onerror = (error) => {
+console.error(error);
+};
+      socket.onclose = (event) => {
+        console.log("WebSocket connection closed", event);
+      };
+
+      return () => {
+        socket.close();
+      };
+    }
+  }, [token]);
+
+
+  const removeNotification = (notificationIdToRemove) => {
+    setNotification((prevNotifications) =>
+      prevNotifications.filter(
+        (notification) => notification.id !== notificationIdToRemove
+      )
+    );
+  };
+
+
+
  
 console.log("ddd",{username})
     return(
@@ -27,24 +83,50 @@ console.log("ddd",{username})
   </div>
 
   <div className="savedpost flex items-center mt-4">
-  <FontAwesomeIcon icon={faBell} />
-    <span className="savedpost_text ml-2">Notifications</span>
+  <FontAwesomeIcon icon={faBell} /> 
+  <button
+              className="myposts_text ml-2 relative"
+             
+              onMouseOver={(e)=>e.currentTarget.style.cursor='pointer'}
+              onClick={() => {setShowNotify(true)}}
+            >
+              Notifications
+             {/* Increase icon size */}
+             {notification?.length > 0 && (
+                <span className="absolute -top-4 -right-2 text-black px-2 py-1 rounded-full">
+                  {notification?.length}
+                </span>
+              )}
+            </button>
   </div>
+  {showNotify && (
+        <div className="notification-modal">
+          <NotificationModal
+            isVisible={showNotify}
+            onClose={() => setShowNotify(false)}
+            notification={notification}
+            removeNotification={removeNotification}
+          />
+        </div>
+      )}
+
   <div className="myposts flex items-center mt-4">
   <FontAwesomeIcon icon={faToolbox} />
-    <span className="myposts_text ml-2" onClick={() => onToggleComponent('myrequirment')} >My Requirements</span>
+    <span className="myposts_text ml-2" onClick={() => onToggleComponent('myrequirment')} onMouseOver={(e)=>e.currentTarget.style.cursor='pointer'} >My Requirements
+    
+    </span>
   </div>
 
   {/* Saved Posts */}
   <div className="savedpost flex items-center mt-4">
   <FontAwesomeIcon icon={faCircleQuestion} />
-    <span className="savedpost_text ml-2" onClick={() => onToggleComponent('myquestions')}>My Questions</span>
+    <span className="savedpost_text ml-2" onClick={() => onToggleComponent('myquestions')} onMouseOver={(e)=>e.currentTarget.style.cursor='pointer'}>My Questions</span>
   </div>
 
   {/* Messages */}
   <div className="messages flex items-center mt-4">
   <FontAwesomeIcon icon={faMessage} className="text-black" />
-    <span className="messages_text ml-2" onClick={() => onToggleComponent('message')}>Messages</span>
+    <span className="messages_text ml-2" onClick={() => onToggleComponent('message')} onMouseOver={(e)=>e.currentTarget.style.cursor='pointer'}>Messages</span>
   </div>
 </div>
 

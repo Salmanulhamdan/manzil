@@ -18,6 +18,7 @@ from .channelsmiddleware import JwtAuthMiddleware
 from channels.routing import ProtocolTypeRouter,URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from chat.routing import websocket_urlpatterns
+from posts.routing import websocket_urlpatterns as notification_websocket_urlpatterns
 # from posts.api import routing as  postrouting
 # from django.urls import path
 # from chat.api import consumers
@@ -35,7 +36,7 @@ application = ProtocolTypeRouter(
         'http': django_asgi_application,
         'websocket': JWTAuthMiddlewareStack(
             AllowedHostsOriginValidator(
-                JwtAuthMiddleware(URLRouter(websocket_urlpatterns))
+                JwtAuthMiddleware(URLRouter(websocket_urlpatterns+notification_websocket_urlpatterns))
             ),
         ),
     }

@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count
 from user.models import CustomUser, Professions
-from posts.models import Answers, Hashtags, Posts, Qustions, Report,Saves, Likes, Shares,Requirment, intrests
-from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, PostSerializer, PostSerializer_for_Report, QuestionSerializer, ReportItemSerializer, ReportSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
+from posts.models import Answers, Hashtags, Notification, Posts, Qustions, Report,Saves, Likes, Shares,Requirment, intrests
+from .serializers import AnswersSerializer, HashtagSerializer, IntrestsSerializer, NotificationSerializer, PostSerializer, PostSerializer_for_Report, QuestionSerializer, ReportItemSerializer, ReportSerializer, RequirmentSerializer,SavesSerializer, LikesSerializer, SharesSerializer
 from django.db.models import Q
 from rest_framework.views import APIView
 from django.db.models import Subquery
@@ -637,3 +637,47 @@ class ReportedItemsView(APIView):
                 return None
         # Add more conditions for other report types if needed
         return None
+
+
+
+
+
+
+
+class NotificationsView(generics.ListAPIView):
+    permission_classes = [  IsAuthenticated]
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return (
+            Notification.objects.filter(to_user=user)
+            .exclude(is_seen=True)
+            .order_by("-created")
+        )
+
+    def get(self, request, *args, **kwargs):
+        try:
+            queryset = self.get_queryset()
+            serializer = self.get_serializer(queryset, many=True)
+            print(serializer.data,"all notissss")
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class NotificationsSeenView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        return Notification.objects.all()  # Override the get_queryset method
+
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            notification = Notification.objects.get(pk=pk)
+            notification.is_seen = True
+            notification.save()
+            return Response(status=status.HTTP_200_OK)
+        except Notification.DoesNotExist:
+            return Response("Not found in the database", status=status.HTTP_404_NOT_FOUND)

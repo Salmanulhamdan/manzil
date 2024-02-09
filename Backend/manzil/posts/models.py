@@ -125,3 +125,23 @@ class Ratinganswer(models.Model):
     rating = models.PositiveIntegerField()
 
 
+
+
+class Notification(models.Model):
+   NOTIFICATION_TYPES = [
+        ('like', 'New Like'),
+        ('post', 'New Post'),
+        ('follow', 'New Follow'),
+        ('message', 'New Message'),
+       
+    ]
+   
+   from_user = models.ForeignKey(CustomUser, related_name="notification_from", on_delete=models.CASCADE, null=True)
+   to_user = models.ForeignKey(CustomUser, related_name="notification_to", on_delete=models.CASCADE, null=True)
+   notification_type = models.CharField(choices=NOTIFICATION_TYPES, max_length=20)
+   created = models.DateTimeField(auto_now_add=True)
+   is_seen = models.BooleanField(default=False)
+   
+   def __str__(self):
+        return f"{self.from_user} sent a {self.notification_type} notification to {self.to_user}"
+

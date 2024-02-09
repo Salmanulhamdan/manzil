@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from user.models import Follow
 from user.api.serializers import Custom_user_serializer, GetUserSerializer, ProfessionsSerializer
-from posts.models import AnswerReply, Answers, Posts, Hashtags, Qustions, Report, Requirment,Saves, Likes, Shares, intrests
+from posts.models import AnswerReply, Answers, Notification, Posts, Hashtags, Qustions, Report, Requirment,Saves, Likes, Shares, intrests
 
 class HashtagSerializer(serializers.ModelSerializer):
     class Meta:
@@ -201,3 +201,20 @@ class AnswersSerializer(serializers.ModelSerializer):
         model = Answers
         fields = ['id', 'user', 'qustion', 'answer', 'replies']
         read_only_fields = ['user']
+
+
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    from_user = Custom_user_serializer(read_only=True)
+
+    class Meta:
+        model = Notification
+        fields = '__all__'
+        read_only_fields = ('notification_type',)
+
+    def validate_notification_type(self, value):
+        choices = dict(Notification.NOTIFICATION_TYPES)
+        if value not in choices:
+            raise serializers.ValidationError("Invalid notification type.")
+        return value

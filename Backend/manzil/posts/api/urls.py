@@ -1,7 +1,7 @@
 
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import AnswerEditView, AnswersViewSet, BlockItembyAdmin, DeleteReportsByItemAndType, EditQustionView, EditRequirment, IntrestsViewset, PostsViewSet,HashtagsViewSet ,LikesViewSet, QustionViewset, ReportViewSet, ReportedItemsView,SharesListCreateView,EditPostView,SavesPostView,LikedPostsView,RequirmentViewset,SavedPostsView
+from .views import AnswerEditView, AnswersViewSet, BlockItembyAdmin, DeleteReportsByItemAndType, EditQustionView, EditRequirment, IntrestsViewset, NotificationsSeenView, NotificationsView, PostsViewSet,HashtagsViewSet ,LikesViewSet, QustionViewset, ReportViewSet, ReportedItemsView,SharesListCreateView,EditPostView,SavesPostView,LikedPostsView,RequirmentViewset,SavedPostsView
 
 router = DefaultRouter()
 router.register(r'hashtags', HashtagsViewSet,basename='hashtags')
@@ -27,4 +27,8 @@ urlpatterns = [
     path('reported-items/', ReportedItemsView.as_view(), name='reported_items'),
     path('delete_reports/', DeleteReportsByItemAndType.as_view(), name='delete_reports'),
     path('block-item/', BlockItembyAdmin.as_view(), name='block-item'),
+
+
+    path('notifications/', NotificationsView.as_view(), name='notifications'),
+    path('notifications-seen/<int:pk>/', NotificationsSeenView.as_view(), name='notifications-seen'),
 ]
