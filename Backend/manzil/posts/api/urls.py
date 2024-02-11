@@ -28,6 +28,8 @@ urlpatterns = [
     path('delete_reports/', DeleteReportsByItemAndType.as_view(), name='delete_reports'),
     path('block-item/', BlockItembyAdmin.as_view(), name='block-item'),
 
+    path('intrests/confirm_intrest/<int:intrest_id>/', IntrestsViewset.as_view({'patch': 'confirm_intrest'}), name='intrests'),
+
 
     path('notifications/', NotificationsView.as_view(), name='notifications'),
     path('notifications-seen/<int:pk>/', NotificationsSeenView.as_view(), name='notifications-seen'),

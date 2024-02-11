@@ -290,7 +290,7 @@ const handleDeleteRequirment = async (requirmentId) => {
          
           View Intrests
         </button>
-        <IntrestsModal isOpen={IntrestsModalOpen} closeModal={closeIntrestsModal} />
+        <IntrestsModal isOpen={IntrestsModalOpen} onClose={closeIntrestsModal} requirment_id={requirment.id} />
       </div>
     </div>
   ))}

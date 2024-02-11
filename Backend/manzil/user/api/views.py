@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from django.contrib.auth.hashers import make_password
 from user.models import CustomUser, Follow,HouseownerProfile, Plan, ProfessionalsProfile,Professions,UserPlan
 from rest_framework import status,viewsets
-from posts.models import Posts
+from posts.models import Notification, Posts
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework import serializers,generics
@@ -360,6 +360,11 @@ class FollowUnfollowUserView(APIView):
         except Follow.DoesNotExist:
             follow_instance = Follow(follower=logged_in_user, following=user_to_follow)
             follow_instance.save()
+
+            Notification.objects.create(
+                        from_user=request.user,
+                        to_user=user_to_follow,
+                        notification_type=Notification.NOTIFICATION_TYPES[2][0],)
            
             return Response({"detail": "You are now following this user."},status=status.HTTP_201_CREATED,)
 class UserProfile(APIView):

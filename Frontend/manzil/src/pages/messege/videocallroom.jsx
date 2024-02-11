@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
 
-import { useNavigate ,Link } from 'react-router-dom';
+
 function VideoCallRoom() {
   const { roomId } = useParams();
 

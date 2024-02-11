@@ -14,31 +14,30 @@ const NotificationModal = ({ isVisible, onClose, notification, removeNotificatio
     if( !isVisible ) return null;
 
     const handleClose = (e) =>{
-        if(e.target.id === 'wrapper') onClose();
+        console.log("jjjdfresde");
+        onClose();
     }
 
    
 
     const getNotificationMessage = (notification) => {
-        const { notification_type, post, comment } = notification;
+        console.log(notification,"notifiacccccto");
+        // const { notification_type, post, comment } = notification;
       
-        if (post) {
-          if (notification_type === "like") {
+        if (notification) {
+          if (notification.notification_type === "like") {
             return "liked your post";
-          } else if (notification_type === "comment") {
+          } else if (notification.notification_type=== "comment") {
             return "commented on your post";
-          } else if (notification_type === "post") {
+          } else if (notification.notification_type === "post") {
             return "created a new post";
-          }else if (notification_type === "blocked") {
+          }else if (notification.notification_type === "blocked") {
             return "blocked you post";
+          }else if (notification.notification_type === "follow") {
+            return "followed you ";
           }
-        } else if (comment) {
-          if (notification_type === "comment") {
-            return "replied to your comment";
-          }
-        }
-      
-        return "has started following you";
+
+        } 
     };
 
     const onClick = async (notificationId, id, notificationType, postId) => {

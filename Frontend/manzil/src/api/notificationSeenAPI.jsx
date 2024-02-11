@@ -7,7 +7,7 @@ const notificationSeenApi = async (notificationId) =>  {
 
     // Make sure to include the 'Content-Type' header and remove extra object nesting
     const response = await axios.post(
-      `${baseUrl}api/notifications-seen/${notificationId}/`,
+      `${baseUrl}/api/notifications-seen/${notificationId}/`,
       null, // No request body, you can use null
       {
         headers: {

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faToolbox,faUser ,faCircleQuestion,faMessage,faBell} from '@fortawesome/free-solid-svg-icons';
 import NotificationModal from '../modals/notificationmodal';
 import { useState,useEffect } from 'react';
+import getNotificationsApi from '../../api/getNotifacationAPI';
 
 function SideBar({username,onToggleComponent}){
 
@@ -14,6 +15,27 @@ function SideBar({username,onToggleComponent}){
   const [showNotify, setShowNotify] = useState(false);
   const [notification, setNotification] = useState([]);
   const token = localStorage.getItem('jwtToken');
+
+  useEffect(() => {
+    
+    const fetchData = async () => {
+      try {
+        const data = await getNotificationsApi();
+        setNotification(data);
+        console.log("notificationnnnn",data);
+
+        // const unseenChatsResponse = await getUnseenChatsApi(); // Implement this API function
+        // setUnseenChats(unseenChatsResponse);
+        // console.log(unseenChats, "iam chatttttttttt");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (token) {
+      fetchData();
+    }
+  }, []);
+
     
   useEffect(() => {
     if (token) {
@@ -30,6 +52,7 @@ function SideBar({username,onToggleComponent}){
 
       socket.onmessage = (event) => {
         console.log(event,"notification socket event ")
+        console.log(event.data,"evendaaataaa");
         const newNotification = JSON.parse(event.data);
         console.log(newNotification,"new notification");
         if (newNotification.type === "notification") {

@@ -11,6 +11,7 @@ User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        
         self.room_id = self.scope['url_route']['kwargs']['room_id']
         self.room_group_name = f"chat_{self.room_id}"
         # Add the channel to the room's group
@@ -40,6 +41,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = self.scope["user"]
         user_serializer_data = await self.async_custom_user_serializer(user)
         email = user_serializer_data['email']
+        name=user_serializer_data['username']
+        profile_pic=user_serializer_data['profile_photo']
         new_message = await self.create_message(self.room_id, message, email)
         
         # Send the received message to the room's group
@@ -50,6 +53,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message,
                 'room_id': self.room_id,
                 'sender_email': email,
+                'sender_name':name,
+                'sender_profile_pic':profile_pic,
                 'created': timesince(new_message.timestamp),
             }
         )
@@ -58,6 +63,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event['message']
         room_id = event['room_id']
         email = event['sender_email']
+        name=event['sender_name']
+        sender_pic=event['sender_profile_pic']
         created = event['created']
         
         # Send the chat message to the WebSocket
@@ -66,6 +73,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'message': message,
             'room_id': room_id,
             'sender_email': email,
+            'sender_name':name,
+            'sender_profile_pic':sender_pic,
             'created': created,
         }))
 

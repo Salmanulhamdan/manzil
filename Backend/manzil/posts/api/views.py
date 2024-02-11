@@ -40,7 +40,7 @@ class PostsViewSet(viewsets.ModelViewSet):
         # Update the request data with the hashtag instances
         # newdata['hashtag'] = [hashtag.id for hashtag in hashtag_instence]
         newdata['user'] = user.id
-        print(newdata,"hh")
+      
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
@@ -63,13 +63,12 @@ class PostsViewSet(viewsets.ModelViewSet):
 
         # Find other posts with similar hashtags
         recommended_posts = (Posts.objects.filter(hashtag__in=liked_post_hashtags).exclude(Q(likes__user=liked_user) | Q(user=liked_user)).distinct())
-        print("recomende",recommended_posts)
-        
+    
 
 
         # Serialize all posts excluding liked and own posts
         remaining_posts = Posts.objects.exclude(Q(user=liked_user)| Q(id__in=recommended_posts.values('id')))
-        print("remainif",remaining_posts)
+       
         remaining_posts_serializer = self.get_serializer(remaining_posts, many=True)
 
 
@@ -102,7 +101,7 @@ class PostsViewSet(viewsets.ModelViewSet):
     def get_user_posts_by_id(self, request, pk=None):
             
         target_user = get_object_or_404(CustomUser, pk=pk)
-        print(target_user,"jjj")
+      
         posts = Posts.objects.filter(user=target_user)
         serialized_posts = self.get_serializer(posts, many=True)
         
@@ -147,7 +146,7 @@ class SavesPostView(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def save_post(self, request):
         post_pk = request.data.get('post')
-        print(post_pk,"saaa")  
+       
         post = Posts.objects.get(pk=post_pk)
         user = request.user
 
@@ -185,7 +184,12 @@ class LikesViewSet(viewsets.ModelViewSet):
 
         like = Likes(post=post, user=user)
         like.save()
+        Notification.objects.create(
+                        from_user=request.user,
+                        to_user=post.user,
+                        notification_type=Notification.NOTIFICATION_TYPES[0][0],)
         total_likes = Likes.objects.filter(post=post).count()
+
 
         return Response({"detail": "Post liked successfully.","total_likes": total_likes}, status=status.HTTP_201_CREATED)
     
@@ -232,7 +236,7 @@ class RequirmentViewset(viewsets.ModelViewSet):
         user=request.user
         newdata=request.data.copy()
         profession_id = newdata.get('profession')
-        print(f"Profession ID from request data: {profession_id}")
+        
 
         if not profession_id:
             return Response({'error': 'Profession is required.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -244,7 +248,7 @@ class RequirmentViewset(viewsets.ModelViewSet):
             return Response({'error': 'Invalid profession ID.'}, status=status.HTTP_400_BAD_REQUEST)
         newdata['user'] = user.id
         newdata['profession']=profession.id
-        print(f"New data before serializer: {newdata}")
+       
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.validated_data['profession'] = profession
@@ -282,11 +286,11 @@ class RequirmentViewset(viewsets.ModelViewSet):
         
     def destroy(self, request, pk=None):
         try:
-            print(pk,"pk")
+       
             user=request.user
-            print(user,"ggg")
+          
             instance = Requirment.objects.get(pk=pk)
-            print(instance.user,"ggg")
+           
             if user==instance.user:
                 instance.delete()
                 return Response({"detail": "Deleted"},status=status.HTTP_204_NO_CONTENT)
@@ -309,7 +313,7 @@ class EditRequirment(generics.UpdateAPIView):
         if user==instance.user:
             serializer = self.get_serializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
-            print(instance.user.username,"instance")
+        
 
             self.perform_update(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -329,6 +333,7 @@ class IntrestsViewset(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         user=request.user
         requirment=request.data.get('requirment')
+   
         existing_interest = intrests.objects.filter(user=user,requirment=requirment).first()
         if existing_interest:
             return Response({"detail": "User already has an interest."}, status=status.HTTP_400_BAD_REQUEST)
@@ -344,7 +349,9 @@ class IntrestsViewset(viewsets.ModelViewSet):
     @action(detail=False, methods=['GET'])
     def get_inrests(self, request):
         try:
+
             requirment=request.data.get('requirment')
+
             all_intrests=intrests.objects.filter(requirment=requirment)
             serlized_data=self.get_serializer(all_intrests,many=True)
 
@@ -352,6 +359,30 @@ class IntrestsViewset(viewsets.ModelViewSet):
         
         except intrests.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+    def get_queryset(self):
+       
+        # Retrieve answers based on the specific question
+        requirment = self.request.query_params.get('requirment')
+        print(requirment,"mmmsssssssssss")
+        print(intrests.objects.filter(requirment=requirment))
+        if requirment:
+            return intrests.objects.filter(requirment=requirment)
+        
+    @action(detail=False, methods=['PATCH'])
+    def confirm_intrest(request, *args, **kwargs):
+        print("Gggggggggggggg")
+        try:
+            intrest_id = kwargs.get('intrest_id')
+            print(intrest_id)
+            intrest = intrests.objects.get(pk=intrest_id)
+        except intrests.DoesNotExist:
+            return Response({"error": "Intrest object does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        
+        intrest.conformation = True
+        intrest.save()
+        
+        return Response({"message": "Intrest confirmation updated successfully"}, status=status.HTTP_200_OK)
         
 
     
@@ -366,15 +397,15 @@ class QustionViewset(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        print("gglll")
+      
         user=request.user
         newdata=request.data.copy()
-        print(newdata,"newdata")
+
         newdata['user'] = user.id
         serializer = self.get_serializer(data=newdata)
         serializer.is_valid(raise_exception=True)
         serializer.save(user=user)
-        print(serializer,"daata")
+      
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
@@ -402,11 +433,11 @@ class QustionViewset(viewsets.ModelViewSet):
         
     def destroy(self, request, pk=None):
         try:
-            print(pk,"pk")
+
             user=request.user
-            print(user,"ggg")
+
             instance = Qustions.objects.get(pk=pk)
-            print(instance.user,"ggg")
+          
             if user==instance.user:
                 instance.delete()
                 return Response({"detail": "Deleted"},status=status.HTTP_204_NO_CONTENT)
@@ -428,7 +459,7 @@ class EditQustionView(generics.UpdateAPIView):
         if user==instance.user:
             serializer = self.get_serializer(instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
-            print(instance.user.username,"instance")
+            
 
             self.perform_update(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -447,21 +478,20 @@ class AnswersViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
     def get_queryset(self):
-        print("answere")
+      
         # Retrieve answers based on the specific question
         question_id = self.request.query_params.get('question')
-        print(question_id)
-        print(Answers.objects.filter(qustion=question_id))
+       
         if question_id:
             return Answers.objects.filter(qustion=question_id)
         
     def destroy(self, request, pk=None):
         try:
-            print(pk,"pk")
+           
             user=request.user
-            print(user,"ggg")
+            
             instance = Answers.objects.get(pk=pk)
-            print(instance.user,"ggg")
+
             if user==instance.user:
                 instance.delete()
                 return Response({"detail": "Deleted"},status=status.HTTP_204_NO_CONTENT)
@@ -598,22 +628,21 @@ class ReportedItemsView(APIView):
 
     def get(self, request, *args, **kwargs):
         reported_items = Report.objects.values('report_type', 'reported_item_id').annotate(report_count=Count('id'))
-        print(reported_items,"kkk")
+    
         serialized_reported_items = []
 
         for item in reported_items:
             report_serializer = ReportItemSerializer(data=item)
-            print(report_serializer,"serlizwe")
+           
             if report_serializer.is_valid():
-                print("valid")
+         
                 report_data = report_serializer.validated_data
-                print(report_data,"rrrrrrrrrrrrrrrrrrrrrrrr")
+               
                 report_data['report_count'] = item['report_count']
                 report_data['reasons'] = self.get_report_reasons(item['report_type'], item['reported_item_id'])
                 report_data['item_details'] = self.get_item_details(item['report_type'], item['reported_item_id'])
                 serialized_reported_items.append(report_data)
 
-                print(serialized_reported_items,"kkkddd")
             else:
                 print("notvalid")
 
@@ -621,16 +650,16 @@ class ReportedItemsView(APIView):
 
     def get_report_reasons(self, report_type, reported_item_id):
         reasons = Report.objects.filter(report_type=report_type, reported_item_id=reported_item_id).values_list('reason', flat=True)
-        print(reasons,"reasonss")
+     
         return list(reasons)
 
     def get_item_details(self, report_type, reported_item_id):
-        print("itemdetailll")
+        
         # Customize this based on your actual models and relationships
         if report_type == 'post':
             try:
                 post = Posts.objects.get(id=reported_item_id)
-                print(post,"poosssst")
+                
                 post_serializer = PostSerializer_for_Report(post)
                 return post_serializer.data
             except Posts.DoesNotExist:
@@ -650,6 +679,7 @@ class NotificationsView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+      
         return (
             Notification.objects.filter(to_user=user)
             .exclude(is_seen=True)
@@ -659,8 +689,9 @@ class NotificationsView(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         try:
             queryset = self.get_queryset()
+         
             serializer = self.get_serializer(queryset, many=True)
-            print(serializer.data,"all notissss")
+          
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response(str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -675,6 +706,7 @@ class NotificationsSeenView(generics.ListAPIView):
 
     def post(self, request, pk, *args, **kwargs):
         try:
+            print("hhhhhhhhhhhhhhhhhhhh")
             notification = Notification.objects.get(pk=pk)
             notification.is_seen = True
             notification.save()

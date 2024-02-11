@@ -12,12 +12,12 @@ function LandingPage() {
         
       
 <div className="background-image" style={{ position: "relative" }}>
-  <button className="google-login" style={{ position: "absolute", top: "41%", left: "45%" }}>
+  {/* <button className="google-login" style={{ position: "absolute", top: "41%", left: "45%" }}>
     Login with Google
   </button>
   <button className="facebook-login" style={{ position: "absolute", top: "45%", right: "47%" }}>
     Login with Facebook
-  </button>
+  </button> */}
   <Link to="/login" className='link'>
   <button className=" hover:bg-blue-400 text-black font-bold py-2 px-4 rounded-full" style={{ position: "absolute", top: "50%", right: "47%" }}>
    Already have an account? Log in
