@@ -113,15 +113,15 @@ const UserProfile = () => {
       <div className="grid grid-cols-1 gap-2">
         <div >
           <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{userProfile ? userProfile.user.post_count : "0"}</p>
-          <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }}>Posts</p>
+          <p className="text-gray-600 cursor-pointer" style={{ display: 'inline-block', marginLeft: '10px' }}>Posts</p>
         </div>
         <div>
           <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{userProfile ? userProfile.user.followers_count : "0"}</p>
-          <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }}>Followers</p>
+          <p className="text-gray-600 cursor-pointer" style={{ display: 'inline-block', marginLeft: '10px' }}>Followers</p>
         </div>
         <div>
           <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{userProfile ? userProfile.user.following_count : "0"}</p>
-          <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }}>Following</p>
+          <p className="text-gray-600 cursor-pointer" style={{ display: 'inline-block', marginLeft: '10px' }}>Following</p>
         </div>
       </div>
       <div className="mt-4">

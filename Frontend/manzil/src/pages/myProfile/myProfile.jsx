@@ -27,18 +27,7 @@ const MyProfile = () => {
   const toggleComponent = (component) => {
     setSelectedComponent(component);
   };
-  const renderSelectedComponent = () => {
-    switch (selectedComponent) {
-      case 'post':
-        return <PostListing />;
-      case 'requirements':
-        return <RequirmentListing />;
-      // case 'questions':
-      //   return <QuestionsComponent />;
-      default:
-        return null;
-    }
-  };
+
 
   const fileInput = useRef(null);
   const handleImageClick = () => {
@@ -209,7 +198,7 @@ const MyProfile = () => {
       }
 
 
-  }, [iseditModalOpen,updateUI,trigger]); 
+  }, [iseditModalOpen,updateUI,trigger,isModalOpen]); 
 
   
 
@@ -267,16 +256,16 @@ const MyProfile = () => {
         <div className="grid grid-cols-3 gap-4">
           <div>
             <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{user.post_count}</p>
-            <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }} onClick={mypostsshow}>Posts</p>
+            <p className="text-gray-600 cursor-pointer" style={{ display: 'inline-block', marginLeft: '10px' }} onClick={mypostsshow}>Posts</p>
           </div>
           <div>
             <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{user.followers_count}</p>
-            <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }}>Followers</p>
+            <p className="text-gray-600 cursor-pointer" style={{ display: 'inline-block', marginLeft: '10px' }}>Followers</p>
           </div>
           
           <div>
             <p className="text-lg font-semibold mb-2" style={{ display: 'inline-block' }}>{user.following_count}</p>
-            <p className="text-gray-600" style={{ display: 'inline-block', marginLeft: '10px' }}>Following</p>
+            <p className="text-gray-600 cursor-pointer" style={{ display: 'inline-block', marginLeft: '10px' }}>Following</p>
           </div>
         </div>
         <div className="mt-4">

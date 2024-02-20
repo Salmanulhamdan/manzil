@@ -1,9 +1,31 @@
 from rest_framework import serializers
 from user.models import CustomUser ,HouseownerProfile,Professions,ProfessionalsProfile,Plan,UserPlan
+
+
+
+
+class Houseowner_Profile_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = HouseownerProfile
+        fields = ['place', 'upgraded']
+
+class Professionals_Profile_Serializer(serializers.ModelSerializer):
+    profession = serializers.StringRelatedField()
+    
+    class Meta:
+        model = ProfessionalsProfile
+        fields = ['place', 'profession', 'experience', 'bio', 'upgraded']
+
 class Custom_user_serializer(serializers.ModelSerializer):
+    houseowner_profile = Houseowner_Profile_Serializer( read_only=True)
+    professional_profile = Professionals_Profile_Serializer( read_only=True)
+
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ['id', 'username', 'email', 'phonenumber', 'profile_photo', 'houseowner_profile', 'professional_profile','is_active','is_staff','usertype']
+
+
+
 
         
 class GetUserSerializer(serializers.ModelSerializer):

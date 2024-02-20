@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 function AdminSide(){
     return(
-        <div className="admin_box bg-gray-200 p-4">
+        <div className="admin_box bg-gray-200 p-4 col-span-1">
         <h1 className="admin_side_title_txt text-2xl font-bold mb-4">Admin</h1>
         <ul>
           <li className="admin_dash_link py-2 text-gray-800 hover:text-blue-500 cursor-pointer">Dashboard</li>

@@ -30,6 +30,7 @@ function AdminDash(){
             console.log('Response:', response.data);
       
             setUsers(response.data);
+            console.log(response.data,"ddddddddddddddddddddddddddddddddddddddd");
           } catch (error) {
             console.error('Error:', error);
       
@@ -74,7 +75,7 @@ function AdminDash(){
    
    
     return(
-        <div>
+        <div className="grid grid-cols-6">
             <AdminSide/>
             <AdminNav/>
             {error ? (
