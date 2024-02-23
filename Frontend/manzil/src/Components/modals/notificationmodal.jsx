@@ -39,8 +39,8 @@ const NotificationModal = ({ isVisible, onClose, notification, removeNotificatio
 
         } 
     };
+    const onNotificationClick = async (notificationId, id, notificationType, postId) => {
 
-    const onClick = async (notificationId, id, notificationType, postId) => {
         try {
             await notificationSeenApi(notificationId)
             removeNotification(notificationId);
@@ -84,16 +84,16 @@ const NotificationModal = ({ isVisible, onClose, notification, removeNotificatio
                     >
                         {notification && notification?.length > 0 ? (
                             notification.map((note, index) => (
-                                <li key={index} style={{border:'2px solid  rgba(209, 90, 90, 0.5)',borderRadius:'5px',marginBottom:'5px'}}>
+                                <li key={note.id} style={{border:'2px solid  rgba(209, 90, 90, 0.5)',borderRadius:'5px',marginBottom:'5px'}}>
                                     <p
                                         className="block w-full whitespace-nowrap  px-4 py-2 text-sm public hover:bg-neutral-100 active:no-underline cursor-pointer"
-                                        onClick={() => onClick(note.id, note.from_user.id, note.notification_type, note.post?.id )}
+                                        onClick={() => onNotificationClick(note.id, note.from_user.id, note.notification_type, note.post?.id )}
                                         data-te-dropdown-item-ref
                                     
                                     >
                                         {note.notification_type === "blocked"
                                             ? "Admin blocked you post"
-                                            : `${note.from_user.username} ${getNotificationMessage(note)}`}
+                                            : `${note.from_user} ${getNotificationMessage(note)}`}
                                     </p>
                                 </li>
                             ))

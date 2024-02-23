@@ -23,10 +23,6 @@ function SideBar({username,onToggleComponent}){
         const data = await getNotificationsApi();
         setNotification(data);
         console.log("notificationnnnn",data);
-
-        // const unseenChatsResponse = await getUnseenChatsApi(); // Implement this API function
-        // setUnseenChats(unseenChatsResponse);
-        // console.log(unseenChats, "iam chatttttttttt");
       } catch (error) {
         console.error(error);
       }
@@ -61,7 +57,7 @@ function SideBar({username,onToggleComponent}){
             newNotification.payload,
           ]);
         }
-        console.log(notification,"list of notissssss")
+        
       };
       socket.onerror = (error) => {
 console.error(error);
@@ -88,7 +84,7 @@ console.error(error);
 
 
  
-console.log("ddd",{username})
+
     return(
 <div className="box2 bg-white p-4 shadow-md fixed">
   {/* My Profile */}

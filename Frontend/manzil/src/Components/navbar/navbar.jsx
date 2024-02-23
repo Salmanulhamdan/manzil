@@ -44,7 +44,7 @@ const navigate = useNavigate();
     <div className='group'>
     {naveitems !== "landingpage" 
     ? naveitems === "homepage"
-      ? <a className='professional' href="/services">Professionals</a>
+      ? ""
       : naveitems === "profile"
         ? null
         : null // If you want to render nothing for the 'else' condition

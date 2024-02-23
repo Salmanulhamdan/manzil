@@ -19,13 +19,29 @@ class Professionals_Profile_Serializer(serializers.ModelSerializer):
 class Custom_user_serializer(serializers.ModelSerializer):
     houseowner_profile = Houseowner_Profile_Serializer( read_only=True)
     professional_profile = Professionals_Profile_Serializer( read_only=True)
+    is_upgraded = serializers.SerializerMethodField()
+    place = serializers.SerializerMethodField()
+
+    def get_is_upgraded(self, obj):
+        houseowner_upgraded = obj.houseowner_profile.upgraded if hasattr(obj, 'houseowner_profile') else False
+        professional_upgraded = obj.professional_profile.upgraded if hasattr(obj, 'professional_profile') else False
+        return houseowner_upgraded or professional_upgraded
+    
+    def get_place(self, obj):
+        houseowner_place = obj.houseowner_profile.place if hasattr(obj, 'houseowner_profile') else None
+        professional_place = obj.professional_profile.place if hasattr(obj, 'professional_profile') else None
+        return houseowner_place or professional_place
+
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'email', 'phonenumber', 'profile_photo', 'houseowner_profile', 'professional_profile','is_active','is_staff','usertype']
+        fields = ['id', 'username', 'email', 'phonenumber', 'profile_photo', 'houseowner_profile', 'professional_profile','is_active','is_staff','usertype','is_upgraded','place']
 
 
-
+class Customuser_serializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
         
 class GetUserSerializer(serializers.ModelSerializer):

@@ -14,6 +14,15 @@ from django.db.models import Subquery
 from rest_framework.decorators import action
 
 
+
+def create_confirmation_notification(sender, requirement, user,notfication_type):
+    Notification.objects.create(
+        from_user=sender,
+        to_user=user,
+        notification_type=notfication_type,
+        
+    )
+
 class HashtagsViewSet(viewsets.ModelViewSet):
     queryset = Hashtags.objects.all()
     serializer_class = HashtagSerializer
@@ -348,6 +357,7 @@ class IntrestsViewset(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['GET'])
     def get_inrests(self, request):
+        print("gettinnn")
         try:
 
             requirment=request.data.get('requirment')
@@ -361,17 +371,17 @@ class IntrestsViewset(viewsets.ModelViewSet):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
     def get_queryset(self):
-       
         # Retrieve answers based on the specific question
         requirment = self.request.query_params.get('requirment')
-        print(requirment,"mmmsssssssssss")
+        
         print(intrests.objects.filter(requirment=requirment))
         if requirment:
             return intrests.objects.filter(requirment=requirment)
         
     @action(detail=False, methods=['PATCH'])
-    def confirm_intrest(request, *args, **kwargs):
+    def confirm_intrest(self,request, *args, **kwargs):
         print("Gggggggggggggg")
+        print(request.user)
         try:
             intrest_id = kwargs.get('intrest_id')
             print(intrest_id)
@@ -379,8 +389,14 @@ class IntrestsViewset(viewsets.ModelViewSet):
         except intrests.DoesNotExist:
             return Response({"error": "Intrest object does not exist"}, status=status.HTTP_404_NOT_FOUND)
         
+        other_intrests = intrests.objects.filter(requirment=intrest.requirment, conformation=True).exclude(pk=intrest_id)
+        other_intrests.update(conformation=False)
+        
         intrest.conformation = True
         intrest.save()
+
+        # Create a notification
+        create_confirmation_notification(request.user, intrest.requirment, intrest.user,'confirmed')
         
         return Response({"message": "Intrest confirmation updated successfully"}, status=status.HTTP_200_OK)
         
@@ -713,3 +729,12 @@ class NotificationsSeenView(generics.ListAPIView):
             return Response(status=status.HTTP_200_OK)
         except Notification.DoesNotExist:
             return Response("Not found in the database", status=status.HTTP_404_NOT_FOUND)
+        
+
+
+
+
+
+
+
+

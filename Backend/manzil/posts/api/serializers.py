@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from user.models import Follow
-from user.api.serializers import Custom_user_serializer, GetUserSerializer, ProfessionsSerializer
+from user.api.serializers import Customuser_serializer, GetUserSerializer, ProfessionsSerializer
 from posts.models import AnswerReply, Answers, Notification, Posts, Hashtags, Qustions, Report, Requirment,Saves, Likes, Shares, intrests
 
 class HashtagSerializer(serializers.ModelSerializer):
@@ -115,14 +115,14 @@ class SharesSerializer(serializers.ModelSerializer):
 
 class RequirmentSerializer(serializers.ModelSerializer):
     is_following_author = serializers.SerializerMethodField()
-    is_intrested = serializers.SerializerMethodField()
-    user =  Custom_user_serializer(read_only=True)
+    is_intrest_confirmed = serializers.SerializerMethodField()
+    user =  Customuser_serializer(read_only=True)
     profession=ProfessionsSerializer(read_only=True)
    
 
     class Meta:
         model = Requirment
-        fields = ('id','profession','description','time','user','is_following_author', 'is_intrested')
+        fields = ('id','profession','description','time','user','is_following_author', 'is_intrest_confirmed')
 
 
     def get_is_following_author(self, obj):
@@ -137,11 +137,19 @@ class RequirmentSerializer(serializers.ModelSerializer):
                 return False
         return False 
     
-    def get_is_intrested(self, obj):
+    def get_is_intrest_confirmed(self, obj):
         user = self.context['request'].user
+        print(user,"usereeeis here")
+        print(obj,"objjjjj")
+        interest_instance = intrests.objects.filter( requirment=obj)
+        print(interest_instance,"jjjjjjdde")
+
         try:
-            interest_instance = intrests.objects.get(user=user, requirment=obj)
-            return True
+            interest_instance = intrests.objects.get( requirment=obj, conformation=True)
+            if interest_instance:
+                user_serializer = Customuser_serializer(interest_instance.user)
+                user_data = user_serializer.data
+                return user_data
         except intrests.DoesNotExist:
             return False
         except Exception as e:
@@ -152,7 +160,7 @@ class RequirmentSerializer(serializers.ModelSerializer):
 
 
 class IntrestsSerializer(serializers.ModelSerializer):
-    user = Custom_user_serializer(read_only=True)
+    user = Customuser_serializer(read_only=True)
     class Meta:
         model = intrests
         fields = ('id','user','requirment','conformation','time')
@@ -162,7 +170,7 @@ class IntrestsSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     is_following_author = serializers.SerializerMethodField()
-    user =  Custom_user_serializer(read_only=True)
+    user =  Customuser_serializer(read_only=True)
     class Meta:
         model = Qustions
         fields = ['id','user','qustion','is_following_author']
@@ -183,7 +191,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class AnswerReplySerializer(serializers.ModelSerializer):
     replies = serializers.SerializerMethodField()
-    user =  Custom_user_serializer(read_only=True)
+    user =  Customuser_serializer(read_only=True)
 
     class Meta:
         model = AnswerReply
@@ -195,7 +203,7 @@ class AnswerReplySerializer(serializers.ModelSerializer):
 
 class AnswersSerializer(serializers.ModelSerializer):
     replies = AnswerReplySerializer(many=True, read_only=True)
-    user =  Custom_user_serializer(read_only=True)
+    user =  Customuser_serializer(read_only=True)
 
     class Meta:
         model = Answers
@@ -206,7 +214,8 @@ class AnswersSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-    from_user = Custom_user_serializer(read_only=True)
+    from_user = serializers.EmailField(source='from_user.username', read_only=True)
+
 
     class Meta:
         model = Notification
