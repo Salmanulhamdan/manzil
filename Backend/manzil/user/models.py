@@ -93,9 +93,6 @@ class ProfessionalsProfile(models.Model):
         return self.user.username
 
     
-    
-
-
 #modls for upgrade a user 
 
 class Plan(models.Model):

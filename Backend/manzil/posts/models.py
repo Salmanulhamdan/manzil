@@ -133,6 +133,7 @@ class Notification(models.Model):
         ('post', 'New Post'),
         ('follow', 'New Follow'),
         ('message', 'New Message'),
+        ('confirmed','Confirmed'),
        
     ]
    
@@ -144,4 +145,9 @@ class Notification(models.Model):
    
    def __str__(self):
         return f"{self.from_user} sent a {self.notification_type} notification to {self.to_user}"
+   
+
+
+
+
 

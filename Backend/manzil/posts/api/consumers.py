@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("kkkkkkkkkkkhfrev")
         logger.info("WebSocket connect")
         self.user = self.scope["user"]
 
@@ -24,6 +23,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             }))
             
     async def receive(self, text_data):
+        print(text_data,"textdattatat")
         logger.info("WebSocket received data: %s", text_data)
         await self.send(text_data=json.dumps({'status': 'OK,recieved'}))
         
@@ -35,9 +35,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
         
     async def send_notification(self, event):
+        print(event,"event")
+
         logger.info("Sending notification: %s", event)
         data = json.loads(event.get('value'))
-        print("senfoooooo")
+        print(data,"senfoooooo")
         await self.send(text_data=json.dumps({
                 'type' : 'notification',
                 'payload': data

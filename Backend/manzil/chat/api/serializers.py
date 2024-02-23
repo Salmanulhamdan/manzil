@@ -2,7 +2,7 @@ from rest_framework import serializers
 from chat.models import ChatRoom, Message
 from django.utils.timesince import timesince
 # from user.models import CustomUser
-from user.api.serializers import Custom_user_serializer
+from user.api.serializers import Customuser_serializer
 
 
 
@@ -38,7 +38,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 class ChatRoomListSerializer(serializers.ModelSerializer):
     unseen_message_count = serializers.SerializerMethodField()
-    members = Custom_user_serializer(many=True)
+    members = Customuser_serializer(many=True)
 
     class Meta:
         model = ChatRoom
@@ -52,6 +52,6 @@ class ChatRoomListSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         members = instance.members.exclude(id=user.id)
         data = super(ChatRoomListSerializer, self).to_representation(instance)
-        data['members'] = Custom_user_serializer(members, many=True).data
+        data['members'] = Customuser_serializer(members, many=True).data
         return data
     

@@ -61,13 +61,14 @@ const HouseownerSignUpForm = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="flex-1 bg-blue-500">
-      {/* <img src="your-image-source.jpg" alt="Your Image" className="mr-4" /> */}
+      <div className="flex-1 flex items-center justify-center  bg-gradient-to-br from-teal-300 to-teal-600 ">
+      <img src="/images/bg.jpg" alt="Your Image" className="" />
   </div>
   <div className="flex-1 flex justify-center items-center ">
-       
+    
     <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-24  ">
-    <div className="mb-4">
+   <h2 className="text-2xl font-bold">HouseOwner Signup</h2>
+    <div className="mt-16 mb-4">
       <input
         type="text"
         name="fullName"

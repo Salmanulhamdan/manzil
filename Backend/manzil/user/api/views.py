@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import razorpay
-from user.api.serializers import Custom_user_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer, UserUpdateSerializer,UserPlanSerializer, UserProfileStatusSerializer,ProfessionsSerializer
+from user.api.serializers import Custom_user_serializer,Customuser_serializer, HouseownerProfileSerializer,Login_serializer_user,GetUserSerializer, PlanSerializer, ProfessionalsProfileSerializer, ProfilePhotoUpdateSerializer, UserUpdateSerializer,UserPlanSerializer, UserProfileStatusSerializer,ProfessionsSerializer
 from rest_framework.views import APIView
 from rest_framework.authentication import authenticate
 from rest_framework.permissions import AllowAny
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 class Signup(APIView):
     permission_classes = [AllowAny]
-    serializer_class = Custom_user_serializer
+    serializer_class = Customuser_serializer
 
     def post(self, request, format=None):
         try:

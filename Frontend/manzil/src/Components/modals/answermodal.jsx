@@ -8,10 +8,11 @@ import { faXmark} from '@fortawesome/free-solid-svg-icons';
 import { Link} from 'react-router-dom';
 const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
   
-    console.log(question_id,"dd");
+
   
   const [answerlist, setAnswerlist] = useState([]);
   const [answer,setAnswer] = useState()
+  const[trigger,setTrigger]=useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,6 +37,7 @@ const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
         // Handle successful post creation, e.g., show a success message, redirect, etc.
         console.log(response.data,'answer created successfully!');
         Swal.fire("Created!", "Your answerhas been Created.", "success");
+        setTrigger(true)
       } else {
         // Handle errors, e.g., show an error message to the user
         console.error('Error creating qustion:', response.statusText);
@@ -64,14 +66,14 @@ const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
            setAnswerlist(answer_response.data)
         }
         
-       console.log("ansers",answer_response.data);
+
       } catch (error) {
         // Handle errors...
         console.error('Error fetching user data:', error);
       }
     };
     fetchData();
-  }, []); 
+  }, [trigger]); 
 
   return (
     <Modal
@@ -105,7 +107,7 @@ const AnswerModal = ({ question_id, question,isOpen, onClose }) => {
             className="w-8 h-8 rounded-full mr-2"
           />
         )}
-            {/* <span className="font-bold mr-2">{answer.user.username}</span>  */}
+            
             <Link className="userrofile_text font-bold mr-2" to={`/userprofile/${answer.user.id}`}>{answer.user.username}</Link>
             <span className="text-gray-500">{/* Add timestamp or other user information if needed */}</span>
           </div>

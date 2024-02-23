@@ -27,7 +27,6 @@ class Message(models.Model):
         return f'{self.sender}'
     
 
-
 class Call(models.Model):
     CALL_TYPE_CHOICES = [
         ('audio', 'Audio Call'),

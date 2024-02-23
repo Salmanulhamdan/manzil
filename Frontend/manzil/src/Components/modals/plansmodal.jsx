@@ -102,8 +102,8 @@ const PlanModal = ({ isOpen, closeModal, }) => {
     >
      
       <div className="bg-gradient-to-r from-purple-200 via-teal-300 to-blue-200 p-6 rounded shadow-md" style={{ width: '800px', height: 'auto' }}>
-          
-          <h2 className="text-3xl font-extrabold mb-6 text-center text-gray-800">Active Plans</h2>
+          <h1 className="text-3xl font-bold text-center mb-4">Upgrade Your Profile To Get Contact Details</h1>
+          <h2 className="text-2xl font-extrabold mb-6 text-center text-gray-800">Active Plans</h2>
            <h4 className="text-lg font-bold mb-4 text-gray-700">Select A Plan</h4>
           <ul className="space-y-2 py-4">
             {Plans.map((plan, index) => (

@@ -70,18 +70,17 @@ const MessageApp = () => {
   }, [ws, trigger]);
 
   const handleSendMessage = () => {
-    console.log("functionc", inputMessage);
     if (ws && inputMessage.trim() !== "") {
       ws.send(JSON.stringify({ message: inputMessage }));
       setInputMessage("");
       setTrigger(false);
     }
   };
-  useEffect(() => {
-    if (inputMessage) {
-      handleSendMessage();
-    }
-  }, [inputMessage]); //
+  // useEffect(() => {
+  //   if (inputMessage) {
+  //     handleSendMessage();
+  //   }
+  // }, [inputMessage]);   this one iam laterusing//
 
   const joinChatroom = async (userId) => {
     try {
@@ -93,7 +92,7 @@ const MessageApp = () => {
 
       const newChatWs = new WebSocket(wsUrl);
       setTrigger(false);
-
+      
       newChatWs.onopen = async () => {
         console.log("Chatroom WebSocket connection opened");
         const previousMessages = await GetChatMessages(data.id);
@@ -118,7 +117,7 @@ const MessageApp = () => {
 
       newChatWs.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        console.log(message);
+    
       };
 
       setWs(newChatWs);
@@ -145,9 +144,9 @@ const MessageApp = () => {
       const nextPageUrl = `http://localhost:3000/provider-videocall/${roomId}`;
       setInputMessage(nextPageUrl);
       console.log(inputMessage, "jjjjjjjjjjjj");
-      // if(inputMessage) {
-      //   handleSendMessage();
-      // } 
+      if(inputMessage) {
+        handleSendMessage();
+      } 
       
       navigate(`/provider-videocall/${roomId}`);
 
